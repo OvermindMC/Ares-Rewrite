@@ -21,8 +21,9 @@ auto Client::init(void) -> void {
     this->isRunning = true;
     
     Debugger::init(this->name);
-    Debugger::log("Initialized");
+    Debugger::log("Initialized Client <" + this->name + ">");
     
     this->mgr = new Manager(this); /* Create new Manager instance */
+    this->mgr->init();
 
 };
