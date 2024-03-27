@@ -12,6 +12,11 @@ FetchContent_MakeAvailable(minhook)
 
 add_library(NetNode SHARED)
 target_sources(NetNode PRIVATE main.cpp)
+
+add_subdirectory(Client)
+add_subdirectory(Utils)
+add_subdirectory(Mem)
+
 target_link_libraries(NetNode PRIVATE minhook)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
