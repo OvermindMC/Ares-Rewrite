@@ -7,6 +7,8 @@
 
 class Manager; /* Forward Declaration */
 
+/* Client Class */
+
 class Client {
 /* Constructor, Deconstructor */
 
