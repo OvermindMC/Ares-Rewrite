@@ -4,6 +4,8 @@ auto init(HINSTANCE hInstance) -> void {
 
     auto client = new Client("NetNode");
 
+    client->init();
+
 };
 
 auto WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID lpRes) -> BOOL {
