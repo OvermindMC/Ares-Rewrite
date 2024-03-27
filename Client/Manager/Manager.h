@@ -9,6 +9,8 @@ enum class CategoryType;
 template<typename Type, typename... Args>
 class Hook;
 
+/* Manager Class */
+
 class Manager {
 /* Constructor, Deconstructor */
 
@@ -25,4 +27,8 @@ private:
 /* Attributes for Client Runtime */
 private:
     std::map<uint64_t, bool> keymap;
+
+/* Methods for Manager Runtime */
+public:
+    auto init(void) -> void;
 };
