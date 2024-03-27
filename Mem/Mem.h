@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <assert.h>
 #include <sstream>
+#include <vector>
+#include <map>
 
 class Mem {
 public:
