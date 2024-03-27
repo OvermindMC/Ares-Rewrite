@@ -18,6 +18,11 @@ auto Client::init(void) -> void {
     if(this->isRunning)
         return;
     
+    this->isRunning = true;
+    
+    Debugger::init(this->name);
+    Debugger::log("Initialized");
+    
     this->mgr = new Manager(this); /* Create new Manager instance */
 
 };
