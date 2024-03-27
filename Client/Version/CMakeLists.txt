@@ -1,0 +1,1 @@
+target_sources(NetNode PRIVATE Version.cpp)
