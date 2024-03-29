@@ -16,14 +16,21 @@ auto Signature::get(SearchType type) -> void* {
     };
 
     if(this->address) {
+        auto offset = 0x0;
+
         switch(type) {
             case SearchType::Default:
                 return (void*)this->address;
             break;
 
             case SearchType::VTable:
-                auto offset = *(int*)(this->address + 0x3);
+                offset = *(int*)(this->address + 0x3);
                 return (void*)(uintptr_t**)((this->address + offset + 7));
+            break;
+
+            case SearchType::Ref:
+                offset = *(int*)(this->address + 0x1);
+                return (void*)(uintptr_t**)((this->address + offset + 5));
             break;
         };
     };
