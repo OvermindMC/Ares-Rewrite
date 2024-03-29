@@ -10,9 +10,9 @@ auto Mem::getDll(void) -> HMODULE {
 
 };
 
-auto Mem::findSig(const char* pattern) -> Signature* {
+auto Mem::findSig(const char* pattern) -> std::unique_ptr<Signature> {
 
-    return new Signature(pattern);
+    return std::make_unique<Signature>(pattern);
 
 };
 
