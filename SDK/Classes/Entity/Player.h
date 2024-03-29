@@ -3,6 +3,8 @@
 #include "Actor.h"
 
 class Player : public Actor {
+public:
+    auto getGameMode(void) -> GameMode*;
 private:
     virtual ~Player(void);
 public:
