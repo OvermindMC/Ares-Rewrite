@@ -2,6 +2,7 @@
 
 #include "../Mem/Mem.h"
 #include "../Utils/Utils.h"
+#include "../SDK/Minecraft.h"
 
 #include "Version/Version.h"
 
