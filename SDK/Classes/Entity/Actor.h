@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EntityContext.h"
+#include "GameMode/GameMode.h"
 #include "Component/Component.h"
 
 template<typename A, typename B>
