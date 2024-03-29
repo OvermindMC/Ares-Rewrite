@@ -13,8 +13,8 @@ class Client {
 /* Constructor, Deconstructor */
 
 public:
-    Client(const char* client_name) : name(client_name ? client_name : "Client") {}
-    ~Client(void) {};
+    Client(const char* client_name);
+    ~Client(void);
     
 /* Client Name, Client Version */
 
