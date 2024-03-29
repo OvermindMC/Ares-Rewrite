@@ -5,6 +5,7 @@
 #include "Math/Random.h"
 #include "Macro/Class.h"
 #include "MapRef/MapRef.h"
+#include "Signature/Signature.h"
 
 #undef min
 #undef max
@@ -21,4 +22,7 @@
 class Mem {
 public:
     static auto getDll(void) -> HMODULE;
+public:
+    static auto findSig(const char* pattern) -> Signature*;
+    static auto getNestedPtr(uintptr_t baseOffset, std::vector<unsigned int> offsets, bool use_exact_base_offset = false) -> void*;
 };
