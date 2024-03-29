@@ -23,6 +23,6 @@ class Mem {
 public:
     static auto getDll(void) -> HMODULE;
 public:
-    static auto findSig(const char* pattern) -> Signature*;
+    static auto findSig(const char* pattern) -> std::unique_ptr<Signature>;
     static auto getNestedPtr(uintptr_t baseOffset, std::vector<unsigned int> offsets, bool use_exact_base_offset = false) -> void*;
 };
