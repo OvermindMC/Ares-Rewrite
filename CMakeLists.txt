@@ -25,18 +25,26 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(EnTT)
 
+FetchContent_Declare(
+        libhat
+        GIT_REPOSITORY https://github.com/BasedInc/libhat
+        GIT_TAG 37ee990ef49e07571e9a948f78cd597c84a639d9
+)
+FetchContent_MakeAvailable(libhat)
+
 add_library(NetNode SHARED)
 target_sources(NetNode PRIVATE main.cpp)
 
 add_subdirectory(Client)
 add_subdirectory(Utils)
 add_subdirectory(Mem)
+add_subdirectory(SDK)
 
 #EnTT config values
 add_compile_definitions(ENTT_SPARSE_PAGE=2048)
 add_compile_definitions(ENTT_PACKED_PAGE=128)
 
-target_link_libraries(NetNode PRIVATE minhook nlohmann_json EnTT::EnTT)
+target_link_libraries(NetNode PRIVATE minhook nlohmann_json EnTT::EnTT libhat)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
