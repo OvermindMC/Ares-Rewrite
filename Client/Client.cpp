@@ -1,6 +1,14 @@
 #include "Client.h"
 #include "Manager/Manager.h"
 
+Client::Client(const char* client_name) : name(client_name ? client_name : "Client") {};
+
+Client::~Client() {
+
+    delete this->mgr;
+
+};
+
 auto Client::getName(void) -> std::string {
 
     return this->name;
