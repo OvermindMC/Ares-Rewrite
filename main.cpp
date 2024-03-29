@@ -3,8 +3,11 @@
 auto init(HINSTANCE hInstance) -> void {
 
     auto client = new Client("NetNode");
-
     client->init();
+
+    delete client;
+    Debugger::free();
+    FreeLibraryAndExitThread(Mem::getDll(), 1);
 
 };
 
