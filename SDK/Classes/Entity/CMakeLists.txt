@@ -1,1 +1,4 @@
-target_sources(NetNode PRIVATE Actor.cpp)
+target_sources(NetNode PRIVATE
+    "Actor.cpp"
+    "Player.cpp"
+)
