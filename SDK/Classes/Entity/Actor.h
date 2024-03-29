@@ -3,6 +3,9 @@
 #include "EntityContext.h"
 #include "Component/Component.h"
 
+template<typename A, typename B>
+class AutomaticID;
+
 class Actor {
 public:
     auto getEntityCtx(void) -> EntityContext*;
@@ -36,6 +39,7 @@ public:
     virtual auto reloadComponents(enum ActorInitializationMethod, class VariantParameterList const &) -> void;
     virtual auto _serverInitItemStackIds(void) -> void;
     virtual auto _doInitialMove(void) -> void;
+    virtual auto hasComponent(struct HashedString*) -> bool;
     virtual auto resetUserPos(bool) -> void;
     virtual auto getOwnerEntityType(void) -> unsigned long long;
     virtual auto remove(void) -> void;
@@ -99,14 +103,14 @@ public:
     virtual auto shouldRender(void) -> bool;
     virtual auto playAmbientSound(void) -> void;
     virtual auto getAmbientSound(void) -> enum LevelSoundEvent;
-    virtual auto isInvulnerableTo(class ActorDamageSource*) -> bool;
+    virtual auto isInvulnerableTo(struct ActorDamageSource*) -> bool;
     virtual auto getBlockDamageCause(class Block&) -> enum ActorDamageCause;
     virtual auto doFireHurt(int) -> void;
     virtual auto onLightningHit(void) -> void;
     virtual auto feed(int) -> void;
     virtual auto handleEntityEvent(enum ActorEvent, int) -> void;
     virtual auto getPickRadius(void) -> float;
-    virtual auto getActorRendererId(void) -> class HashedStruct*;
+    virtual auto getActorRendererId(void) -> struct HashedStruct*;
     virtual auto despawn(void) -> void;
     virtual auto setArmor(enum ArmorSlot, class ItemStack*) -> void;
     virtual auto getArmorMaterialTypeInSlot(enum ArmorSlot) -> enum ArmorMaterialType;
@@ -118,11 +122,35 @@ public:
     virtual auto setOffhandSlot(class ItemStack*) -> void;
     virtual auto getEquippedTotem(void) -> class ItemStack*;
     virtual auto consumeTotem(void) -> void;
-    virtual auto save(class CompoundTag*) -> bool;
-    virtual auto load(class CompoundTag*, class DataLoadHelper*) -> bool;
+    virtual auto save(struct CompoundTag*) -> bool;
+    virtual auto load(struct CompoundTag*, struct DataLoadHelper*) -> bool;
     virtual auto queryEntityRenderer(void) -> void*;
     virtual auto getSourceUniqueID(void) -> uint64_t;
     virtual auto canFreeze(void) -> bool;
     virtual auto getLiquidAABB(enum MaterialType) -> AABB<float>;
     virtual auto handleInsidePortal(Vec3<int>*) -> void;
+    virtual auto canChangeDimensionsUsingPortal(void) -> bool;
+    virtual auto changeDimension(class Packet*) -> void;
+    virtual auto changeDimension(class AutomaticID<class Dimension, int>) -> void;
+    virtual auto getControllingPlayer(void) -> uint64_t;
+    virtual auto causeFallDamageToActor(float, float, struct ActorDamageSource) -> void;
+    virtual auto onSynchedDataUpdate(int) -> void;
+    virtual auto canAddPassenger(Actor*) -> bool;
+    virtual auto canPickupItem(class ItemStack*) -> bool;
+    virtual auto canBePulledIntoVehicle(void) -> bool;
+    virtual auto inCaravan(void) -> bool;
+    virtual auto sendMotionPacketIfNeeded(void) -> void;
+    virtual auto canSynchronizeNewEntity(void) -> bool;
+    virtual auto startSwimming(void) -> void;
+    virtual auto stopSwimming(void) -> void;
+    virtual auto buildDebugInfo(std::string&) -> __int64;
+    virtual auto getCommandPermissionLevel(void) -> enum CommandPermissionLevel;
+    virtual auto getDeathTime(void) -> __int64;
+    virtual auto canBeAffected(UCHAR) -> bool;
+    virtual auto canBeAffectedByArrow(struct MobEffectInstance*) -> bool;
+    virtual auto onEffectRemoved(struct MobEffectInstance*) -> void;
+    virtual auto canObstructSpawningAndBlockPlacement(void) -> bool;
+    virtual auto getAnimationComponent(void) -> class AnimationComponent*;
+    virtual auto openContainerComponent(class Player*) -> void;
+    virtual auto swing(void) -> void;
 };
