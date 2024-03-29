@@ -25,4 +25,10 @@ public:
 public:
     static auto findSig(const char* pattern) -> std::unique_ptr<Signature>;
     static auto getNestedPtr(uintptr_t baseOffset, std::vector<unsigned int> offsets, bool use_exact_base_offset = false) -> void*;
+public:
+    template<unsigned int I, typename Type, typename... TArgs>
+	static inline auto callVFunc(void* ptr, TArgs... args) -> Type {
+		using Fn = Type(__fastcall*)(void*, decltype(args)...);
+		return (*static_cast<Fn**>((void*)ptr))[I]((void*)ptr, args...);
+	};
 };
