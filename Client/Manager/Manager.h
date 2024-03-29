@@ -15,8 +15,8 @@ class Manager {
 /* Constructor, Deconstructor */
 
 public:
-    Manager(Client* client_raw_ptr) : client(client_raw_ptr) {};
-    ~Manager(void) {};
+    Manager(Client* client_raw_ptr);
+    ~Manager(void);
 
 /* Attributes for Runtime */
 private:
