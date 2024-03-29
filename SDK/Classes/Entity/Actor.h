@@ -181,7 +181,7 @@ public:
     virtual auto _shouldProvideFeedbackOnArmorSet(enum ArmorSlot, class ItemStack*) -> void;
     virtual auto updateEntitySpecificMolangVariables(class RenderParams*) -> void;
     virtual auto shouldTryMakeStepSound(void) -> bool;
-    virtual auto _hurt(class ActorDamageSource*, float, bool, bool) -> bool;
+    virtual auto _hurt(struct ActorDamageSource*, float, bool, bool) -> bool;
     virtual auto readAdditionalSaveData(struct CompoundTag*, struct DataLoadHelper*) -> void;
     virtual auto addAdditionalSaveData(struct CompoundTag*) -> void;
     virtual auto _playStepSound(Vec3<int>*, class Block*) -> void;
