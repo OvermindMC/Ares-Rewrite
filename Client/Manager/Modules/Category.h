@@ -12,8 +12,6 @@ enum class CategoryType {
 
 /* Category Class */
 class Category {
-public:    
-
 /* Constructor, Deconstructor */
 
 public:
