@@ -13,11 +13,19 @@ public:
 /* Attributes for Module */
 private:
     Category* category;
+    std::pair<bool, bool> state;
 public:
     std::string name, description;
     uint64_t bindKey = 0x0;
 
 /* Methods for Runtime */
 public:
-    //
+    auto baseTick(void) -> void;
+public:
+    auto getState(void) -> bool;
+    auto toggleState(void) -> void;
+    auto setState(bool module_state) -> void;
+public:
+    auto getBind(void) -> uint64_t;
+    auto setBind(uint64_t module_bind) -> void;
 };
