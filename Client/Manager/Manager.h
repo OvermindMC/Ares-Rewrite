@@ -31,4 +31,8 @@ private:
 /* Methods for Manager Runtime */
 public:
     auto init(void) -> void;
+public:
+    auto initHooks(void) -> bool;
+    auto initCategories(void) -> void;
+    auto initSubModules(void) -> void;
 };
