@@ -41,3 +41,9 @@ auto Client::isRunning(void) -> bool {
     return this->_isRunning;
 
 };
+
+auto Client::stop(void) -> void {
+
+    this->_isRunning = false;
+
+};
