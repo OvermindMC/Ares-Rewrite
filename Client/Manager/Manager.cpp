@@ -9,10 +9,16 @@ Manager::~Manager(void) {
         
         //
 
-        MH_DisableHook(MH_ALL_HOOKS);
-        MH_Uninitialize();
-
     };
+
+    MH_DisableHook(MH_ALL_HOOKS);
+    MH_Uninitialize();
+
+    for(auto& item : this->categories) {
+        delete item.second;
+    };
+
+    this->categories.clear();
 
 };
 
