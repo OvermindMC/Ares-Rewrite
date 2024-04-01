@@ -12,9 +12,40 @@ auto Manager::init(void) -> void {
 
     Debugger::log("Initialized Manager");
 
-    std::ostringstream o;
-    o << std::hex << this->client;
+    if(this->initHooks()) {
+        this->initCategories();
+        this->initSubModules();
 
-    Debugger::log(o.str());
+        while(this->client->isRunning()) {
+
+            //
+
+            Sleep(1);
+
+        };
+    };
+
+};
+
+auto Manager::initHooks(void) -> bool {
+
+    if(MH_Initialize() != MH_OK)
+        return false;
+    
+    // WIP
+
+    return true;
+
+};
+
+auto Manager::initCategories(void) -> void {
+
+    //
+
+};
+
+auto Manager::initSubModules(void) -> void {
+
+    //
 
 };
