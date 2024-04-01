@@ -1,5 +1,5 @@
 #include "Manager.h"
-#include "Modules/Category.h"
+#include "Modules/Module/Module.h"
 
 Manager::Manager(Client* client_raw_ptr) : client(client_raw_ptr) {};
 
@@ -32,7 +32,16 @@ auto Manager::init(void) -> void {
 
         while(this->client->isRunning()) {
 
-            //
+            /*static int c = 0;
+
+            if(c > 50) {
+                Debugger::log("Bye");
+                
+                Sleep(1000);
+                this->client->stop();
+            };
+
+            c++;*/
 
             Sleep(1);
 
@@ -72,5 +81,23 @@ auto Manager::initCategories(void) -> void {
 auto Manager::initSubModules(void) -> void {
 
     //
+
+};
+
+auto Manager::assignModule(Module* module_raw_ptr, CategoryType category_type) -> void {
+
+    auto category = (this->categories.contains(category_type) ? this->categories.at(category_type) : nullptr);
+
+    if(category) {
+
+        category->addModule(module_raw_ptr);
+
+    };
+
+};
+
+auto Manager::getCategory(CategoryType category_type) -> Category* {
+
+    return (this->categories.contains(category_type) ? this->categories.at(category_type) : nullptr);
 
 };
