@@ -23,15 +23,21 @@ auto Client::getVersion(void) -> Version {
 
 auto Client::init(void) -> void {
 
-    if(this->isRunning)
+    if(this->_isRunning)
         return;
     
-    this->isRunning = true;
+    this->_isRunning = true;
     
     Debugger::init(this->name);
     Debugger::log("Initialized Client <" + this->name + ">");
     
     this->mgr = new Manager(this); /* Create new Manager instance */
     this->mgr->init();
+
+};
+
+auto Client::isRunning(void) -> bool {
+
+    return this->_isRunning;
 
 };
