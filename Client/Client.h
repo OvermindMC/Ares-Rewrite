@@ -29,9 +29,10 @@ private:
 /* Runtime */
 
 private:
-    bool isRunning = false;
+    bool _isRunning = false;
     Manager* mgr = nullptr;
 
 public:
     auto init(void) -> void;
+    auto isRunning(void) -> bool;
 };
