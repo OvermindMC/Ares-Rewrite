@@ -3,6 +3,7 @@
 #include "../Client.h"
 
 /* Forward Declarations */
+class Module;
 class Category;
 enum class CategoryType;
 
@@ -35,4 +36,8 @@ public:
     auto initHooks(void) -> bool;
     auto initCategories(void) -> void;
     auto initSubModules(void) -> void;
+public:
+    auto assignModule(Module* module_raw_ptr, CategoryType category_type) -> void;
+public:
+    auto getCategory(CategoryType category_type) -> Category*;
 };
