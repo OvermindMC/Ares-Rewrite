@@ -1,4 +1,5 @@
 #include "Category.h"
+#include "Module/Module.h"
 
 Category::Category(Manager* manager_raw_ptr, CategoryType category_type) : mgr(manager_raw_ptr), type(category_type) {
 
@@ -9,7 +10,7 @@ Category::Category(Manager* manager_raw_ptr, CategoryType category_type) : mgr(m
 Category::~Category(void) {
 
     for(auto module : this->modules) {
-        //delete module;
+        delete module;
     };
 
     this->modules.clear();
