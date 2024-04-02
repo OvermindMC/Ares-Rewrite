@@ -17,6 +17,12 @@ Category::~Category(void) {
 
 };
 
+auto Category::getManager(void) -> Manager* {
+
+    return this->mgr;
+
+};
+
 auto Category::getType(void) -> CategoryType {
 
     return this->type;
