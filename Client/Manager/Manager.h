@@ -39,4 +39,20 @@ public:
     auto initSubModules(void) -> void;
 public:
     auto getCategory(CategoryType category_type) -> Category*;
+    auto getSortedEvents(void) -> std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>>;
+public:
+    template<EventType event_type, typename... TArgs>
+    auto dispatchEvent(TArgs... arguments) -> void {
+        auto events = this->getSortedEvents();
+        auto iter = events.find(event_type);
+
+        if(iter != events.end()) {
+            auto& list = iter->second;
+
+            for(auto& event : list) {
+                auto raw_event_ptr = static_cast<Event<TArgs...>*>(event.second);
+                raw_event_ptr->callback(arguments...);
+            };
+        };
+    };
 };
