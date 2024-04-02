@@ -32,16 +32,11 @@ auto Manager::init(void) -> void {
 
         while(this->client->isRunning()) {
 
-            static int c = 0;
-
-            if(c > 50) {
-                Debugger::log("Bye");
-                
-                Sleep(3000);
-                this->client->stop();
+            for(auto [ type, category ] : this->categories) {
+                for(auto module : category->getModules()) {
+                    module->baseTick();
+                };
             };
-
-            c++;
 
             Sleep(1);
 
