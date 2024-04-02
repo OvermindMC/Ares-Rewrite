@@ -12,9 +12,9 @@ public:
 
 /* Attributes for Module */
 private:
-    EventDispatcher* eventDispatcher;
+    EventDispatcher* eventDispatcher = nullptr;
 private:
-    Category* category;
+    Category* category = nullptr;
     std::pair<bool, bool> state;
 public:
     std::string name, description;
