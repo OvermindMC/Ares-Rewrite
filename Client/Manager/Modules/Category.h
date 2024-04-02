@@ -26,6 +26,8 @@ private:
 
 /* Methods for Runtime */
 public:
+    auto getManager(void) -> Manager*;
+public:
     auto getType(void) -> CategoryType;
     auto getName(void) -> std::string;
 public:
