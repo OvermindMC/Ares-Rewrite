@@ -5,11 +5,13 @@ Module::Module(Manager* manager_raw_ptr, CategoryType category_type, std::string
     this->category = manager_raw_ptr->getCategory(category_type);
     this->category->addModule(this);
 
+    this->eventDispatcher = new EventDispatcher();
+
 };
 
 Module::~Module(void) {
 
-    //
+    delete this->eventDispatcher;
 
 };
 
@@ -18,14 +20,12 @@ auto Module::baseTick(void) -> void {
     if(this->state.first != this->state.second) {
 
         this->state.second = this->state.first;
-
-        if(this->state.first) {
-            //
-        } else {
-            //
-        };
+        this->getEventDispatcher()->dispatchEvent(EventType::Module_Toggle);
 
     };
+
+    if(this->state.first)
+        this->getEventDispatcher()->dispatchEvent(EventType::Module_Tick);
 
 };
 
@@ -56,5 +56,11 @@ auto Module::getBind(void) -> uint64_t {
 auto Module::setBind(uint64_t module_bind) -> void {
 
     this->bindKey = module_bind;
+
+};
+
+auto Module::getEventDispatcher(void) -> EventDispatcher* {
+
+    return this->eventDispatcher;
 
 };
