@@ -32,6 +32,8 @@ private:
 
 /* Methods for Manager Runtime */
 public:
+    auto getClient(void) -> Client*;
+public:
     auto init(void) -> void;
 public:
     auto initHooks(void) -> bool;
