@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Client.h"
+#include "Event/Dispatcher.h"
 
 /* Forward Declarations */
 class Module;
