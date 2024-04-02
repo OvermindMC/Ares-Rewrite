@@ -12,6 +12,8 @@ public:
 
 /* Attributes for Module */
 private:
+    EventDispatcher* eventDispatcher;
+private:
     Category* category;
     std::pair<bool, bool> state;
 public:
@@ -28,4 +30,6 @@ public:
 public:
     auto getBind(void) -> uint64_t;
     auto setBind(uint64_t module_bind) -> void;
+public:
+    auto getEventDispatcher(void) -> EventDispatcher*;
 };
