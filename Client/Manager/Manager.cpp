@@ -22,6 +22,12 @@ Manager::~Manager(void) {
 
 };
 
+auto Manager::getClient(void) -> Client* {
+
+    return this->client;
+
+};
+
 auto Manager::init(void) -> void {
 
     Debugger::log("Initialized Manager");
