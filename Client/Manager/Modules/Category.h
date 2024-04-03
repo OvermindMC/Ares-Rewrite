@@ -23,6 +23,7 @@ private:
     CategoryType type;
 public:
     PTR_ACCESS(Manager*, mgr, mgr_raw_ptr);
+    PTR_ACCESS(Client*, client, mgr->client);
 /* Methods for Runtime */
 public:
     auto getType(void) -> CategoryType;
