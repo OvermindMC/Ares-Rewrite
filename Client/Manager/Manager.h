@@ -12,27 +12,21 @@ template<typename Type, typename... Args>
 class Hook;
 
 /* Manager Class */
-
 class Manager {
 /* Constructor, Deconstructor */
-
 public:
     Manager(Client* client_raw_ptr);
     ~Manager(void);
-
 /* Attributes for Runtime */
 private:
-    Client* client = nullptr;
-    std::vector<void*> hooks;
-    std::map<CategoryType, Category*> categories;
-
-/* Attributes for Client Runtime */
+    Client* client_instance_raw_ptr = nullptr;
 private:
+    std::vector<void*> hooks;
     std::map<uint64_t, bool> keymap;
-
-/* Methods for Manager Runtime */
+    std::map<CategoryType, Category*> categories;
 public:
-    auto getClient(void) -> Client*;
+    PTR_ACCESS(Client*, client, client_instance_raw_ptr);
+/* Methods for Manager Runtime */
 public:
     auto init(void) -> void;
 public:
