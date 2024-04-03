@@ -73,11 +73,13 @@ auto Manager::initCategories(void) -> void {
 
 };
 
-#include "Modules/Module/Misc/TestModule.h"
+#include "Modules/Module/Misc/TestMod.h"
+#include "Modules/Module/Misc/Uninject.h"
 
 auto Manager::initSubModules(void) -> void {
 
     new TestMod(this);
+    new Uninject(this);
 
 };
 

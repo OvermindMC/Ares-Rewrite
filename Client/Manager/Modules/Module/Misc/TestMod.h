@@ -4,5 +4,5 @@
 
 class TestMod : public Module {
 public:
-    TestMod(Manager* mgr);
+    TestMod(Manager*);
 };

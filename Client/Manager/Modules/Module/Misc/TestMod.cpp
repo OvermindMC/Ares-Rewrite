@@ -1,4 +1,4 @@
-#include "TestModule.h"
+#include "TestMod.h"
 
 TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", "For Developers") {
 
@@ -15,8 +15,6 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
                 if(c > 50) {
                     this->getEventDispatcher()->unregisterEvent(EventType::Module_Tick);
                     Debugger::log("Unregistered!");
-
-                    this->category->mgr->client->stop();
                 };
             }
         )
