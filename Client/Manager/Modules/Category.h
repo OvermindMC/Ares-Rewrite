@@ -13,20 +13,17 @@ enum class CategoryType {
 /* Category Class */
 class Category {
 /* Constructor, Deconstructor */
-
 public:
     Category(Manager* manager_raw_ptr, CategoryType category_type);
     ~Category(void);
-
 /* Attributes for Category */
 private:
+    Manager* mgr_raw_ptr = nullptr;
     std::vector<Module*> modules;
-    Manager* mgr = nullptr;
     CategoryType type;
-
-/* Methods for Runtime */
 public:
-    auto getManager(void) -> Manager*;
+    PTR_ACCESS(Manager*, mgr, mgr_raw_ptr);
+/* Methods for Runtime */
 public:
     auto getType(void) -> CategoryType;
     auto getName(void) -> std::string;
