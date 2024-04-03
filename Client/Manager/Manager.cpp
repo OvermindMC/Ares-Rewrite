@@ -1,7 +1,7 @@
 #include "Manager.h"
 #include "Modules/Module/Module.h"
 
-Manager::Manager(Client* client_raw_ptr) : client(client_raw_ptr) {};
+Manager::Manager(Client* client_raw_ptr) : client_instance_raw_ptr(client_raw_ptr) {};
 
 Manager::~Manager(void) {
 
@@ -22,12 +22,6 @@ Manager::~Manager(void) {
 
 };
 
-auto Manager::getClient(void) -> Client* {
-
-    return this->client;
-
-};
-
 auto Manager::init(void) -> void {
 
     Debugger::log("Initialized Manager");
@@ -36,7 +30,7 @@ auto Manager::init(void) -> void {
         this->initCategories();
         this->initSubModules();
 
-        while(this->client->isRunning()) {
+        while(this->client_instance_raw_ptr->isRunning()) {
 
             for(auto [ type, category ] : this->categories) {
                 for(auto module : category->getModules()) {
