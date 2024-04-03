@@ -12,10 +12,10 @@ public:
 
 /* Attributes for Module */
 private:
-    EventDispatcher* event_dispatcher_raw_ptr = nullptr;
-private:
     Category* category_raw_ptr = nullptr;
     std::pair<bool, bool> state;
+private:
+    EventDispatcher* event_dispatcher_raw_ptr = nullptr;
 public:
     std::string name, description;
     uint64_t bindKey = 0x0;
