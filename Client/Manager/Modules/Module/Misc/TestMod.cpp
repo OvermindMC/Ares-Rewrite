@@ -8,7 +8,16 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
         EventType::Module_Tick, EventDispatcher::EventPriority::Low, std::function<void(void)>(
             [&]() -> void {
                 Debugger::log("Tick!");
-                this->setState(false);
+                
+                static int c = 0;
+                c++;
+
+                if(c > 50) {
+                    this->getEventDispatcher()->unregisterEvent(EventType::Module_Tick);
+                    Debugger::log("Unregistered!");
+
+                    this->category->mgr->client->stop();
+                };
             }
         )
     );
