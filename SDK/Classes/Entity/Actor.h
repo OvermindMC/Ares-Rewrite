@@ -27,6 +27,18 @@ public:
         return assureF(ctx->registry, type.hash());
     };
 public:
+    template<typename T>
+    auto getComponentData(void) -> T* {
+        auto assure = this->getComponent<T>();
+        auto ctx = this->getEntityCtx();
+
+        if(assure && assure->contains(ctx->entityId)) {
+            return (T*)std::addressof(assure->get(ctx->entityId));
+        };
+
+        return nullptr;
+    };
+public:
     auto getRuntimeID(void) -> unsigned long long;
 private:
     virtual ~Actor(void);
