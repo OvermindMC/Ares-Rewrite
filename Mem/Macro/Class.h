@@ -28,3 +28,7 @@ type get##name()
 AS_FIELD(type, name, get##name);                                                                  \
 type get##name() const { return direct_access<type>(this, offset); }                              \
 void set##name(type v) const { direct_access<type>(this, offset) = v; }
+
+#define PTR_ACCESS(type, name, raw_ptr)                                                           \
+    __declspec(property(get = get##name)) type name;                                              \
+    type get##name() const { return this->raw_ptr; }  
