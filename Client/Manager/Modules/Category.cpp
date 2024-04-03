@@ -1,7 +1,7 @@
 #include "Category.h"
 #include "Module/Module.h"
 
-Category::Category(Manager* manager_raw_ptr, CategoryType category_type) : mgr(manager_raw_ptr), type(category_type) {
+Category::Category(Manager* manager_raw_ptr, CategoryType category_type) : mgr_raw_ptr(manager_raw_ptr), type(category_type) {
 
     //
 
@@ -14,12 +14,6 @@ Category::~Category(void) {
     };
 
     this->modules.clear();
-
-};
-
-auto Category::getManager(void) -> Manager* {
-
-    return this->mgr;
 
 };
 
