@@ -48,5 +48,17 @@ public:
         };
     };
 public:
+    ~EventDispatcher(void) {
+        for(auto& event : this->events_map) {
+            for(auto item : event.second) {
+                auto raw_event_ptr = static_cast<Event<>*>(item.second);
+                if(raw_event_ptr)
+                    delete raw_event_ptr;
+            };
+            this->events_map[event.first].clear();
+        };
+        this->events_map.clear();
+    };
+public:
     std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>> events_map;
 };
