@@ -21,6 +21,8 @@ public:
     uint64_t bindKey = 0x0;
 public:
     PTR_ACCESS(Category*, category, category_raw_ptr);
+    PTR_ACCESS(Manager*, mgr, category_raw_ptr->mgr);
+    PTR_ACCESS(Client*, client, mgr->client);
 /* Methods for Runtime */
 public:
     auto baseTick(void) -> void;
