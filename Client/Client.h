@@ -30,7 +30,10 @@ private:
 
 private:
     bool _isRunning = false;
-    Manager* mgr = nullptr;
+    Manager* mgr_raw_ptr = nullptr;
+
+public:
+    PTR_ACCESS(Manager*, mgr, mgr_raw_ptr);
 
 /* Runtime Methods */
 public:
