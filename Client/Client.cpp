@@ -5,7 +5,7 @@ Client::Client(const char* client_name) : name(client_name ? client_name : "Clie
 
 Client::~Client() {
 
-    delete this->mgr;
+    delete this->mgr_raw_ptr;
 
 };
 
@@ -31,8 +31,8 @@ auto Client::init(void) -> void {
     Debugger::init(this->name);
     Debugger::log("Initialized Client <" + this->name + ">");
     
-    this->mgr = new Manager(this); /* Create new Manager instance */
-    this->mgr->init();
+    this->mgr_raw_ptr = new Manager(this); /* Create new Manager instance */
+    this->mgr_raw_ptr->init();
 
 };
 
