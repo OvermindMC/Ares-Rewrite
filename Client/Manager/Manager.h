@@ -24,7 +24,7 @@ private:
     std::vector<void*> hooks;
     std::map<uint64_t, bool> keymap;
     std::map<std::string, void*> signature_map;
-    std::map<CategoryType, Category*> categories;
+    std::map<CategoryType, std::unique_ptr<Category>> categories;
 public:
     PTR_ACCESS(Client*, client, client_instance_raw_ptr);
 /* Methods for Manager Runtime */
