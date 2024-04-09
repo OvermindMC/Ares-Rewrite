@@ -21,8 +21,10 @@ public:
             auto& list = iter->second;
             
             for(auto& event : list) {
-                auto raw_event_ptr = static_cast<Event<>*>(event.second);
-                delete raw_event_ptr;
+                if(event.second) {
+                    delete static_cast<Event<>*>(event.second);
+                    event.second = nullptr;
+                };
             };
 
             events_map.erase(iter->first);
@@ -42,22 +44,16 @@ public:
             });
 
             for(auto& event : list) {
-                auto raw_event_ptr = static_cast<Event<TArgs...>*>(event.second);
-                raw_event_ptr->callback(arguments...);
+                if(event.second)
+                    static_cast<Event<TArgs...>*>(event.second)->callback(arguments...);
             };
         };
     };
 public:
     ~EventDispatcher(void) {
         for(auto& event : this->events_map) {
-            for(auto item : event.second) {
-                auto raw_event_ptr = static_cast<Event<>*>(item.second);
-                if(raw_event_ptr)
-                    delete raw_event_ptr;
-            };
-            this->events_map[event.first].clear();
+            this->unregisterEvent(event.first);
         };
-        this->events_map.clear();
     };
 public:
     std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>> events_map;
