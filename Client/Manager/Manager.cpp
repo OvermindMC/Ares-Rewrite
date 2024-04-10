@@ -9,12 +9,6 @@ Manager::~Manager(void) {
     this->categories.clear();
     this->cleanupHooks();
 
-    if(!this->hooks.empty()) {
-        
-        //
-
-    };
-
     MH_DisableHook(MH_ALL_HOOKS);
     MH_Uninitialize();
 
@@ -72,10 +66,18 @@ auto Manager::init(void) -> void {
 
 auto Manager::cleanupHooks(void) -> void {
 
-    //
+    for(auto curr_hook_raw_ptr : this->hooks) {
+
+        auto currHook = (Hook<void>*)curr_hook_raw_ptr;
+        delete currHook;
+
+    };
+
+    this->hooks.clear();
 
 };
 
+#include "Hook/Hooks/Level/Tick.h"
 #include "Hook/Hooks/Actor/Tick.h"
 
 auto Manager::initHooks(void) -> bool {
@@ -83,6 +85,7 @@ auto Manager::initHooks(void) -> bool {
     if(MH_Initialize() != MH_OK)
         return false;
     
+    new Level_TickHook(this);
     new Actor_TickHook(this);
 
     return true;
@@ -116,7 +119,7 @@ auto Manager::initSubModules(void) -> void {
 
 };
 
-auto Manager::registerHook(void* hook_raw_ptr) -> void {
+auto Manager::registerHook(void* hook_raw_ptr) -> bool {
 
     auto hook = (Hook<void>*)hook_raw_ptr;
     auto canPush = true;
@@ -125,18 +128,18 @@ auto Manager::registerHook(void* hook_raw_ptr) -> void {
 
         auto currHook = (Hook<void>*)curr_hook_raw_ptr;
 
-        if(currHook->name == hook->name) {
+        if(strcmp(currHook->name, hook->name) == 0) {
+            Debugger::log(currHook->name);
             canPush = false;
             break;
         };
 
     };
 
-    if(canPush) {
+    if(canPush)
         this->hooks.push_back(hook_raw_ptr);
-    } else {
-        Debugger::log("This hook was already initialized!");
-    };
+
+    return canPush;
 
 };
 

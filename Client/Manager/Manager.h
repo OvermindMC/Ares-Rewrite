@@ -43,7 +43,7 @@ public:
         return (this->signature_map.contains(query) ? (T)this->signature_map.at(query) : T{});
     };
 public:
-    auto registerHook(void* hook_raw_ptr) -> void;
+    auto registerHook(void* hook_raw_ptr) -> bool;
 public:
     auto getCategory(CategoryType category_type) -> Category*;
     auto getSortedEvents(void) -> std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>>;
