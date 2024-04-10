@@ -40,6 +40,7 @@ public:
     };
 public:
     auto getRuntimeID(void) -> unsigned long long;
+    auto getEntityTypeId(void) -> unsigned char;
 private:
     virtual ~Actor(void);
 public:
