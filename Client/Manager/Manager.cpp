@@ -1,4 +1,5 @@
 #include "Manager.h"
+#include "Hook/Hook.h"
 #include "Modules/Module/Module.h"
 
 Manager::Manager(Client* client_raw_ptr) : client_instance_raw_ptr(client_raw_ptr) {};
@@ -68,12 +69,14 @@ auto Manager::init(void) -> void {
 
 };
 
+#include "Hook/Hooks/Actor/Tick.h"
+
 auto Manager::initHooks(void) -> bool {
 
     if(MH_Initialize() != MH_OK)
         return false;
     
-    // WIP
+    new Actor_TickHook(this);
 
     return true;
 
@@ -103,6 +106,30 @@ auto Manager::initSubModules(void) -> void {
 
     new TestMod(this);
     new Uninject(this);
+
+};
+
+auto Manager::registerHook(void* hook_raw_ptr) -> void {
+
+    auto hook = (Hook<void>*)hook_raw_ptr;
+    auto canPush = true;
+
+    for(auto curr_hook_raw_ptr : this->hooks) {
+
+        auto currHook = (Hook<void>*)curr_hook_raw_ptr;
+
+        if(currHook->name == hook->name) {
+            canPush = false;
+            break;
+        };
+
+    };
+
+    if(canPush) {
+        this->hooks.push_back(hook_raw_ptr);
+    } else {
+        Debugger::log("This hook was already initialized!");
+    };
 
 };
 

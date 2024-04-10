@@ -1,0 +1,40 @@
+#pragma once
+
+#include "../Manager.h"
+
+template<typename Type, typename... Args>
+class Hook {
+private:
+    Manager* mgr_raw_ptr = nullptr;
+public:
+    using Func = Type(__thiscall*)(Args...); /* Declare return type and arguments for detour function */
+    Func _Func = (Func)nullptr; /* Pointer declaration of original function for calling original function after our existing implementation */
+public:
+    static inline std::function<Type(Args...)> callback = [&](Args... args) -> Type { return Type{}; }; /* Declare callback with type, arguments */
+public:
+    static auto detourCallback(Args... arguments) -> Type {
+        return callback ? callback(arguments...) : Type{}; /* If T (return type) isn't void, return empty initialization */
+    };
+private:
+    const char* _name = nullptr;
+    void* _addr = nullptr;
+public:
+    PTR_ACCESS(const char*, name, _name);
+public:
+    Hook(Manager* mgr, std::string name, void* addr, std::function<Type(Args...)> cb) : mgr_raw_ptr(mgr), _name(name.c_str()), _addr(addr) {
+
+        this->callback = cb;
+        
+        if(MH_CreateHook(addr, &detourCallback, reinterpret_cast<LPVOID*>(&_Func)) != MH_OK) {
+            Debugger::log("Failed to initialize hook <" + name + ">");
+        } else {
+            std::ostringstream o;
+            o << std::hex << addr;
+
+            Debugger::log("Successfully initialized hook <" + name + ":" + o.str() + ">");
+            mgr->registerHook(this);
+            MH_EnableHook(addr);
+        };
+
+    };
+};

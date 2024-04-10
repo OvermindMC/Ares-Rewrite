@@ -7,3 +7,7 @@ struct RuntimeIDComponent {
 struct ActorGameTypeComponent {
     enum GameType gameType;
 };
+
+struct ActorTypeComponent {
+    uint8_t typeId;
+};
