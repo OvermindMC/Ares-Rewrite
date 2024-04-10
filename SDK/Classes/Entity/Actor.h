@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Level/Level.h"
 #include "EntityContext.h"
 #include "GameMode/GameMode.h"
 #include "Component/Component.h"
@@ -41,6 +42,8 @@ public:
 public:
     auto getRuntimeID(void) -> unsigned long long;
     auto getEntityTypeId(void) -> unsigned char;
+public:
+    auto getPos(void) -> Vec3<float>;
 private:
     virtual ~Actor(void);
 public:

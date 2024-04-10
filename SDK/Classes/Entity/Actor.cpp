@@ -23,3 +23,10 @@ auto Actor::getEntityTypeId(void) -> unsigned char {
     return _GetEntityTypeId(this);
 
 };
+
+auto Actor::getPos(void) -> Vec3<float> {
+
+    auto data = this->getComponentData<StateVectorComponent>();
+    return (data ? data->position : Vec3<float>{});
+
+};
