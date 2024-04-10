@@ -7,13 +7,7 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
     this->getEventDispatcher()->registerEvent(
         EventType::Module_Tick, EventDispatcher::EventPriority::Low, std::function<void(void)>(
             [&]() -> void {
-                
-                /*static int c = 0;
-                c++;
-
-                if(c > 1000)
-                    this->setState(false);*/
-
+                //
             }
         )
     );
@@ -21,18 +15,7 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
     this->getEventDispatcher()->registerEvent(
         EventType::Module_Toggle, EventDispatcher::EventPriority::Low, std::function<void(void)>(
             [&]() -> void {
-                if(!this->getState()) {
-                    Debugger::log("Goodbye...");
-                    this->client->stop();
-                };
-            }
-        )
-    );
-
-    this->getEventDispatcher()->registerEvent(
-        EventType::Level_Tick, EventDispatcher::EventPriority::Highest, std::function<void(Level*)>(
-            [&](Level* level) -> void {
-                Debugger::log("!");
+                //
             }
         )
     );
