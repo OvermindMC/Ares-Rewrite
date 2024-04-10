@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 bool Renderer::init = false;
+ImDrawList* Renderer::drawList = nullptr;
 
 #define RELEASE_AND_NULLIFY(ptr) \
     if (ptr) {                   \
@@ -144,5 +145,14 @@ safe_release:
     ::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
 
     return nullptr;
+
+};
+
+auto Renderer::drawText(ImVec2 textPos, std::string text, float fontSize, ImColor color) -> void {
+
+    if(!Renderer::drawList)
+        return;
+    
+    Renderer::drawList->AddText(ImGui::GetFont(), fontSize, textPos, ImColor(color.Value.x / 255.f, color.Value.y / 255.f, color.Value.z / 255.f, color.Value.w), text.c_str());
 
 };
