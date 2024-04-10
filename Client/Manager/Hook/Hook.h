@@ -22,6 +22,7 @@ private:
     void* _addr = nullptr;
 public:
     PTR_ACCESS(const char*, name, _name);
+    PTR_ACCESS(void*, address, _addr);
 public:
     Hook(Manager* mgr, const char* name, void* addr, std::function<Type(Args...)> cb) : mgr_raw_ptr(mgr), _name(name), _addr(addr) {
 
@@ -42,5 +43,8 @@ public:
             };
         };
 
+    };
+    ~Hook(void) {
+        MH_DisableHook(this->_addr);
     };
 };
