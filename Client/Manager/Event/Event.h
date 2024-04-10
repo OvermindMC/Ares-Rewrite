@@ -4,7 +4,11 @@
 #include <map>
 
 enum class EventType {
-    Module_Tick = 1, Module_Toggle = 2
+    /* Client Internal Events*/
+    Module_Tick = 1, Module_Toggle = 2,
+    
+    /* Other */
+    Level_Tick = 3
 };
 
 template<typename... TArgs>
