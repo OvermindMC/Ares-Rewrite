@@ -79,12 +79,14 @@ auto Manager::cleanupHooks(void) -> void {
 
 #include "Hook/Hooks/Level/Tick.h"
 #include "Hook/Hooks/Actor/Tick.h"
+#include "Hook/Hooks/SwapChain/Present.h"
 
 auto Manager::initHooks(void) -> bool {
 
     if(MH_Initialize() != MH_OK)
         return false;
     
+    new SwapChain_PresentHook(this);
     new Level_TickHook(this);
     new Actor_TickHook(this);
 

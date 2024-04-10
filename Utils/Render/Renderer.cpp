@@ -1,7 +1,14 @@
 #include "Renderer.h"
+#include "../Debugger/Debugger.h"
 
-bool Renderer::init = false;
+bool Renderer::initialized = false;
 ImDrawList* Renderer::drawList = nullptr;
+IDXGISwapChain3* Renderer::sc = nullptr;
+
+ID3D11DeviceContext* Renderer::context = nullptr;
+ID3D11Texture2D* Renderer::backBuffer = nullptr;
+IDXGISurface* Renderer::surfaceBuffer = nullptr;
+ID3D11RenderTargetView* Renderer::tv = nullptr;
 
 #define RELEASE_AND_NULLIFY(ptr) \
     if (ptr) {                   \
@@ -145,6 +152,109 @@ safe_release:
     ::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
 
     return nullptr;
+
+};
+
+auto Renderer::getWindow(void) -> HWND {
+
+    static auto window = (HWND)FindWindowA(nullptr, "Minecraft");
+    return window;
+
+};
+
+auto Renderer::init(IDXGISwapChain3* swapChain, ID3D11Device* device) -> bool {
+
+    Renderer::sc = swapChain;
+
+    if(!ImGui::GetCurrentContext()) {
+        Debugger::log("Initializing ImGui Context");
+        
+        ImGui::CreateContext();
+        ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(DroidSans_compressed_data, DroidSans_compressed_size, 18.f);
+    };
+
+    device->GetImmediateContext(&Renderer::context);
+    if(!Renderer::context) {
+        Debugger::log("Failed to get context");
+        return false;
+    };
+    
+    if(FAILED(swapChain->GetBuffer(0, IID_PPV_ARGS(&Renderer::backBuffer)))) {
+        Debugger::log("Failed to get back buffer texture");
+        return false;
+    };
+    
+    if(FAILED(swapChain->GetBuffer(0, IID_PPV_ARGS(&Renderer::surfaceBuffer)))) {
+        Debugger::log("Failed to get surface buffer");
+        return false;
+    };
+    
+    if(FAILED(device->CreateRenderTargetView(Renderer::backBuffer, nullptr, &Renderer::tv))) {
+        Debugger::log("Failed to create render target view!");
+        return false;
+    };
+    
+    if(!Renderer::initialized) {
+        Renderer::initialized = true;
+        ImGui_ImplWin32_Init(Renderer::getWindow());
+        ImGui_ImplDX11_Init(device, Renderer::context);
+    };
+
+    return true;
+
+};
+
+auto Renderer::cleanup(bool clearAll) -> void {
+
+    Renderer::initialized = !clearAll;
+
+    if(clearAll && ImGui::GetCurrentContext()) {
+        ImGui::DestroyContext();
+    };
+
+    if(Renderer::context) {
+        Renderer::context->Flush();
+        RELEASE_AND_NULLIFY(Renderer::context);
+    };
+
+    if(Renderer::backBuffer) {
+        RELEASE_AND_NULLIFY(Renderer::backBuffer);
+    };
+
+    if(Renderer::surfaceBuffer) {
+        RELEASE_AND_NULLIFY(Renderer::surfaceBuffer);
+    };
+
+    if(Renderer::tv) {
+        RELEASE_AND_NULLIFY(Renderer::tv);
+    };
+
+};
+
+auto Renderer::newFrame(void) -> void {
+
+    if(!Renderer::initialized)
+        return;
+    
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+};
+
+auto Renderer::endFrame(void) -> void {
+
+    ImGui::EndFrame();
+    ImGui::Render();
+    
+    Renderer::context->OMSetRenderTargets(1, &Renderer::tv, nullptr);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+};
+
+auto Renderer::setDrawList(ImDrawList* list) -> void {
+
+    Renderer::drawList = list;
 
 };
 
