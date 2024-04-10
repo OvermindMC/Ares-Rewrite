@@ -23,19 +23,23 @@ private:
 public:
     PTR_ACCESS(const char*, name, _name);
 public:
-    Hook(Manager* mgr, std::string name, void* addr, std::function<Type(Args...)> cb) : mgr_raw_ptr(mgr), _name(name.c_str()), _addr(addr) {
+    Hook(Manager* mgr, const char* name, void* addr, std::function<Type(Args...)> cb) : mgr_raw_ptr(mgr), _name(name), _addr(addr) {
 
         this->callback = cb;
         
         if(MH_CreateHook(addr, &detourCallback, reinterpret_cast<LPVOID*>(&_Func)) != MH_OK) {
-            Debugger::log("Failed to initialize hook <" + name + ">");
+            Debugger::log("Failed to initialize hook <" + std::string(name) + ">");
         } else {
             std::ostringstream o;
             o << std::hex << addr;
 
-            Debugger::log("Successfully initialized hook <" + name + ":" + o.str() + ">");
-            mgr->registerHook(this);
-            MH_EnableHook(addr);
+            Debugger::log("Successfully initialized hook <" + std::string(name) + ":" + o.str() + ">");
+            
+            if(mgr->registerHook(this)) {
+                MH_EnableHook(addr);
+            } else {
+                Debugger::log("Failed to enable hook <" + std::string(name) + ":" + o.str() + ">");
+            };
         };
 
     };
