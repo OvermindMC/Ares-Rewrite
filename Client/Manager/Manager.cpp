@@ -66,11 +66,13 @@ auto Manager::init(void) -> void {
 
 auto Manager::cleanupHooks(void) -> void {
 
-    for(auto curr_hook_raw_ptr : this->hooks) {
-
-        auto currHook = (Hook<void>*)curr_hook_raw_ptr;
-        delete currHook;
-
+    for (auto it = this->hooks.begin(); it != this->hooks.end(); ++it) {
+        auto curr_hook_raw_ptr = *it;
+        if (curr_hook_raw_ptr) {
+            auto currHook = static_cast<Hook<void>*>(curr_hook_raw_ptr);
+            delete currHook;
+            *it = nullptr;
+        }
     };
 
     this->hooks.clear();
@@ -142,6 +144,23 @@ auto Manager::registerHook(void* hook_raw_ptr) -> bool {
         this->hooks.push_back(hook_raw_ptr);
 
     return canPush;
+
+};
+
+auto Manager::getHookRaw(std::string query) -> void* {
+
+    auto hook_raw_ptr = (void*)nullptr;
+
+    for(auto curr_hook_raw_ptr : this->hooks) {
+
+        if(strcmp(((Hook<void>*)curr_hook_raw_ptr)->name, query.c_str()) == 0) {
+            hook_raw_ptr = curr_hook_raw_ptr;
+            break;
+        };
+
+    };
+
+    return hook_raw_ptr;
 
 };
 
