@@ -1,6 +1,6 @@
 #include "Tick.h"
 
-Actor_TickHook::Actor_TickHook(Manager* mgr) : Hook<void, Actor*>(mgr, "Actor_Tick", (void*)mgr->getSig<uintptr_t**>("Actor_VTable")[29],
+Actor_TickHook::Actor_TickHook(Manager* mgr) : Hook<void, Actor*>(mgr, "Actor_Tick", mgr->getSig<void**>("Actor_VTable")[29],
     [&](Actor* entity) -> void {
         
         auto typeId = entity->getEntityTypeId();
