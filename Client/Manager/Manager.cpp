@@ -6,6 +6,8 @@ Manager::Manager(Client* client_raw_ptr) : client_instance_raw_ptr(client_raw_pt
 
 Manager::~Manager(void) {
 
+    this->categories.clear();
+
     if(!this->hooks.empty()) {
         
         //
@@ -14,8 +16,6 @@ Manager::~Manager(void) {
 
     MH_DisableHook(MH_ALL_HOOKS);
     MH_Uninitialize();
-
-    this->categories.clear();
 
 };
 
