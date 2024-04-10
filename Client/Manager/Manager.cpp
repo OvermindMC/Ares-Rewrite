@@ -7,6 +7,7 @@ Manager::Manager(Client* client_raw_ptr) : client_instance_raw_ptr(client_raw_pt
 Manager::~Manager(void) {
 
     this->categories.clear();
+    this->cleanupHooks();
 
     if(!this->hooks.empty()) {
         
@@ -40,11 +41,11 @@ auto Manager::init(void) -> void {
             auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 11 48 8B 01 BA ? ? ? ? 48 8B 00 FF 15 ? ? ? ? 48 8B 8B ? ? ? ? 48 85 C9 74 17");
             return ptr->get(Signature::SearchType::VTable);
         }()},
-        {"AVMouseInput", []() {
+        {"MouseInput", []() {
             auto ptr = std::make_unique<Signature>("48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 57 41 54 41 55 41 56 41 57 48 83 EC 60");
             return ptr->get(Signature::SearchType::Default);
         }()},
-        {"AVMouseInput", []() {
+        {"KeyInput", []() {
             auto ptr = std::make_unique<Signature>("48 83 EC 48 0F B6 C1 4C 8D 05");
             return ptr->get(Signature::SearchType::Default);
         }()}
@@ -66,6 +67,12 @@ auto Manager::init(void) -> void {
 
         };
     };
+
+};
+
+auto Manager::cleanupHooks(void) -> void {
+
+    //
 
 };
 

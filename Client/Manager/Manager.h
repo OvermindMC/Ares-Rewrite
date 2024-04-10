@@ -27,9 +27,12 @@ private:
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 public:
     PTR_ACCESS(Client*, client, client_instance_raw_ptr);
+public:
+    std::map<uint64_t, Actor*> entityMap;
 /* Methods for Manager Runtime */
 public:
     auto init(void) -> void;
+    auto cleanupHooks(void) -> void;
 public:
     auto initHooks(void) -> bool;
     auto initCategories(void) -> void;
