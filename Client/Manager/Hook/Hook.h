@@ -7,6 +7,8 @@ class Hook {
 private:
     Manager* mgr_raw_ptr = nullptr;
 public:
+    PTR_ACCESS(Manager*, mgr, mgr_raw_ptr);
+public:
     using Func = Type(__thiscall*)(Args...); /* Declare return type and arguments for detour function */
     Func _Func = (Func)nullptr; /* Pointer declaration of original function for calling original function after our existing implementation */
 public:
