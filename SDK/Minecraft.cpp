@@ -8,3 +8,23 @@ auto MC::getClientInstance(void) -> ClientInstance* {
     return (ClientInstance*)(clientinstance_raw_ptr);
 
 };
+
+auto EntityUtils::isHostile(unsigned char type) -> bool {
+
+    static const std::unordered_set<unsigned char> hostileEntities {
+        32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 52,
+        53, 54, 55, 57, 58, 59, 104, 105, 110, 114, 116, 123, 124, 126, 127, 131
+    };
+    return hostileEntities.find(type) != hostileEntities.end();
+
+};
+
+auto EntityUtils::isPassive(unsigned char type) -> bool {
+
+    static const std::unordered_set<unsigned char> passiveEntities {
+        10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+        30, 31, 74, 75, 108, 109, 111, 112, 113, 115, 118, 121, 122, 125, 128, 132, 133, 134
+    };
+    return passiveEntities.find(type) != passiveEntities.end();
+
+};
