@@ -46,5 +46,7 @@ public:
     };
     ~Hook(void) {
         MH_DisableHook(this->_addr);
+        Debugger::log("Deleted " + std::string(this->_name));
+        Sleep(1000);
     };
 };
