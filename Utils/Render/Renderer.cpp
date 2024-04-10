@@ -167,8 +167,6 @@ auto Renderer::init(IDXGISwapChain3* swapChain, ID3D11Device* device) -> bool {
     Renderer::sc = swapChain;
 
     if(!ImGui::GetCurrentContext()) {
-        Debugger::log("Initializing ImGui Context");
-        
         ImGui::CreateContext();
         ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(DroidSans_compressed_data, DroidSans_compressed_size, 18.f);
     };
