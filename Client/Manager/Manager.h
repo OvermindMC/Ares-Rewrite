@@ -44,6 +44,7 @@ public:
     };
 public:
     auto registerHook(void* hook_raw_ptr) -> bool;
+    auto getHookRaw(std::string) -> void*;
 public:
     auto getCategory(CategoryType category_type) -> Category*;
     auto getSortedEvents(void) -> std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>>;
