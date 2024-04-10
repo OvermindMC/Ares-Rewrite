@@ -8,7 +8,8 @@ enum class EventType {
     Module_Tick = 1, Module_Toggle = 2,
     
     /* Other */
-    Level_Tick = 3
+    Present_Tick = 3,
+    Level_Tick = 4
 };
 
 template<typename... TArgs>
