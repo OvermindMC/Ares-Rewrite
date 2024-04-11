@@ -328,12 +328,12 @@ auto LiteRender::Container::updateBounds(void) -> void {
         return;
     
     auto display = this->el->display();
-    auto padSpace = display.getFontSize() / 10.f;
+    auto padSpace = (display.getFontSize() / 10.f) + 4.f;
     auto size = Renderer::getTextSize(display.getText(), display.getFontSize());
     
     this->boundsRect = ImVec4(
-        this->tPos.x - padSpace, this->tPos.y - padSpace,
-        (this->tPos.x + padSpace) + size.x, (this->tPos.y + padSpace) + size.y
+        (this->tPos.x + 4.f) - padSpace, this->tPos.y - padSpace,
+        ((this->tPos.x + 4.f) + padSpace) + size.x, (this->tPos.y + padSpace) + size.y
     );
 
 };
@@ -346,7 +346,7 @@ auto LiteRender::Container::renderDisplay(void) -> void {
     auto display = this->el->display();
     auto size = Renderer::getTextSize(display.getText(), display.getFontSize());
 
-    Renderer::drawText(this->tPos, display.getText(), display.getFontSize(), display.getColor());
+    Renderer::drawText(ImVec2(this->tPos.x + 4.f, this->tPos.y), display.getText(), display.getFontSize(), display.getColor());
 
 };
 
@@ -357,14 +357,41 @@ auto LiteRender::Container::renderStyles(void) -> void {
     
     auto style = this->el->style();
     auto display = this->el->display();
-    auto padSpace = (display.getFontSize() / 10.f) + 2.f;
+    auto padSpace = (display.getFontSize() / 10.f) + 4.f;
+    
+    Renderer::addRect(this->boundsRect, style.getOutlineColor(), 0.f, padSpace - 2.f);
+    Renderer::fillRect(this->boundsRect, style.getBgColor(), 0.f);
 
-    Renderer::addRect(this->boundsRect, style.getOutlineColor(), 0.f, 1.f);
-    Renderer::fillRect(
-        ImVec4(
-            this->boundsRect.x + padSpace, this->boundsRect.y + padSpace,
-            (this->boundsRect.z - padSpace), (this->boundsRect.w - padSpace)
-        ), style.getBgColor(), 0.f
-    );
+};
+
+
+auto LiteRender::Frame::updateBounds(void) -> void {
+
+    if(this->elements.empty())
+        return;
+    
+    auto currPos = this->tPos;
+    currPos.x += this->padX;
+    for(auto el : this->elements) {
+
+        el->setPos(currPos);
+        el->updateBounds();
+
+        currPos.x = el->getBounds().z + (this->padX * 2.f);
+
+    };
+
+};
+
+auto LiteRender::Frame::render(void) -> void {
+
+    this->updateBounds();
+
+    for(auto el : this->elements) {
+
+        el->renderStyles();
+        el->renderDisplay();
+
+    };
 
 };
