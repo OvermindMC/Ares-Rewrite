@@ -79,7 +79,7 @@ auto Manager::cleanupHooks(void) -> void {
 
 };
 
-#include "Hook/Hooks/Level/Tick.h"
+#include "Hook/Hooks/Actor/Level/Tick.h"
 #include "Hook/Hooks/Actor/Tick.h"
 #include "Hook/Hooks/SwapChain/Present.h"
 
