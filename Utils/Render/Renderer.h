@@ -78,6 +78,7 @@ public:
                     auto getFontSize(void) -> float { return this->font_size; };
                 public:
                     ElementDisplay(std::string text, ImColor color, float fontSize = 18.f) : display_text(text), text_color(color), font_size(fontSize) {};
+                    ~ElementDisplay(void) { this->display_text.clear(); };
             };
         private:
             ElementDisplay elDisplay;
@@ -105,7 +106,7 @@ public:
             Element* el = nullptr;
         public:
             Container(Element* element, ImVec2 pos) : el(element), tPos(pos) {};
-            ~Container(void) { delete this->el; };
+            ~Container(void);
         public:
             auto get(void) -> Element* { return this->el; };
         public:
