@@ -365,6 +365,16 @@ auto LiteRender::Container::renderStyles(void) -> void {
 };
 
 
+LiteRender::Frame::~Frame(void) {
+
+    for(auto el : this->elements) {
+        delete el;
+    };
+
+    this->elements.clear();
+
+};
+
 auto LiteRender::Frame::updateBounds(void) -> void {
 
     if(this->elements.empty())
