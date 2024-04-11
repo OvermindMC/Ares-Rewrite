@@ -316,6 +316,12 @@ auto Renderer::fillRect(ImVec4 rectPos, ImColor color, float rounding) -> void {
 };
 
 
+LiteRender::Container::~Container(void) {
+
+    delete this->el;
+
+};
+
 auto LiteRender::Container::updateBounds(void) -> void {
 
     if(!this->el)
