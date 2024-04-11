@@ -72,7 +72,7 @@ auto Manager::cleanupHooks(void) -> void {
             auto currHook = static_cast<Hook<void>*>(curr_hook_raw_ptr);
             delete currHook;
             *it = nullptr;
-        }
+        };
     };
 
     this->hooks.clear();
