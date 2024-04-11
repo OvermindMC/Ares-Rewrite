@@ -30,5 +30,12 @@ public:
 public:
     static auto setDrawList(ImDrawList*) -> void;
 public:
+    static auto getTextSize(std::string, float) -> ImVec2;
+    static auto getTextW(std::string, float) -> float;
+    static auto getTextH(std::string, float) -> float;
+public:
     static auto drawText(ImVec2, std::string, float, ImColor) -> void;
+public:
+    static auto addRect(ImVec4, ImColor, float, float) -> void;
+    static auto fillRect(ImVec4, ImColor, float) -> void;
 };
