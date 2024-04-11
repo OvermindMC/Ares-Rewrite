@@ -256,11 +256,61 @@ auto Renderer::setDrawList(ImDrawList* list) -> void {
 
 };
 
+auto Renderer::getTextSize(std::string text, float fontSize) -> ImVec2 {
+
+    auto result = ImVec2(0.f, 0.f);
+    
+    if(!Renderer::drawList)
+        return result;
+    
+    result = ImGui::GetFont()->CalcTextSizeA(fontSize, 1000.f, -1.f, text.c_str());
+    return result;
+
+};
+
+auto Renderer::getTextW(std::string text, float fontSize) -> float {
+
+    return Renderer::getTextSize(text, fontSize).x;
+
+};
+
+auto Renderer::getTextH(std::string text, float fontSize) -> float {
+
+    return Renderer::getTextSize(text, fontSize).y;
+
+};
+
 auto Renderer::drawText(ImVec2 textPos, std::string text, float fontSize, ImColor color) -> void {
 
     if(!Renderer::drawList)
         return;
     
     Renderer::drawList->AddText(ImGui::GetFont(), fontSize, textPos, ImColor(color.Value.x / 255.f, color.Value.y / 255.f, color.Value.z / 255.f, color.Value.w), text.c_str());
+
+};
+
+auto Renderer::addRect(ImVec4 rectPos, ImColor color, float rounding, float thickness) -> void {
+
+    if(!Renderer::drawList)
+        return;
+    
+    ImDrawFlags flags = 0;
+    
+    Renderer::drawList->AddRect(
+        ImVec2(rectPos.x, rectPos.y), ImVec2(rectPos.z, rectPos.w),
+        ImColor(color.Value.x / 255.f, color.Value.y / 255.f, color.Value.z / 255.f, color.Value.w), rounding, flags, thickness
+    );
+    
+};
+
+auto Renderer::fillRect(ImVec4 rectPos, ImColor color, float rounding) -> void {
+
+    if(!Renderer::drawList)
+        return;
+    
+    Renderer::drawList->AddRectFilled(
+        ImVec2(rectPos.x, rectPos.y), ImVec2(rectPos.z, rectPos.w),
+        ImColor(color.Value.x / 255.f, color.Value.y / 255.f, color.Value.z / 255.f, color.Value.w), rounding
+    );
 
 };
