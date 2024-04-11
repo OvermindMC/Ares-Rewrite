@@ -314,3 +314,51 @@ auto Renderer::fillRect(ImVec4 rectPos, ImColor color, float rounding) -> void {
     );
 
 };
+
+
+auto LiteRender::Container::updateBounds(void) -> void {
+
+    if(!this->el)
+        return;
+    
+    auto display = this->el->display();
+    auto padSpace = display.getFontSize() / 10.f;
+    auto size = Renderer::getTextSize(display.getText(), display.getFontSize());
+    
+    this->boundsRect = ImVec4(
+        this->tPos.x - padSpace, this->tPos.y - padSpace,
+        (this->tPos.x + padSpace) + size.x, (this->tPos.y + padSpace) + size.y
+    );
+
+};
+
+auto LiteRender::Container::renderDisplay(void) -> void {
+
+    if(!this->el)
+        return;
+    
+    auto display = this->el->display();
+    auto size = Renderer::getTextSize(display.getText(), display.getFontSize());
+
+    Renderer::drawText(this->tPos, display.getText(), display.getFontSize(), display.getColor());
+
+};
+
+auto LiteRender::Container::renderStyles(void) -> void {
+
+    if(!this->el)
+        return;
+    
+    auto style = this->el->style();
+    auto display = this->el->display();
+    auto padSpace = (display.getFontSize() / 10.f) + 2.f;
+
+    Renderer::addRect(this->boundsRect, style.getOutlineColor(), 0.f, 1.f);
+    Renderer::fillRect(
+        ImVec4(
+            this->boundsRect.x + padSpace, this->boundsRect.y + padSpace,
+            (this->boundsRect.z - padSpace), (this->boundsRect.w - padSpace)
+        ), style.getBgColor(), 0.f
+    );
+
+};
