@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Hook.h"
+#include "../../../Hook.h"
 
 class Level_TickHook : public Hook<void, Level*> {
 public:

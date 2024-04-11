@@ -1,5 +1,5 @@
 #include "Tick.h"
-#include "../Actor/Tick.h"
+#include "../Tick.h"
 
 Level_TickHook::Level_TickHook(Manager* mgr) : Hook<void, Level*>(mgr, "Level_Tick", mgr->getSig<void**>("Level_VTable")[99],
     [&](Level* level) -> void {
