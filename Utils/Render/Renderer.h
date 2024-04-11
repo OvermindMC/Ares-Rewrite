@@ -50,18 +50,18 @@ public:
                 public:
                     auto setBgColor(const ImColor& color) -> void { this->bg_color = color; }
                     auto setBgColor(float r, float g, float b, float a = 1.f) -> void { this->bg_color = ImColor(r, g, b, a); }
-                    auto getBgColor(void) const -> const ImColor& { return this->bg_color; }
+                    auto getBgColor(void) -> ImColor& { return this->bg_color; }
                 public:
                     auto setOutlineColor(const ImColor& color) -> void { this->outline_color = color; }
                     auto setOutlineColor(float r, float g, float b, float a = 1.f) -> void { this->outline_color = ImColor(r, g, b, a); }
-                    auto getOutlineColor(void) const -> const ImColor& { return this->outline_color; }
+                    auto getOutlineColor(void) -> ImColor& { return this->outline_color; }
                 public:
                     ElementStyle(ImColor bgColor, ImColor outlineColor = ImColor(0.f, 0.f, 0.f)) : bg_color(bgColor), outline_color(outlineColor) {};
             };
         private:
             ElementStyle elStyle;
         public:
-            auto style(void) const -> const ElementStyle& { return this->elStyle; }
+            auto style(void) -> ElementStyle& { return this->elStyle; };
         public:
             class ElementDisplay {
                 private:
@@ -69,27 +69,30 @@ public:
                     ImColor text_color;
                     float font_size;
                 public:
-                    auto getColor(void) const -> const ImColor& { return this->text_color; };
+                    auto getColor(void) -> ImColor& { return this->text_color; };
                     auto setColor(const ImColor& color) -> void { this->text_color = color; };
                 public:
-                    auto getText(void) const -> const std::string& { return this->display_text; };
+                    auto getText(void) -> std::string& { return this->display_text; };
                     auto setText(std::string text) -> void { this->display_text = text.c_str(); };
                 public:
-                    auto getFontSize(void) const -> const float { return this->font_size; };
+                    auto getFontSize(void) -> float { return this->font_size; };
                 public:
                     ElementDisplay(std::string text, ImColor color, float fontSize = 18.f) : display_text(text), text_color(color), font_size(fontSize) {};
             };
         private:
             ElementDisplay elDisplay;
         public:
-            auto display(void) const -> const ElementDisplay& { return this->elDisplay; };
+            auto display(void) -> ElementDisplay& { return this->elDisplay; };
         public:
             enum class ElementType {
+                Unknown = 0,
                 Base = 1,
                 Text = 2
             };
         private:
             ElementType elType;
+        public:
+            auto getType(void) -> ElementType& { return this->elType; };
         public:
             Element(ElementDisplay display, ElementStyle style, ElementType type = ElementType::Base) : elDisplay(display), elStyle(style), elType(type) {};
     };
@@ -103,16 +106,31 @@ public:
         public:
             Container(Element* element, ImVec2 pos) : el(element), tPos(pos) {};
             ~Container(void) { delete this->el; };
+        public:
+            auto get(void) -> Element* { return this->el; };
+        public:
+            auto style(void) -> Element::ElementStyle& { return this->el->style(); };
+            auto display(void) -> Element::ElementDisplay& { return this->el->display(); };
+        public:
+            auto getType(void) -> Element::ElementType& { return this->el->getType(); };
+        public:
+            auto setPos(const ImVec2& pos) -> void { this->tPos = pos; };
+            auto setPos(float x, float y) -> void { this->tPos = ImVec2(x, y); };
+        public:
+            auto updateBounds(void) -> void;
+        public:
+            auto renderDisplay(void) -> void;
+            auto renderStyles(void) -> void;
     };
 public:
     class Text : public Element {
         public:
             Text(std::string text, ImColor textColor = ImColor(255.f, 255.f, 255.f)) : Element(ElementDisplay(text, textColor), ElementStyle(ImColor(0.f, 0.f, 0.f, 0.f), ImColor(0.f, 0.f, 0.f, 0.f)), ElementType::Text) {};
         public:
-            auto getText(void) const -> const std::string& { return this->display().getText(); };
-            auto getTextWidth(void) const -> const float { return Renderer::getTextW(this->getText(), this->display().getFontSize()); };
-            auto getTextHeight(void) const -> const float { return Renderer::getTextH(this->getText(), this->display().getFontSize()); };
+            auto getText(void) -> std::string& { return this->display().getText(); };
+            auto getTextWidth(void) -> float { return Renderer::getTextW(this->getText(), display().getFontSize()); };
+            auto getTextHeight(void) -> float { return Renderer::getTextH(this->getText(), display().getFontSize()); };
         public:
-            auto getColor(void) const -> const ImColor& { return this->display().getColor(); };
+            auto getColor(void) -> ImColor& { return this->display().getColor(); };
     };
 };
