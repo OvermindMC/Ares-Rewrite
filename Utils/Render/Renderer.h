@@ -109,6 +109,7 @@ public:
             ~Container(void);
         public:
             auto get(void) -> Element* { return this->el; };
+            auto getBounds(void) -> ImVec4& { return this->boundsRect; };
         public:
             auto style(void) -> Element::ElementStyle& { return this->el->style(); };
             auto display(void) -> Element::ElementDisplay& { return this->el->display(); };
@@ -122,6 +123,26 @@ public:
         public:
             auto renderDisplay(void) -> void;
             auto renderStyles(void) -> void;
+    };
+public:
+    class Frame {
+        private:
+            ImVec4 boundsRect;
+            ImVec2 tPos;
+            float padX = 2.f;
+        public:
+            std::vector<Container*> elements;
+        public:
+            Frame(std::vector<Container*> elements_list = {}, float padding_x = 0.f) : elements(elements_list), padX(padding_x) {};
+            ~Frame(void) {};
+        public:
+            auto setPos(const ImVec2& pos) -> void { this->tPos = pos; };
+            auto setPos(float x, float y) -> void { this->tPos = ImVec2(x, y); };
+        public:
+            auto setStylesAll(LiteRender::Element::ElementStyle styles) -> void { for(auto el : this->elements) { auto& style = el->style(); style.setBgColor(styles.getBgColor()); style.setOutlineColor(styles.getOutlineColor()); }; };
+        public:
+            auto updateBounds(void) -> void;
+            auto render(void) -> void;
     };
 public:
     class Text : public Element {
