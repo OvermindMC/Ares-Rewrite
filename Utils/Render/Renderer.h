@@ -134,7 +134,7 @@ public:
             std::vector<Container*> elements;
         public:
             Frame(std::vector<Container*> elements_list = {}, float padding_x = 0.f) : elements(elements_list), padX(padding_x) {};
-            ~Frame(void) {};
+            ~Frame(void);
         public:
             auto setPos(const ImVec2& pos) -> void { this->tPos = pos; };
             auto setPos(float x, float y) -> void { this->tPos = ImVec2(x, y); };
