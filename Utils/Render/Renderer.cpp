@@ -324,46 +324,45 @@ LiteRender::Container::~Container(void) {
 
 auto LiteRender::Container::updateBounds(void) -> void {
 
-    if(!this->el)
-        return;
-    
-    auto display = this->el->display();
-    auto padSpace = (display.getFontSize() / 10.f) + 4.f;
-    auto size = Renderer::getTextSize(display.getText(), display.getFontSize());
-    
+    auto size = this->getSize();
+    auto space = this->getSpace();
     this->boundsRect = ImVec4(
-        (this->tPos.x + 4.f) - padSpace, this->tPos.y - padSpace,
-        ((this->tPos.x + 4.f) + padSpace) + size.x, (this->tPos.y + padSpace) + size.y
+        this->tPos.x - space, this->tPos.y - space,
+        this->tPos.x + (size.x + space), this->tPos.y + (size.y + space)
     );
 
 };
 
-auto LiteRender::Container::renderDisplay(void) -> void {
+auto LiteRender::Container::getRenderPos(void) -> ImVec2 {
 
-    if(!this->el)
-        return;
-    
-    auto display = this->el->display();
-    auto size = Renderer::getTextSize(display.getText(), display.getFontSize());
+    auto space = this->getSpace();
 
-    Renderer::drawText(ImVec2(this->tPos.x + 4.f, this->tPos.y), display.getText(), display.getFontSize(), display.getColor());
+    return ImVec2(
+        this->boundsRect.x + space, this->boundsRect.y + space
+    );
 
 };
 
-auto LiteRender::Container::renderStyles(void) -> void {
+auto LiteRender::Container::render(void) -> void {
 
-    if(!this->el)
-        return;
-    
-    auto style = this->el->style();
-    auto display = this->el->display();
-    auto padSpace = (display.getFontSize() / 10.f) + 4.f;
-    
-    Renderer::addRect(this->boundsRect, style.getOutlineColor(), 0.f, padSpace - 2.f);
-    Renderer::fillRect(this->boundsRect, style.getBgColor(), 0.f);
+    this->updateBounds();
+
+    auto& style = this->style();
+    auto& display = this->display();
+
+    Renderer::fillRect(this->getBounds(), style.getBgColor(), 1.f);
+    Renderer::drawText(this->getRenderPos(), display.getText(), display.getFontSize(), display.getColor());
 
 };
 
+
+LiteRender::Frame::Frame(std::vector<Container*> elements_list, float fontSize) : elements(elements_list), font_size(fontSize) {
+
+    for(auto el : this->elements) {
+        el->display().setFontSize(fontSize);
+    };
+
+};
 
 LiteRender::Frame::~Frame(void) {
 
@@ -377,31 +376,29 @@ LiteRender::Frame::~Frame(void) {
 
 auto LiteRender::Frame::updateBounds(void) -> void {
 
-    if(this->elements.empty())
-        return;
-    
-    auto currPos = this->tPos;
-    currPos.x += this->padX;
-    for(auto el : this->elements) {
-
+    auto currPos = ImVec2(this->tPos.x, this->tPos.y);
+    auto space = this->getSpace();
+    for(auto iter = this->elements.begin(); iter != this->elements.end(); ++iter) {
+        auto el = *iter;
+        
+        el->display().setFontSize(this->font_size);
         el->setPos(currPos);
         el->updateBounds();
 
-        currPos.x = el->getBounds().z + (this->padX * 2.f);
+        currPos = ImVec2(el->getBounds().z, (el != this->elements.back() ? this->tPos.y : el->getBounds().w));
 
     };
+
+    this->boundsRect = ImVec4(this->tPos.x - space, this->tPos.y - space, currPos.x, currPos.y);
 
 };
 
 auto LiteRender::Frame::render(void) -> void {
 
     this->updateBounds();
-
+    
     for(auto el : this->elements) {
-
-        el->renderStyles();
-        el->renderDisplay();
-
+        el->render();
     };
 
 };
