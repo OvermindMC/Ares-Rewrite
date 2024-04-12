@@ -7,19 +7,53 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
     this->getEventDispatcher()->registerEvent(
         EventType::Present_Tick, EventDispatcher::EventPriority::Highest, std::function<void(void)>(
             [&](void) -> void {
-                auto rectPos = ImVec4(10.f, 10.f, 10.f + Renderer::getTextW("Hello, World!", 18.f), 10.f + Renderer::getTextH("Hello, World!", 18.f));
-                auto padd = ImVec2(4.f, 6.f);
 
-                Renderer::fillRect(rectPos, ImColor(80.f, 100.f, 170.f), 0.f);
-                Renderer::addRect(ImVec4(
-                    rectPos.x - padd.x, rectPos.y - padd.y,
-                    rectPos.z + padd.x, rectPos.w + padd.y
-                ), ImColor(21.f, 21.f, 21.f, 0.6f), 1.f, 3.f);
+                static auto frameA = LiteRender::Frame({
+                    new LiteRender::Container(
+                        new LiteRender::Text(
+                            "Text A"
+                        )
+                    ),
+                    new LiteRender::Container(
+                        new LiteRender::Text(
+                            "Text B"
+                        )
+                    ),
+                    new LiteRender::Container(
+                        new LiteRender::Text(
+                            "Text C"
+                        )
+                    )
+                });
 
-                Renderer::drawText(
-                    ImVec2(10.f, 10.f), "Hello, World!", 18.f, ImColor(255.f, 255.f, 255.f)
-                );
+                frameA.setPos(100.f, 100.f);
+                frameA.render();
+
+                static auto frameB = LiteRender::Frame({
+                    new LiteRender::Container(
+                        new LiteRender::Text(
+                            "Text D"
+                        )
+                    ),
+                    new LiteRender::Container(
+                        new LiteRender::Text(
+                            "Text E"
+                        )
+                    ),
+                    new LiteRender::Container(
+                        new LiteRender::Text(
+                            "Text F"
+                        )
+                    )
+                });
+
+                frameB.setStylesAll(LiteRender::Element::ElementStyle(
+                    ImColor(8.f, 157.f, 252.f), ImColor(252.f, 130.f, 8.f)
+                ));
                 
+                frameB.setPos(frameA.getBounds().z + frameB.getSpace(), 100.f);
+                frameB.render();
+
             }
         )
     );
