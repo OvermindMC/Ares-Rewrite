@@ -7,6 +7,10 @@
 
 #include <string>
 
+#undef min
+#undef max
+#include <algorithm>
+
 class Renderer {
 private:
     static bool initialized;
@@ -76,6 +80,7 @@ public:
                     auto setText(std::string text) -> void { this->display_text = text.c_str(); };
                 public:
                     auto getFontSize(void) -> float { return this->font_size; };
+                    auto setFontSize(float fontSize) { this->font_size = fontSize; };
                 public:
                     ElementDisplay(std::string text, ImColor color, float fontSize = 18.f) : display_text(text), text_color(color), font_size(fontSize) {};
                     ~ElementDisplay(void) { this->display_text.clear(); };
@@ -105,43 +110,52 @@ public:
         private:
             Element* el = nullptr;
         public:
-            Container(Element* element, ImVec2 pos) : el(element), tPos(pos) {};
+            Container(Element* element, ImVec2 pos = ImVec2(0.f, 0.f)) : el(element), tPos(pos) {};
             ~Container(void);
         public:
             auto get(void) -> Element* { return this->el; };
-            auto getBounds(void) -> ImVec4& { return this->boundsRect; };
         public:
             auto style(void) -> Element::ElementStyle& { return this->el->style(); };
             auto display(void) -> Element::ElementDisplay& { return this->el->display(); };
         public:
             auto getType(void) -> Element::ElementType& { return this->el->getType(); };
         public:
-            auto setPos(const ImVec2& pos) -> void { this->tPos = pos; };
-            auto setPos(float x, float y) -> void { this->tPos = ImVec2(x, y); };
+            auto getSpace(void) -> float { return (this->display().getFontSize() / 10.f) + 4.f; };
+            auto getSize(void) -> ImVec2 { auto& disp = this->display(); return Renderer::getTextSize(disp.getText(), disp.getFontSize()); };
         public:
+            auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
+            auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
+        public:
+            auto getBounds(void) -> ImVec4 { return this->boundsRect; };
             auto updateBounds(void) -> void;
         public:
-            auto renderDisplay(void) -> void;
-            auto renderStyles(void) -> void;
+            auto getRenderPos(void) -> ImVec2;
+        public:
+            auto render(void) -> void;
     };
 public:
     class Frame {
         private:
             ImVec4 boundsRect;
             ImVec2 tPos;
-            float padX = 2.f;
+        private:
+            float font_size;
         public:
             std::vector<Container*> elements;
         public:
-            Frame(std::vector<Container*> elements_list = {}, float padding_x = 0.f) : elements(elements_list), padX(padding_x) {};
+            Frame(std::vector<Container*> elements_list, float font_size = 18.f);
             ~Frame(void);
         public:
-            auto setPos(const ImVec2& pos) -> void { this->tPos = pos; };
-            auto setPos(float x, float y) -> void { this->tPos = ImVec2(x, y); };
+            auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
+            auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
+        public:
+            auto getSpace(void) -> float { return (this->font_size / 10.f) + 4.f; };
+        public:
+            auto getBounds(void) -> ImVec4 { return this->boundsRect; };
+            auto updateBounds(void) -> void;
         public:
             auto setStylesAll(LiteRender::Element::ElementStyle styles) -> void { for(auto el : this->elements) { auto& style = el->style(); style.setBgColor(styles.getBgColor()); style.setOutlineColor(styles.getOutlineColor()); }; };
         public:
-            auto updateBounds(void) -> void;
             auto render(void) -> void;
     };
 public:
