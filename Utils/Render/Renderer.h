@@ -135,6 +135,7 @@ public:
             auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
             auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
         public:
+            auto setBounds(ImVec4 bounds) -> void { this->boundsRect = bounds; };
             auto getBounds(void) -> ImVec4 { return this->boundsRect; };
             auto updateBounds(void) -> void;
         public:
@@ -157,11 +158,14 @@ public:
         public:
             auto setFontSize(float fontSize) -> void;
         public:
+            auto getPos(void) -> ImVec2 { return this->tPos; };
+        public:
             auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
             auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
         public:
             auto getSpace(void) -> float { return (this->font_size / 10.f) + 4.f; };
         public:
+            auto setBounds(ImVec4 bounds) -> void { this->boundsRect = bounds; };
             auto getBounds(void) -> ImVec4 { return this->boundsRect; };
             auto updateBounds(void) -> void;
         public:
@@ -174,10 +178,13 @@ public:
     class Window {
         private:
             std::string title_text;
+            ImColor titleRectColor;
             float font_size;
         private:
             ImVec4 boundsRect;
             ImVec2 tPos;
+        private:
+            Container* titleContainer = nullptr;
         private:
             LiteRender::Element::ElementStyle styles = LiteRender::Element::ElementStyle(ImColor(), ImColor());
         public:
@@ -185,6 +192,9 @@ public:
         public:
             Window(std::string titleText, float fontSize = 18.f, std::vector<Frame*> framesList = {});
             ~Window(void);
+        public:
+            auto getTitleRectColor(void) -> ImColor { return this->titleRectColor; };
+            auto setTitleRectColor(ImColor color) -> void { this->titleRectColor = color; };
         public:
             auto getWindowStyles(void) -> LiteRender::Element::ElementStyle& { return this->styles; };
             auto setWindowStyles(LiteRender::Element::ElementStyle style) -> void { this->styles = style; };
@@ -203,6 +213,8 @@ public:
             auto setStylesFor(LiteRender::Element::ElementType type, LiteRender::Element::ElementStyle styles) -> void { for(auto frame : this->frames) { frame->setStylesFor(type, styles); }; };
         public:
             auto render(void) -> void;
+        private:
+            auto renderBackground(void) -> void;
     };
 public:
     class Text : public Element {
