@@ -13,11 +13,11 @@ public:
 /* Attributes for Module */
 private:
     Category* category_raw_ptr = nullptr;
-    std::pair<bool, bool> state;
 private:
     std::unique_ptr<EventDispatcher> event_dispatcher_ptr = nullptr;
 public:
     std::string name, description;
+    std::pair<bool, bool> state;
     uint64_t bindKey = 0x0;
 public:
     PTR_ACCESS(Category*, category, category_raw_ptr);
