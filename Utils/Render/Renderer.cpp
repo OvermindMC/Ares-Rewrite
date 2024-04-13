@@ -454,7 +454,7 @@ auto LiteRender::Window::updateBounds(void) -> void {
         frame->setPos(currPos);
         frame->updateBounds();
 
-        currPos = ImVec2(this->tPos.x, frame->getBounds().w + frame->getSpace());
+        currPos = ImVec2(this->tPos.x, frame->getBounds().w + (frame != this->frames.back() ? frame->getSpace() : 0.f));
 
         if(frame->getBounds().z > xOff)
             xOff = frame->getBounds().z;
@@ -467,6 +467,9 @@ auto LiteRender::Window::updateBounds(void) -> void {
 auto LiteRender::Window::render(void) -> void {
 
     this->updateBounds();
+
+    Renderer::fillRect(this->boundsRect, this->styles.getBgColor(), 0.f);
+    Renderer::addRect(this->boundsRect, this->styles.getOutlineColor(), 1.f, 1.f);
 
     for(auto frame : this->frames) {
         frame->render();
