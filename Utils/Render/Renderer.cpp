@@ -359,9 +359,7 @@ auto LiteRender::Container::render(void) -> void {
 
 LiteRender::Frame::Frame(std::vector<Container*> elements_list, float fontSize) : elements(elements_list), font_size(fontSize) {
 
-    for(auto el : this->elements) {
-        el->display().setFontSize(fontSize);
-    };
+    this->setFontSize(fontSize);
 
 };
 
@@ -372,6 +370,16 @@ LiteRender::Frame::~Frame(void) {
     };
 
     this->elements.clear();
+
+};
+
+auto LiteRender::Frame::setFontSize(float fontSize) -> void {
+
+    this->font_size = fontSize;
+    
+    for(auto el : this->elements) {
+        el->display().setFontSize(fontSize);
+    };
 
 };
 
@@ -400,6 +408,68 @@ auto LiteRender::Frame::render(void) -> void {
     
     for(auto el : this->elements) {
         el->render();
+    };
+
+};
+
+
+LiteRender::Window::Window(std::string titleText, float fontSize, std::vector<Frame*> framesList): title_text(titleText), font_size(fontSize), frames(framesList) {
+
+    for(auto frame : this->frames) {
+        frame->setFontSize(this->font_size);
+    };
+
+};
+
+LiteRender::Window::~Window(void) {
+
+    for(auto frame : this->frames) {
+        delete frame;
+    };
+
+    this->frames.clear();
+
+};
+
+auto LiteRender::Window::setFontSize(float fontSize) -> void {
+
+    this->font_size = fontSize;
+
+    for(auto frame : this->frames) {
+        frame->setFontSize(fontSize);
+    };
+
+};
+
+auto LiteRender::Window::updateBounds(void) -> void {
+    
+    auto currPos = ImVec2(this->tPos.x, this->tPos.y);
+    auto space = this->getSpace();
+    auto xOff = this->tPos.x;
+    
+    for(auto iter = this->frames.begin(); iter != this->frames.end(); ++iter) {
+        auto frame = *iter;
+
+        frame->setFontSize(this->font_size);
+        frame->setPos(currPos);
+        frame->updateBounds();
+
+        currPos = ImVec2(this->tPos.x, frame->getBounds().w + frame->getSpace());
+
+        if(frame->getBounds().z > xOff)
+            xOff = frame->getBounds().z;
+    };
+
+    this->boundsRect = ImVec4(this->tPos.x - space, this->tPos.y - space, xOff, currPos.y);
+
+};
+
+auto LiteRender::Window::render(void) -> void {
+
+    this->updateBounds();
+
+    for(auto frame : this->frames) {
+        frame->render();
     };
 
 };
