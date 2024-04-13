@@ -118,6 +118,8 @@ public:
             ImVec2 tPos;
         private:
             Element* el = nullptr;
+        private:
+            float spaceExtra = 4.f;
         public:
             Container(Element* element, ImVec2 pos = ImVec2(0.f, 0.f)) : el(element), tPos(pos) {};
             ~Container(void);
@@ -129,7 +131,9 @@ public:
         public:
             auto getType(void) -> Element::ElementType& { return this->el->getType(); };
         public:
-            auto getSpace(void) -> float { return (this->display().getFontSize() / 10.f) + 4.f; };
+            auto getSpace(void) -> float { return (this->display().getFontSize() / 10.f) + spaceExtra; };
+            auto setExtraSpace(float off) -> void { this->spaceExtra = off; };
+        public:
             auto getSize(void) -> ImVec2 { auto& disp = this->display(); return Renderer::getTextSize(disp.getText(), disp.getFontSize()); };
         public:
             auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
@@ -150,6 +154,8 @@ public:
             ImVec2 tPos;
         private:
             float font_size;
+        private:
+            float spaceExtra = 4.f;
         public:
             std::vector<Container*> elements;
         public:
@@ -163,7 +169,8 @@ public:
             auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
             auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
         public:
-            auto getSpace(void) -> float { return (this->font_size / 10.f) + 4.f; };
+            auto getSpace(void) -> float { return (this->font_size / 10.f) + spaceExtra; };
+            auto setExtraSpace(float off) -> void { this->spaceExtra = off; for(auto el : this->elements) { el->setExtraSpace(off); }; };
         public:
             auto setBounds(ImVec4 bounds) -> void { this->boundsRect = bounds; };
             auto getBounds(void) -> ImVec4 { return this->boundsRect; };
@@ -183,6 +190,8 @@ public:
         private:
             ImVec4 boundsRect;
             ImVec2 tPos;
+        private:
+            float spaceExtra = 4.f;
         private:
             Container* titleContainer = nullptr;
         private:
@@ -204,7 +213,8 @@ public:
             auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
             auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
         public:
-            auto getSpace(void) -> float { return (this->font_size / 10.f) + 4.f; };
+            auto getSpace(void) -> float { return (this->font_size / 10.f) + spaceExtra; };
+            auto setExtraSpace(float off) -> void { this->spaceExtra = off; for(auto frame : this->frames) { frame->setExtraSpace(off); }; };
         public:
             auto getBounds(void) -> ImVec4 { return this->boundsRect; };
             auto updateBounds(void) -> void;
