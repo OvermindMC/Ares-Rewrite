@@ -9,7 +9,9 @@ enum class EventType {
     
     /* Other */
     Present_Tick = 3,
-    Level_Tick = 4
+    Level_Tick = 4,
+
+    KeyInput = 5
 };
 
 template<typename... TArgs>
