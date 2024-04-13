@@ -101,7 +101,8 @@ public:
                 Base = 1,
                 
                 Text = 2,
-                Button = 3
+                Button = 3,
+                Checkbox = 4
             };
         private:
             ElementType elType;
@@ -243,5 +244,15 @@ public:
             Button(std::string text, ImColor textColor, std::function<void(char, bool)> callback = [=](char, bool) -> void {}) : Element(ElementDisplay(text, textColor), ElementStyle(ImColor(24.f, 115.f, 201.f), ImColor(48.f, 67.f, 97.f)), ElementType::Button), onClick(callback) {};
         private:
             std::function<void(char, bool)> onClick;
+    };
+public:
+    class Checkbox : public Element {
+        public:
+            Checkbox(std::string text, ImColor textColor, bool* hBool) : Element(ElementDisplay(text, textColor), ElementStyle(ImColor(24.f, 115.f, 201.f), ImColor(48.f, 67.f, 97.f)), LiteRender::Element::ElementType::Checkbox), boolPtr(hBool) {};
+        private:
+            bool* boolPtr = nullptr;
+        public:
+            auto getState(void) -> bool { return *boolPtr; };
+            auto toggleState(void) -> void { *boolPtr = !*boolPtr; };
     };
 };
