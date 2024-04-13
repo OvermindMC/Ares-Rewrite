@@ -168,6 +168,18 @@ auto Manager::getHookRaw(std::string query) -> void* {
 
 };
 
+auto Manager::getCategories(void) -> std::vector<Category*> {
+
+    auto result = std::vector<Category*>();
+
+    for(auto& [ type, category ] : this->categories) {
+        result.push_back(category.get());
+    };
+
+    return result;
+
+};
+
 auto Manager::getCategory(CategoryType category_type) -> Category* {
 
     return (this->categories.contains(category_type) ? this->categories.at(category_type).get() : nullptr);
