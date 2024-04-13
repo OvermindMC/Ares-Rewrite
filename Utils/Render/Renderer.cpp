@@ -415,6 +415,8 @@ auto LiteRender::Frame::render(void) -> void {
 
 LiteRender::Window::Window(std::string titleText, float fontSize, std::vector<Frame*> framesList): title_text(titleText), font_size(fontSize), frames(framesList) {
 
+    this->titleRectColor = ImColor(137.f, 74.f, 224.f);
+    
     for(auto frame : this->frames) {
         frame->setFontSize(this->font_size);
     };
@@ -443,7 +445,7 @@ auto LiteRender::Window::setFontSize(float fontSize) -> void {
 
 auto LiteRender::Window::updateBounds(void) -> void {
     
-    auto currPos = ImVec2(this->tPos.x, this->tPos.y);
+    auto currPos = ImVec2(this->tPos.x, this->tPos.y + this->getSpace());
     auto space = this->getSpace();
     auto xOff = this->tPos.x;
     
@@ -454,7 +456,7 @@ auto LiteRender::Window::updateBounds(void) -> void {
         frame->setPos(currPos);
         frame->updateBounds();
 
-        currPos = ImVec2(this->tPos.x, frame->getBounds().w + (frame != this->frames.back() ? frame->getSpace() : 0.f));
+        currPos = ImVec2(this->tPos.x, frame->getBounds().w + (frame != this->frames.back() ? (frame->getSpace() + this->getSpace()) : 0.f));
 
         if(frame->getBounds().z > xOff)
             xOff = frame->getBounds().z;
@@ -467,12 +469,28 @@ auto LiteRender::Window::updateBounds(void) -> void {
 auto LiteRender::Window::render(void) -> void {
 
     this->updateBounds();
+    this->renderBackground();
 
-    Renderer::fillRect(this->boundsRect, this->styles.getBgColor(), 0.f);
-    Renderer::addRect(this->boundsRect, this->styles.getOutlineColor(), 1.f, 1.f);
+    auto size = Renderer::getTextSize(this->title_text, this->font_size);
+    auto space = this->getSpace();
+
+    auto titleRect = ImVec4(
+        this->boundsRect.x, this->boundsRect.y - (size.y + (space * 2.f)), this->boundsRect.z, this->boundsRect.y
+    );
 
     for(auto frame : this->frames) {
         frame->render();
     };
+
+    Renderer::fillRect(titleRect, this->titleRectColor, 1.f);
+    Renderer::addRect(titleRect, this->styles.getOutlineColor(), 1.f, 1.f);
+    Renderer::drawText(ImVec2(titleRect.x + (((titleRect.z - titleRect.x) / 2.f) - (size.x / 2.f)), titleRect.w - (size.y + space)), this->title_text, this->font_size, ImColor(255.f, 255.f, 255.f));
+
+};
+
+auto LiteRender::Window::renderBackground(void) -> void {
+
+    Renderer::fillRect(this->boundsRect, this->styles.getBgColor(), 0.f);
+    Renderer::addRect(this->boundsRect, this->styles.getOutlineColor(), 1.f, 1.f);
 
 };
