@@ -19,6 +19,8 @@ private:
 private:
     static IDXGISwapChain3* sc;
 private:
+    static ID3D11Device* dev;
+private:
     static ID3D11DeviceContext* context;
     static ID3D11Texture2D* backBuffer;
     static IDXGISurface* surfaceBuffer;
@@ -244,6 +246,8 @@ public:
             Button(std::string text, ImColor textColor, std::function<void(char, bool)> callback = [=](char, bool) -> void {}) : Element(ElementDisplay(text, textColor), ElementStyle(ImColor(24.f, 115.f, 201.f), ImColor(48.f, 67.f, 97.f)), ElementType::Button), onClick(callback) {};
         private:
             std::function<void(char, bool)> onClick;
+        public:
+            auto callOnClick(char action, bool isDown) -> void { if(this->onClick) this->onClick(action, isDown); };
     };
 public:
     class Checkbox : public Element {
