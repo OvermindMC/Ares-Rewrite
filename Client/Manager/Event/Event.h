@@ -11,7 +11,8 @@ enum class EventType {
     Present_Tick = 3,
     Level_Tick = 4,
 
-    KeyInput = 5
+    KeyInput = 5,
+    MouseInput = 6
 };
 
 template<typename... TArgs>

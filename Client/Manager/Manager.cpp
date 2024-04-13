@@ -83,6 +83,7 @@ auto Manager::cleanupHooks(void) -> void {
 #include "Hook/Hooks/Actor/Level/Tick.h"
 #include "Hook/Hooks/SwapChain/Present.h"
 #include "Hook/Hooks/Input/Key/KeyInput.h"
+#include "Hook/Hooks/Input/Mouse/MouseInput.h"
 
 auto Manager::initHooks(void) -> bool {
 
@@ -92,6 +93,7 @@ auto Manager::initHooks(void) -> bool {
     new SwapChain_PresentHook(this);
     new Level_TickHook(this);
     new Actor_TickHook(this);
+    new MouseInput_Hook(this);
     new KeyInput_Hook(this);
 
     return true;
