@@ -52,14 +52,19 @@ public:
             class ElementStyle {
                 private:
                     ImColor bg_color, outline_color;
+                    ImColor hoverColor;
                 public:
-                    auto setBgColor(const ImColor& color) -> void { this->bg_color = color; }
-                    auto setBgColor(float r, float g, float b, float a = 1.f) -> void { this->bg_color = ImColor(r, g, b, a); }
-                    auto getBgColor(void) -> ImColor& { return this->bg_color; }
+                    auto setBgColor(const ImColor& color) -> void { this->bg_color = color; };
+                    auto setBgColor(float r, float g, float b, float a = 1.f) -> void { this->bg_color = ImColor(r, g, b, a); };
+                    auto getBgColor(void) -> ImColor& { return this->bg_color; };
                 public:
-                    auto setOutlineColor(const ImColor& color) -> void { this->outline_color = color; }
-                    auto setOutlineColor(float r, float g, float b, float a = 1.f) -> void { this->outline_color = ImColor(r, g, b, a); }
-                    auto getOutlineColor(void) -> ImColor& { return this->outline_color; }
+                    auto setOutlineColor(const ImColor& color) -> void { this->outline_color = color; };
+                    auto setOutlineColor(float r, float g, float b, float a = 1.f) -> void { this->outline_color = ImColor(r, g, b, a); };
+                    auto getOutlineColor(void) -> ImColor& { return this->outline_color; };
+                public:
+                    auto setHoverColor(const ImColor& color) -> void { this->hoverColor = color; };
+                    auto setHoverColor(float r, float g, float b, float a = 1.f) -> void { this->hoverColor = ImColor(r, g, b, a); };
+                    auto getHoverColor(void) -> ImColor& { return this->hoverColor; };
                 public:
                     ElementStyle(ImColor bgColor, ImColor outlineColor = ImColor(0.f, 0.f, 0.f)) : bg_color(bgColor), outline_color(outlineColor) {};
             };
