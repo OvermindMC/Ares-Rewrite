@@ -5,6 +5,7 @@ bool Renderer::initialized = false;
 ImDrawList* Renderer::drawList = nullptr;
 IDXGISwapChain3* Renderer::sc = nullptr;
 
+ID3D11Device* Renderer::dev = nullptr;
 ID3D11DeviceContext* Renderer::context = nullptr;
 ID3D11Texture2D* Renderer::backBuffer = nullptr;
 IDXGISurface* Renderer::surfaceBuffer = nullptr;
@@ -165,6 +166,7 @@ auto Renderer::getWindow(void) -> HWND {
 auto Renderer::init(IDXGISwapChain3* swapChain, ID3D11Device* device) -> bool {
 
     Renderer::sc = swapChain;
+    Renderer::dev = device;
 
     if(!ImGui::GetCurrentContext()) {
         ImGui::CreateContext();
@@ -208,6 +210,7 @@ auto Renderer::cleanup(bool clearAll) -> void {
 
     if(clearAll && ImGui::GetCurrentContext()) {
         ImGui::DestroyContext();
+        ImFX::CleanupFX();
     };
 
     if(Renderer::context) {
@@ -234,6 +237,7 @@ auto Renderer::newFrame(void) -> void {
     if(!Renderer::initialized)
         return;
     
+    ImFX::NewFrame(Renderer::dev, Renderer::surfaceBuffer, 0.f);
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -247,6 +251,9 @@ auto Renderer::endFrame(void) -> void {
     
     Renderer::context->OMSetRenderTargets(1, &Renderer::tv, nullptr);
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+    ImFX::EndFrame();
+    ImFX::CleanupFX();
 
 };
 
@@ -441,6 +448,9 @@ auto LiteRender::Frame::render(void) -> void {
 LiteRender::Window::Window(std::string titleText, float fontSize, std::vector<Frame*> framesList): title_text(titleText), font_size(fontSize), frames(framesList) {
 
     this->titleRectColor = ImColor(137.f, 74.f, 224.f);
+    this->styles = LiteRender::Element::ElementStyle(
+        ImColor(100.f, 110.f, 178.f), ImColor(21.f, 21.f, 21.f)
+    );
     
     for(auto frame : this->frames) {
         frame->setFontSize(this->font_size);
