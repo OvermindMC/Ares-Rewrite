@@ -173,11 +173,16 @@ public:
         private:
             ImVec4 boundsRect;
             ImVec2 tPos;
+        private:
+            LiteRender::Element::ElementStyle styles = LiteRender::Element::ElementStyle(ImColor(), ImColor());
         public:
             std::vector<Frame*> frames;
         public:
             Window(std::string titleText, float fontSize = 18.f, std::vector<Frame*> framesList = {});
             ~Window(void);
+        public:
+            auto getWindowStyles(void) -> LiteRender::Element::ElementStyle& { return this->styles; };
+            auto setWindowStyles(LiteRender::Element::ElementStyle style) -> void { this->styles = style; };
         public:
             auto setFontSize(float fontSize) -> void;
         public:
