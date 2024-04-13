@@ -26,6 +26,10 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
                     )
                 });
 
+                frameA.setStylesAll(LiteRender::Element::ElementStyle(
+                    ImColor(24.f, 201.f, 92.f), ImColor(252.f, 130.f, 8.f)
+                ));
+
                 frameA.setPos(100.f, 100.f);
                 frameA.render();
 
