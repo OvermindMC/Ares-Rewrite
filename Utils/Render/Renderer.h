@@ -66,7 +66,7 @@ public:
                     auto setHoverColor(float r, float g, float b, float a = 1.f) -> void { this->hoverColor = ImColor(r, g, b, a); };
                     auto getHoverColor(void) -> ImColor& { return this->hoverColor; };
                 public:
-                    ElementStyle(ImColor bgColor, ImColor outlineColor = ImColor(0.f, 0.f, 0.f)) : bg_color(bgColor), outline_color(outlineColor) {};
+                    ElementStyle(ImColor bgColor, ImColor outlineColor = ImColor(0.f, 0.f, 0.f)) : bg_color(bgColor), outline_color(outlineColor), hoverColor(bgColor.Value.x, bgColor.Value.y, bgColor.Value.z, std::max(bgColor.Value.w - 0.2f, 0.2f)) {};
             };
         private:
             ElementStyle elStyle;
