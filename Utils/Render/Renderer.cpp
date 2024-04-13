@@ -453,16 +453,16 @@ auto LiteRender::Window::updateBounds(void) -> void {
         auto frame = *iter;
 
         frame->setFontSize(this->font_size);
-        frame->setPos(currPos);
+        frame->setPos(ImVec2(currPos.x + space, currPos.y));
         frame->updateBounds();
 
-        currPos = ImVec2(this->tPos.x, frame->getBounds().w + (frame != this->frames.back() ? (frame->getSpace() + this->getSpace()) : 0.f));
+        currPos = ImVec2(currPos.x, frame->getBounds().w + (frame != this->frames.back() ? (frame->getSpace() + this->getSpace()) : 0.f));
 
-        if(frame->getBounds().z > xOff)
-            xOff = frame->getBounds().z;
+        if((frame->getBounds().z + this->getSpace()) > xOff)
+            xOff = frame->getBounds().z + this->getSpace();
     };
 
-    this->boundsRect = ImVec4(this->tPos.x - space, this->tPos.y - space, xOff, currPos.y);
+    this->boundsRect = ImVec4(this->tPos.x - space, this->tPos.y - space, xOff, currPos.y + space);
 
 };
 
