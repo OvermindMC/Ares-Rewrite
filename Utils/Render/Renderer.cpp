@@ -351,6 +351,7 @@ auto LiteRender::Container::render(void) -> void {
     auto& display = this->display();
 
     Renderer::fillRect(this->getBounds(), style.getBgColor(), 1.f);
+    Renderer::addRect(this->getBounds(), style.getOutlineColor(), 0.f, 1.f);
     Renderer::drawText(this->getRenderPos(), display.getText(), display.getFontSize(), display.getColor());
 
 };
