@@ -104,6 +104,7 @@ public:
             auto getType(void) -> ElementType& { return this->elType; };
         public:
             Element(ElementDisplay display, ElementStyle style, ElementType type = ElementType::Base) : elDisplay(display), elStyle(style), elType(type) {};
+            virtual ~Element() = default;
     };
 public:
     class Container {
@@ -149,6 +150,8 @@ public:
             Frame(std::vector<Container*> elements_list, float font_size = 18.f);
             ~Frame(void);
         public:
+            auto setFontSize(float fontSize) -> void;
+        public:
             auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
             auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
         public:
@@ -159,6 +162,35 @@ public:
         public:
             auto setStylesAll(LiteRender::Element::ElementStyle styles) -> void { for(auto el : this->elements) { auto& style = el->style(); style.setBgColor(styles.getBgColor()); style.setOutlineColor(styles.getOutlineColor()); }; };
             auto setStylesFor(LiteRender::Element::ElementType type, LiteRender::Element::ElementStyle styles) -> void { for(auto el : this->elements) { if(el->getType() == type) { auto& style = el->style(); style.setBgColor(styles.getBgColor()); style.setOutlineColor(styles.getOutlineColor()); }; }; };
+        public:
+            auto render(void) -> void;
+    };
+public:
+    class Window {
+        private:
+            std::string title_text;
+            float font_size;
+        private:
+            ImVec4 boundsRect;
+            ImVec2 tPos;
+        public:
+            std::vector<Frame*> frames;
+        public:
+            Window(std::string titleText, float fontSize = 18.f, std::vector<Frame*> framesList = {});
+            ~Window(void);
+        public:
+            auto setFontSize(float fontSize) -> void;
+        public:
+            auto setPos(ImVec2 pos) -> void { this->tPos = pos; };
+            auto setPos(float x = 0.f, float y = 0.f) -> void { this->tPos = ImVec2(x, y); };
+        public:
+            auto getSpace(void) -> float { return (this->font_size / 10.f) + 4.f; };
+        public:
+            auto getBounds(void) -> ImVec4 { return this->boundsRect; };
+            auto updateBounds(void) -> void;
+        public:
+            auto setStylesAll(LiteRender::Element::ElementStyle styles) -> void { for(auto frame : this->frames) { frame->setStylesAll(styles); }; };
+            auto setStylesFor(LiteRender::Element::ElementType type, LiteRender::Element::ElementStyle styles) -> void { for(auto frame : this->frames) { frame->setStylesFor(type, styles); }; };
         public:
             auto render(void) -> void;
     };
