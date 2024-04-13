@@ -386,7 +386,7 @@ auto LiteRender::Frame::updateBounds(void) -> void {
         el->setPos(currPos);
         el->updateBounds();
 
-        currPos = ImVec2(el->getBounds().z, (el != this->elements.back() ? this->tPos.y : el->getBounds().w));
+        currPos = ImVec2(el->getBounds().z + (el != this->elements.back() ? el->getSpace() : 0.f), (el != this->elements.back() ? this->tPos.y : el->getBounds().w));
 
     };
 
