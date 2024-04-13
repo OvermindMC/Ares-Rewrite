@@ -6,6 +6,7 @@
 #include "ImGui/imgui_impl_win32.h"
 
 #include <string>
+#include <functional>
 
 #undef min
 #undef max
@@ -93,7 +94,9 @@ public:
             enum class ElementType {
                 Unknown = 0,
                 Base = 1,
-                Text = 2
+                
+                Text = 2,
+                Button = 3
             };
         private:
             ElementType elType;
@@ -155,6 +158,7 @@ public:
             auto updateBounds(void) -> void;
         public:
             auto setStylesAll(LiteRender::Element::ElementStyle styles) -> void { for(auto el : this->elements) { auto& style = el->style(); style.setBgColor(styles.getBgColor()); style.setOutlineColor(styles.getOutlineColor()); }; };
+            auto setStylesFor(LiteRender::Element::ElementType type, LiteRender::Element::ElementStyle styles) -> void { for(auto el : this->elements) { if(el->getType() == type) { auto& style = el->style(); style.setBgColor(styles.getBgColor()); style.setOutlineColor(styles.getOutlineColor()); }; }; };
         public:
             auto render(void) -> void;
     };
@@ -168,5 +172,12 @@ public:
             auto getTextHeight(void) -> float { return Renderer::getTextH(this->getText(), display().getFontSize()); };
         public:
             auto getColor(void) -> ImColor& { return this->display().getColor(); };
+    };
+public:
+    class Button : public Element {
+        public:
+            Button(std::string text, ImColor textColor, std::function<void(char, bool)> callback = [=](char, bool) -> void {}) : Element(ElementDisplay(text, textColor), ElementStyle(ImColor(24.f, 115.f, 201.f), ImColor(48.f, 67.f, 97.f)), ElementType::Button), onClick(callback) {};
+        private:
+            std::function<void(char, bool)> onClick;
     };
 };
