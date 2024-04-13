@@ -331,6 +331,12 @@ auto LiteRender::Container::updateBounds(void) -> void {
         this->tPos.x + (size.x + space), this->tPos.y + (size.y + space)
     );
 
+    switch(this->getType()) {
+        case LiteRender::Element::ElementType::Checkbox:
+            this->boundsRect.z += (space * 4.f);
+        break;
+    };
+
 };
 
 auto LiteRender::Container::getRenderPos(void) -> ImVec2 {
@@ -347,12 +353,31 @@ auto LiteRender::Container::render(void) -> void {
 
     this->updateBounds();
 
+    auto& io = ImGui::GetIO();
     auto& style = this->style();
     auto& display = this->display();
 
     Renderer::fillRect(this->getBounds(), style.getBgColor(), 1.f);
     Renderer::addRect(this->getBounds(), style.getOutlineColor(), 1.f, 1.f);
     Renderer::drawText(this->getRenderPos(), display.getText(), display.getFontSize(), display.getColor());
+
+    auto space = this->getSpace();
+    auto checkboxRect = ImVec4(
+        this->boundsRect.z - (space * 4.f), this->boundsRect.y + (space / 2.f),
+        this->boundsRect.z - (space / 2.f), this->boundsRect.w - (space / 2.f)
+    );
+
+    switch(this->getType()) {
+        case LiteRender::Element::ElementType::Checkbox:
+            auto checkbox = (LiteRender::Checkbox*)this->get();
+            Renderer::addRect(checkboxRect, ImColor(21.f, 21.f, 21.f), 3.f, 2.f);
+            Renderer::fillRect(checkboxRect, checkbox->getState() ? ImColor(80.f, 220.f, 138.f, .6f) : ImColor(200.f, 100.f, 80.f, .6f), 3.f);
+
+            if(io.MouseDown[0] && ImGui::IsMouseHoveringRect(ImVec2(checkboxRect.x, checkboxRect.y), ImVec2(checkboxRect.z, checkboxRect.w))) {
+                checkbox->toggleState();
+            };
+        break;
+    };
 
 };
 
