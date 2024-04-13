@@ -9,6 +9,8 @@ Manager::~Manager(void) {
     this->categories.clear();
     this->cleanupHooks();
 
+    ImFX::CleanupFX();
+
     MH_DisableHook(MH_ALL_HOOKS);
     MH_Uninitialize();
 
