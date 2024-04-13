@@ -196,8 +196,6 @@ public:
         private:
             float spaceExtra = 4.f;
         private:
-            Container* titleContainer = nullptr;
-        private:
             LiteRender::Element::ElementStyle styles = LiteRender::Element::ElementStyle(ImColor(), ImColor());
         public:
             std::vector<Frame*> frames;
