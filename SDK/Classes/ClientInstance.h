@@ -15,5 +15,7 @@ public:
     auto grabMouse(void) -> void;
     auto releaseMouse(void) -> void;
 public:
+    auto getScreenName(void) -> std::string;
+public:
     BUILD_ACCESS(Vec2<float>, mousePos, 0x498);
 };
