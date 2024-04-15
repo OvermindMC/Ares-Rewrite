@@ -11,7 +11,7 @@ public:
 class LevelRenderer {
 public:
     auto getRenderPlayer(void) -> LevelRendererPlayer* {
-        return *(LevelRendererPlayer**)((uintptr_t)(this) + 0x308);
+        return *(LevelRendererPlayer**)((unsigned long long)(this) + 0x308);
     };
 public:
     AS_FIELD(LevelRendererPlayer*, renderPlayer, getRenderPlayer);
