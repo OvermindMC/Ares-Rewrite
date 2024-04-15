@@ -6,15 +6,21 @@ auto ClientInstance::getLocalPlayer(void) -> Player* {
 
 };
 
-auto ClientInstance::getGuiData(void) -> GuiData* {
-
-    return *(GuiData**)((uintptr_t)(this) + 0x558);
-
-};
-
 auto ClientInstance::getLevelRenderer(void) -> LevelRenderer* {
 
     return *(LevelRenderer**)((uintptr_t)(this) + 0xE0);
+
+};
+
+auto ClientInstance::getMinecraftGame(void) -> MinecraftGame* {
+
+    return *(MinecraftGame**)((uintptr_t)(this) + 0xB0);
+
+};
+
+auto ClientInstance::getGuiData(void) -> GuiData* {
+
+    return *(GuiData**)((uintptr_t)(this) + 0x558);
 
 };
 
