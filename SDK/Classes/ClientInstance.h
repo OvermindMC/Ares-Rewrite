@@ -6,6 +6,8 @@
 class ClientInstance {
 public:
     auto getLocalPlayer(void) -> Player*;
+public:
+    auto getLevelRenderer(void) -> LevelRenderer*;
     auto getGuiData(void) -> GuiData*;
 public:
     auto grabMouse(void) -> void;
