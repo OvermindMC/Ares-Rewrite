@@ -63,12 +63,11 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             window->frames.push_back(frame);
                         
                         window->setExtraSpace(6.f);
-                        //window->setPos(x, 100.f);
+                        
                         window->updateBounds();
-
-                        //x = (window->getBounds().z + window->getSpace());
                         windows.push_back(window);
                     };
+                    
                     std::sort(windows.begin(), windows.end(), [&](LiteRender::Window* windowA, LiteRender::Window* windowB) {
                         return windowA->getBounds().w > windowB->getBounds().w;
                     });
