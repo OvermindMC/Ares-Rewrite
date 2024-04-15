@@ -35,3 +35,12 @@ auto ClientInstance::releaseMouse(void) -> void {
     return Mem::callVFunc<332, void>(this);
 
 };
+
+auto ClientInstance::getScreenName(void) -> std::string {
+
+    static std::string out;
+    Mem::callVFunc<147, void, std::string*>(this, &out);
+
+    return out;
+
+};
