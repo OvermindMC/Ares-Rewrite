@@ -12,6 +12,12 @@ auto ClientInstance::getGuiData(void) -> GuiData* {
 
 };
 
+auto ClientInstance::getLevelRenderer(void) -> LevelRenderer* {
+
+    return *(LevelRenderer**)((uintptr_t)(this) + 0xE0);
+
+};
+
 auto ClientInstance::grabMouse(void) -> void {
 
     return Mem::callVFunc<331, void>(this);
