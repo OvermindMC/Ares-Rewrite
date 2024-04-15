@@ -35,4 +35,14 @@ public:
     auto setBind(uint64_t module_bind) -> void;
 public:
     auto getEventDispatcher(void) -> EventDispatcher*;
+public:
+    template<EventType type, EventDispatcher::EventPriority priority, typename... Args>
+    auto registerEvent(std::function<void(Args...)> callback) -> void {
+        this->getEventDispatcher()->registerEvent<Args...>(type, priority, callback);
+    };
+public:
+    template<EventType type>
+    auto unregisterEvent(void) -> void {
+        this->getEventDispatcher()->unregisterEvent(type);
+    };
 };
