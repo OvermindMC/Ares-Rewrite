@@ -37,6 +37,10 @@ auto Manager::init(void) -> void {
             auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 11 48 8B 01 BA ? ? ? ? 48 8B 00 FF 15 ? ? ? ? 48 8B 8B ? ? ? ? 48 85 C9 74 17");
             return ptr->get(Signature::SearchType::VTable);
         }()},
+        {"ScreenController_VTable", []() {
+            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? 48 89 83 ? ? ? ? F2 0F 10 05 ? ? ? ?");
+            return ptr->get(Signature::SearchType::VTable);
+        }()},
         {"MouseInput", []() {
             auto ptr = std::make_unique<Signature>("48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 57 41 54 41 55 41 56 41 57 48 83 EC 60");
             return ptr->get(Signature::SearchType::Default);
@@ -86,12 +90,14 @@ auto Manager::cleanupHooks(void) -> void {
 #include "Hook/Hooks/SwapChain/Present.h"
 #include "Hook/Hooks/Input/Key/KeyInput.h"
 #include "Hook/Hooks/Input/Mouse/MouseInput.h"
+#include "Hook/Hooks/Screen/ScreenController.h"
 
 auto Manager::initHooks(void) -> bool {
 
     if(MH_Initialize() != MH_OK)
         return false;
     
+    new ScreenController_TickHook(this);
     new SwapChain_PresentHook(this);
     new Level_TickHook(this);
     new Actor_TickHook(this);
