@@ -3,6 +3,7 @@
 #include "Entity/Player.h"
 #include "GuiData/GuiData.h"
 #include "MinecraftGame/MinecraftGame.h"
+#include "ScreenController/ScreenController.h"
 
 class ClientInstance {
 public:
