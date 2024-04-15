@@ -12,7 +12,9 @@ enum class EventType {
     Level_Tick = 4,
 
     KeyInput = 5,
-    MouseInput = 6
+    MouseInput = 6,
+
+    ScreenControllerTick = 7
 };
 
 template<typename... TArgs>
