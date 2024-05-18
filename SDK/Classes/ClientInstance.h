@@ -2,6 +2,7 @@
 
 #include "Entity/Player.h"
 #include "GuiData/GuiData.h"
+#include "Minecraft/Minecraft.h"
 #include "MinecraftGame/MinecraftGame.h"
 #include "ScreenController/ScreenController.h"
 
@@ -11,6 +12,7 @@ public:
 public:
     auto getLevelRenderer(void) -> LevelRenderer*;
     auto getMinecraftGame(void) -> MinecraftGame*;
+    auto getMinecraft(void) -> Minecraft*;
     auto getGuiData(void) -> GuiData*;
 public:
     auto grabMouse(void) -> void;
