@@ -4,6 +4,7 @@
 #include "EntityContext.h"
 #include "GameMode/GameMode.h"
 #include "Component/Component.h"
+#include "Inventory/PlayerInventory.h"
 
 template<typename A, typename B>
 class AutomaticID;
