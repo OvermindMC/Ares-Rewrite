@@ -18,6 +18,12 @@ auto ClientInstance::getMinecraftGame(void) -> MinecraftGame* {
 
 };
 
+auto ClientInstance::getMinecraft(void) -> Minecraft* {
+
+    return *(Minecraft**)((uintptr_t)(this) + 0xD0);
+
+};
+
 auto ClientInstance::getGuiData(void) -> GuiData* {
 
     return *(GuiData**)((uintptr_t)(this) + 0x558);
