@@ -5,6 +5,7 @@
 class Player : public Actor {
 public:
     auto getGameMode(void) -> GameMode*;
+    auto getSupplies(void) -> PlayerInventory*;
 private:
     virtual ~Player(void);
 public:
