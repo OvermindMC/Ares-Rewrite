@@ -11,7 +11,6 @@ public:
     virtual auto knockback(class Actor*, int, float, float, float, float, float) -> void;
     virtual auto spawnAnim(void) -> void;
     virtual auto setSprinting(bool) -> void;
-    virtual auto getHurtSound(void) -> enum LevelSoundEvent;
     virtual auto getDeathSound(void) -> enum LevelSoundEvent;
     virtual auto getSpeed(void) -> float;
     virtual auto setSpeed(float) -> void;
