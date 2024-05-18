@@ -46,3 +46,9 @@ auto ScreenController::handleAutoPlace(std::string container, int slot) -> void 
     };
 
 };
+
+auto ScreenController::getSelectedSlot(std::string container, int slot) -> ItemStack* {
+
+    return Mem::callVFunc<62, ItemStack*, const std::string&, int>(this, container, slot);
+
+};
