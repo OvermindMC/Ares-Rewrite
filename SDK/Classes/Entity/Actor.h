@@ -60,14 +60,12 @@ public:
     virtual auto resetUserPos(bool) -> void;
     virtual auto getOwnerEntityType(void) -> unsigned long long;
     virtual auto remove(void) -> void;
-    virtual auto isRuntimePredictedMovementEnabled(void) -> bool;
     virtual auto getFiringPos(void) -> Vec3<float>;
     virtual auto getInterpolatedBodyRot(float) -> float;
     virtual auto getInterpolatedHeadRot(float) -> float;
     virtual auto getInterpolatedBodyYaw(float) -> float;
     virtual auto getYawSpeedInDegreesPerSecond(void) -> float;
     virtual auto getInterpolatedRidingOffset(float, int) -> Vec3<float>;
-    virtual auto resetInterpolated(void) -> void;
     virtual auto isFireImmune(void) -> bool;
     virtual auto blockedByShield(struct ActorDamageSource*, Actor*) -> void;
     virtual auto canDisableShield(void) -> bool;
@@ -92,7 +90,7 @@ public:
     virtual auto getBrightness(float, struct IConstBlockSource*) -> float;
     virtual auto playerTouch(class Player*) -> void;
     virtual auto isImmobile(void) -> bool;
-    virtual auto isSilentObserver(void) -> bool;
+    virtual auto _doSprintParticleEffect(void) -> void;
     virtual auto isPickable(void) -> bool;
     virtual auto isSleeping(void) -> bool;
     virtual auto setSleeping(bool) -> void;
@@ -103,8 +101,6 @@ public:
     virtual auto isOnFire(void) -> bool;
     virtual auto isSurfaceMob(void) -> bool;
     virtual auto isTargetable(void) -> bool;
-    virtual auto isLocalPlayer(void) -> bool;
-    virtual auto isPlayer(void) -> bool;
     virtual auto canAttack(Actor*, bool) -> bool;
     virtual auto setTarget(Actor*) -> bool;
     virtual auto isValidTarget(Actor*) -> bool;
