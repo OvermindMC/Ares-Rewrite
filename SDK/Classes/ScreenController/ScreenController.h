@@ -2,6 +2,8 @@
 
 #include "../../../Mem/Mem.h"
 
+class ItemStack;
+
 class ScreenController {
 public:
     auto getName(void) -> std::string;
@@ -10,4 +12,6 @@ public:
 public:
     auto handleDropItem(std::string container, int slot) -> void;
     auto handleAutoPlace(std::string container, int slot) -> void;
+public:
+    auto getSelectedSlot(std::string, int) -> ItemStack*;
 };
