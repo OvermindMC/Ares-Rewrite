@@ -36,6 +36,14 @@ public:
     };
 };
 
+class HoveringTooltip {
+    public:
+        std::string text;
+        float fontSize;
+    public:
+        HoveringTooltip(std::string tooltip_text, float font_size) : text(tooltip_text), fontSize(font_size) {};
+};
+
 ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui", "Interact with Modules", VK_INSERT) {
 
     static auto windows = std::vector<std::unique_ptr<Window>>();
@@ -232,6 +240,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     };
                 };
 
+                auto hoveringTooltip = HoveringTooltip("", 0.f);
                 for(auto& window : windows) {
                     
                     auto bounds = window->getBounds();
@@ -276,24 +285,26 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             ), module->name, window->fontSize, module->getState() ? ImColor(3.f, 252.f, 207.f) : ImColor(255.f, 255.f, 255.f)
                         );
 
-                        if(upMostWin == window.get() && rect.intersects(mousePos) && module->description.length() > 0) {
-                            auto text = module->description;
-                            auto textSize = Renderer::getTextSize(text, window->fontSize);
-
-                            auto hRect = ImVec4(
-                                mousePos._x - (textSize.x / 2.f), (mousePos._y - 14.f) - (textSize.y / 2.f),
-                                (mousePos._x - (textSize.x / 2.f)) + textSize.x, ((mousePos._y - 14.f) - (textSize.y / 2.f)) + textSize.y
-                            );
-
-                            Renderer::fillRect(hRect, ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
-                            Renderer::drawText(
-                                ImVec2(hRect.x, hRect.y), module->description, window->fontSize, ImColor(255.f, 255.f, 255.f)
-                            );
-                        };
+                        if(upMostWin == window.get() && rect.intersects(mousePos) && module->description.length() > 0)
+                            hoveringTooltip = HoveringTooltip(module->description, window->fontSize);
 
                         currY += size.y + (module == window->category->getModules().back() ? 0.f : (window->pad / 2.f));
                     };
 
+                };
+
+                if(hoveringTooltip.text.length() > 0) {
+                    auto textSize = Renderer::getTextSize(hoveringTooltip.text, hoveringTooltip.fontSize);
+
+                    auto hRect = ImVec4(
+                        mousePos._x - (textSize.x / 2.f), (mousePos._y - 14.f) - (textSize.y / 2.f),
+                        (mousePos._x - (textSize.x / 2.f)) + textSize.x, ((mousePos._y - 14.f) - (textSize.y / 2.f)) + textSize.y
+                    );
+
+                    Renderer::fillRect(hRect, ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
+                    Renderer::drawText(
+                        ImVec2(hRect.x, hRect.y), hoveringTooltip.text, hoveringTooltip.fontSize, ImColor(255.f, 255.f, 255.f)
+                    );
                 };
             }
         )
