@@ -20,7 +20,7 @@ public:
 public:
     auto getBounds(void) -> ImVec2 {
         auto currSize = Renderer::getTextSize(category->getName(), fontSize);
-        currSize.x += pad; //currSize.y += pad;
+        currSize.x += pad;
 
         for(auto module : category->getModules()) {
             auto size = Renderer::getTextSize(module->name, fontSize);
@@ -62,9 +62,32 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
     this->registerEvent<EventType::MouseInput, EventDispatcher::EventPriority::Highest>(
         std::function<void(char, bool, Vec2<float>)>(
             [&](char action, bool isDown, Vec2<float> mousePos) -> void {
-                if(action) {
-                    Debugger::log(std::string(std::to_string(action) + ", " + std::to_string(isDown)));
-                }
+                auto instance = MC::getClientInstance();
+                mousePos = instance ? instance->mousePos : Vec2<float>();
+
+                if(!instance)
+                    return;
+                
+                bool actionDone = false;
+                
+                if(action == 2 && isDown) { /* Window collapsing */
+                    for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
+                        auto& window = *iter;
+                        auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
+                        auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
+
+                        if(titleRect.intersects(mousePos)) {
+                            window->isCollapsed = !window->isCollapsed;
+                            actionDone = true;
+                            return;
+                        };
+                    };
+                };
+
+                if(actionDone)
+                    return;
+                
+                /* Do other potential actions */
             }
         )
     );
@@ -112,7 +135,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                         auto window = std::make_unique<Window>(category);
                         
                         window->tPos = ImVec2(currX, 20.f);
-                        currX += (window->getBounds().x * 1.2f);
+                        currX += (window->getBounds().x * 1.08f);
                         window->fontSize = std::min(12.f * this->uiScale, 18.f);
                         
                         windows.push_back(std::move(window));
@@ -123,15 +146,16 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     
                     auto bounds = window->getBounds();
                     auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
-                    window->rectPos = ImVec4(window->tPos.x, window->tPos.y, window->tPos.x + bounds.x, window->tPos.y + bounds.y);
+                    window->rectPos = ImVec4(window->tPos.x, window->tPos.y, window->tPos.x + bounds.x, window->tPos.y + (window->isCollapsed ? (titleSize.y) : bounds.y));
 
                     auto centerX = ((window->rectPos.x + (window->tPos.x + bounds.x)) / 2.f) - (Renderer::getTextW(window->getTitle(), window->fontSize) / 2.f);
                     auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
 
-                    Renderer::fillRect(window->rectPos, ImColor(27.f, 27.f, 27.f, 8.f), .4f);
-
-                    if(titleRect.intersects(mousePos))
-                        Renderer::fillRect(ImVec4(titleRect._x, titleRect._y, titleRect._z, titleRect._w), ImColor(255.f, 255.f, 255.f, .4f), 1.f);
+                    Renderer::fillRect(window->rectPos, ImColor(0.f, 27.f, 74.f, 8.f), 1.f);
+                    Renderer::fillRect(
+                        ImVec4(
+                            titleRect._x, titleRect._y, titleRect._z, titleRect._w
+                        ), titleRect.intersects(mousePos) ? ImColor(3.f, 88.f, 210.f, 1.f) : ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
 
                     Renderer::drawText(ImVec2(centerX, window->tPos.y), window->getTitle(), window->fontSize, ImColor(255.f, 255.f, 255.f));
 
@@ -140,6 +164,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             window->rectPos.x, window->rectPos.y + titleSize.y, window->rectPos.z, window->rectPos.y + (titleSize.y + 2.f)
                         ), ImColor(255.f, 255.f, 255.f, 1.f), 1.f
                     );
+
+                    if(window->isCollapsed)
+                        continue;
 
                     auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
                     for(auto module : window->category->getModules()) {
