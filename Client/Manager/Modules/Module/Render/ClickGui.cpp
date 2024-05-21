@@ -158,7 +158,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     this->uiScale = guidata->uiScale;
 
                     for(auto& window : windows) {
-                        window->fontSize = std::min(12.f * this->uiScale, 18.f);
+                        window->fontSize = std::min(14.f * this->uiScale, 20.f);
                     };
                 };
             }
@@ -171,20 +171,37 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if(!this->getState())
                     return;
                 
+                auto& io = ImGui::GetIO();
+                auto display = io.DisplaySize;
+
+                ImFX::Begin(ImGui::GetBackgroundDrawList());
+                ImFX::AddBlur(10.f, ImVec4(0.f, 0.f, display.x, display.y));
+                ImFX::End();
+                
                 auto instance = MC::getClientInstance();
                 auto guidata = instance ? instance->getGuiData() : nullptr;
                 auto mousePos = instance ? instance->mousePos : Vec2<float>();
 
                 if(windows.empty()) {
-                    auto currX = 10.f;
                     this->uiScale = guidata->uiScale;
+                    auto totalWidth = 0.f;
+                    auto space = 10.f;
 
+                    for(auto category : this->mgr->getCategories()) {
+                        auto window = std::make_unique<Window>(category);
+                        totalWidth += (window->getBounds().x + space);
+                    };
+
+                    totalWidth -= space;
+                    auto startX = (display.x - totalWidth) / 2.f;
+
+                    auto currX = startX;
                     for(auto category : this->mgr->getCategories()) {
                         auto window = std::make_unique<Window>(category);
                         
                         window->tPos = ImVec2(currX, 20.f);
-                        currX += (window->getBounds().x * 1.08f);
-                        window->fontSize = std::min(12.f * this->uiScale, 18.f);
+                        currX += (window->getBounds().x + space);
+                        window->fontSize = std::min(14.f * this->uiScale, 20.f);
                         
                         windows.push_back(std::move(window));
                     }
