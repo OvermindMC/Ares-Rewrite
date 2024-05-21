@@ -66,6 +66,13 @@ auto Manager::init(void) -> void {
             Sleep(1);
 
         };
+
+        for(auto& pair : this->categories) {
+            for(auto module : pair.second->getModules()) {
+                module->setState(false);
+                module->baseTick();
+            };
+        };
     };
 
 };
@@ -130,6 +137,8 @@ auto Manager::initCategories(void) -> void {
 
 };
 
+#include "Modules/Module/Movement/NoSlow.h"
+
 #include "Modules/Module/Render/ClickGui.h"
 
 #include "Modules/Module/Misc/Timer.h"
@@ -137,6 +146,8 @@ auto Manager::initCategories(void) -> void {
 #include "Modules/Module/Misc/Uninject.h"
 
 auto Manager::initSubModules(void) -> void {
+
+    new NoSlow(this);
 
     new ClickGui(this);
     
