@@ -190,6 +190,20 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     }
                 };
 
+                auto upMostWin = (Window*)nullptr;
+                for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
+                    auto& window = *iter;
+                    
+                    if(
+                        Vec4<float>(
+                            window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.w
+                        ).intersects(mousePos)
+                    ) {
+                        upMostWin = window.get();
+                        break;
+                    };
+                };
+
                 for(auto& window : windows) {
                     
                     auto bounds = window->getBounds();
@@ -210,7 +224,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     Renderer::fillRect(
                         ImVec4(
                             titleRect._x, titleRect._y, titleRect._z, titleRect._w
-                        ), titleRect.intersects(mousePos) ? ImColor(3.f, 88.f, 210.f, 1.f) : ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
+                        ), upMostWin == window.get() && titleRect.intersects(mousePos) ? ImColor(3.f, 88.f, 210.f, 1.f) : ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
 
                     Renderer::drawText(ImVec2(centerX, window->tPos.y), window->getTitle(), window->fontSize, ImColor(255.f, 255.f, 255.f));
 
@@ -234,7 +248,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             ), module->name, window->fontSize, ImColor(255.f, 255.f, 255.f)
                         );
 
-                        if(rect.intersects(mousePos) && module->description.length() > 0) {
+                        if(upMostWin == window.get() && rect.intersects(mousePos) && module->description.length() > 0) {
                             auto text = module->description;
                             auto textSize = Renderer::getTextSize(text, window->fontSize);
 
