@@ -172,7 +172,14 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     
                     auto bounds = window->getBounds();
                     auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
-                    window->rectPos = ImVec4(window->tPos.x, window->tPos.y, window->tPos.x + bounds.x, window->tPos.y + (window->isCollapsed ? (titleSize.y) : bounds.y));
+                    
+                    window->rectPos.x = window->tPos.x; window->rectPos.y = window->tPos.y;
+                    window->rectPos.z = window->tPos.x + bounds.x;
+
+                    if(window->rectPos.w <= 0.f)
+                        window->rectPos.w = (window->isCollapsed ? window->tPos.y : window->tPos.y + bounds.y);
+
+                    this->reachOff(&window->rectPos.w, window->isCollapsed ? window->tPos.y + titleSize.y : window->tPos.y + bounds.y, (window->category->getModules().size() * 2.f));
 
                     auto centerX = ((window->rectPos.x + (window->tPos.x + bounds.x)) / 2.f) - (Renderer::getTextW(window->getTitle(), window->fontSize) / 2.f);
                     auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
@@ -191,13 +198,13 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                         ), ImColor(255.f, 255.f, 255.f, 1.f), 1.f
                     );
 
-                    if(window->isCollapsed)
-                        continue;
-
                     auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
                     for(auto module : window->category->getModules()) {
                         auto size = Renderer::getTextSize(module->name, window->fontSize);
                         auto rect = Vec4(window->rectPos.x, currY, window->rectPos.z, (currY + size.y));
+
+                        if(currY + (size.y) > window->rectPos.w)
+                            break;
 
                         Renderer::drawText(
                             ImVec2(
@@ -227,5 +234,25 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
             }
         )
     );
+
+};
+
+auto ClickGui::reachOff(float* x, float xOff, float modifier) -> void {
+
+    if (*x < xOff) {
+
+		if (*x < (xOff - modifier))
+			*x += modifier;
+		else
+			*x = xOff;
+
+	} else if (*x > xOff) {
+
+		if (*x > (xOff + modifier))
+			*x -= modifier;
+		else
+			*x = xOff;
+
+	};
 
 };
