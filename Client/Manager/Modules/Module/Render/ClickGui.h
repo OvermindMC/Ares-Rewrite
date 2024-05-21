@@ -9,4 +9,7 @@ public:
     auto reachOff(float* x, float xOff, float modifier) -> void;
 public:
     float uiScale = 0.f;
+public:
+    class Window* dragWin = nullptr;
+    Vec2<float> dragStart;
 };
