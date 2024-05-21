@@ -1,6 +1,14 @@
 #include "ClickGui.h"
 
-class Window {
+class ClickGuiWindow {
+public:
+    class Mod {
+        public:
+            Module* mod = nullptr;
+            bool isCollapsed = true;
+        public:
+            Mod(Module* mod) : mod(mod) {};
+    };
 public:
     ImVec4 rectPos;
     ImVec2 tPos;
@@ -11,8 +19,9 @@ public:
     float pad = 16.f;
 public:
     Category* category;
+    std::vector<std::unique_ptr<Mod>> mods;
 public:
-    Window(Category* c) : category(c) {};
+    ClickGuiWindow(Category* c) : category(c) {};
 public:
     auto getTitle(void) -> std::string {
         return category->getName();
@@ -22,8 +31,9 @@ public:
         auto currSize = Renderer::getTextSize(category->getName(), fontSize);
         currSize.x += pad;
 
-        for(auto module : category->getModules()) {
-            auto size = Renderer::getTextSize(module->name, fontSize);
+        for(auto& mod : mods) {
+            auto module = mod->mod;
+            auto size = Renderer::getTextSize(std::string(module->name + "  "), fontSize);
             size.x += pad; size.y += (pad / 2.f);
 
             if(size.x > currSize.x)
@@ -46,7 +56,7 @@ class HoveringTooltip {
 
 ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui", "Interact with Modules", VK_INSERT) {
 
-    static auto windows = std::vector<std::unique_ptr<Window>>();
+    static auto windows = std::vector<std::unique_ptr<ClickGuiWindow>>();
 
     this->setState(true);
 
@@ -125,7 +135,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 
                 /* Do other potential actions */
 
-                if(action == 1 && isDown) {
+                if((action == 1 || action == 2) && isDown) {
                     for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
                         auto& window = *iter;
                         auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
@@ -135,17 +145,22 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             //
                         } else if(!window->isCollapsed) {
                             auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
-                            for(auto module : window->category->getModules()) {
-                                auto size = Renderer::getTextSize(module->name, window->fontSize);
+                            for(auto& mod : window->mods) {
+                                auto module = mod->mod;
+                                auto size = Renderer::getTextSize(std::string(module->name + "   "), window->fontSize);
                                 auto rect = Vec4(window->rectPos.x, currY, window->rectPos.z, (currY + size.y));
 
                                 if(rect.intersects(mousePos)) {
-                                    module->toggleState();
-                                    actionDone = true;
-                                    return;
+                                    if(action == 2) {
+                                        mod->isCollapsed = !mod->isCollapsed;
+                                    } else {
+                                        module->toggleState();
+                                        actionDone = true;
+                                        return;
+                                    };
                                 };
 
-                                currY += size.y + (module == window->category->getModules().back() ? 0.f : (window->pad / 2.f));
+                                currY += size.y + (mod == window->mods.back() ? 0.f : (window->pad / 2.f));
                             };
                         };
                     };
@@ -207,7 +222,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     auto space = 10.f;
 
                     for(auto category : this->mgr->getCategories()) {
-                        auto window = std::make_unique<Window>(category);
+                        auto window = std::make_unique<ClickGuiWindow>(category);
                         totalWidth += (window->getBounds().x + space);
                     };
 
@@ -216,17 +231,22 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                     auto currX = startX;
                     for(auto category : this->mgr->getCategories()) {
-                        auto window = std::make_unique<Window>(category);
+                        auto window = std::make_unique<ClickGuiWindow>(category);
                         
                         window->tPos = ImVec2(currX, 20.f);
                         currX += (window->getBounds().x + space);
                         window->fontSize = std::min(14.f * this->uiScale, 20.f);
+
+                        for(auto module : category->getModules()) {
+                            auto mod = std::make_unique<ClickGuiWindow::Mod>(module);
+                            window->mods.push_back(std::move(mod));
+                        };
                         
                         windows.push_back(std::move(window));
                     }
                 };
 
-                auto upMostWin = (Window*)nullptr;
+                auto upMostWin = (ClickGuiWindow*)nullptr;
                 for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
                     auto& window = *iter;
                     
@@ -252,7 +272,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     if(window->rectPos.w <= 0.f || this->dragWin == window.get())
                         window->rectPos.w = (window->isCollapsed ? window->tPos.y : window->tPos.y + bounds.y);
 
-                    this->reachOff(&window->rectPos.w, window->isCollapsed ? window->tPos.y + titleSize.y : window->tPos.y + bounds.y, (window->category->getModules().size() * 2.f));
+                    this->reachOff(&window->rectPos.w, window->isCollapsed ? window->tPos.y + titleSize.y : window->tPos.y + bounds.y, (window->mods.size() * 2.f));
 
                     auto centerX = ((window->rectPos.x + (window->tPos.x + bounds.x)) / 2.f) - (Renderer::getTextW(window->getTitle(), window->fontSize) / 2.f);
                     auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
@@ -272,8 +292,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     );
 
                     auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
-                    for(auto module : window->category->getModules()) {
-                        auto size = Renderer::getTextSize(module->name, window->fontSize);
+                    for(auto& mod : window->mods) {
+                        auto module = mod->mod;
+                        auto size = Renderer::getTextSize(std::string(module->name + "   "), window->fontSize);
                         auto rect = Vec4(window->rectPos.x, currY, window->rectPos.z, (currY + size.y));
 
                         if(currY + (size.y) > window->rectPos.w)
@@ -285,10 +306,19 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             ), module->name, window->fontSize, module->getState() ? ImColor(3.f, 252.f, 207.f) : ImColor(255.f, 255.f, 255.f)
                         );
 
+                        {
+                            auto text = (mod->isCollapsed ? "+ " : "- ");
+                            Renderer::drawText(
+                                ImVec2(
+                                    window->rectPos.z - Renderer::getTextW(text, window->fontSize), currY
+                                ), text, window->fontSize, ImColor(50.f, 140.f, 240.f)
+                            );
+                        }
+
                         if(upMostWin == window.get() && rect.intersects(mousePos) && module->description.length() > 0)
                             hoveringTooltip = HoveringTooltip(module->description, window->fontSize);
 
-                        currY += size.y + (module == window->category->getModules().back() ? 0.f : (window->pad / 2.f));
+                        currY += size.y + (mod == window->mods.back() ? 0.f : (window->pad / 2.f));
                     };
 
                 };
