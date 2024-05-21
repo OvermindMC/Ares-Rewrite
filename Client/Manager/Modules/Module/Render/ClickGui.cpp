@@ -60,10 +60,16 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
     );
 
     this->registerEvent<EventType::MouseInput, EventDispatcher::EventPriority::Highest>(
-        std::function<void(char, bool, Vec2<float>)>(
-            [&](char action, bool isDown, Vec2<float> mousePos) -> void {
+        std::function<void(char, bool, Vec2<float>, bool*)>(
+            [&](char action, bool isDown, Vec2<float> mousePos, bool* cancel) -> void {
+                if(!this->getState())
+                    return;
+                
                 auto instance = MC::getClientInstance();
                 mousePos = instance ? instance->mousePos : Vec2<float>();
+
+                if(action)
+                    *cancel = true;
 
                 if(!instance)
                     return;
@@ -141,9 +147,11 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
     );
 
     this->registerEvent<EventType::KeyInput, EventDispatcher::EventPriority::Highest>(
-        std::function<void(uint64_t, bool)>(
-            [&](uint64_t key, bool isDown) -> void {
-                //
+        std::function<void(uint64_t, bool, bool*)>(
+            [&](uint64_t key, bool isDown, bool* cancel) -> void {
+                if(this->getState()) {
+                    *cancel = true;
+                };
             }
         )
     );
@@ -262,7 +270,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                         Renderer::drawText(
                             ImVec2(
                                 window->tPos.x + 2.f, currY
-                            ), module->name, window->fontSize, ImColor(255.f, 255.f, 255.f)
+                            ), module->name, window->fontSize, module->getState() ? ImColor(3.f, 252.f, 207.f) : ImColor(255.f, 255.f, 255.f)
                         );
 
                         if(upMostWin == window.get() && rect.intersects(mousePos) && module->description.length() > 0) {
