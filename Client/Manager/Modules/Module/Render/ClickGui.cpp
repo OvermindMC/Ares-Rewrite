@@ -151,6 +151,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
             [&](uint64_t key, bool isDown, bool* cancel) -> void {
                 if(this->getState()) {
                     *cancel = true;
+
+                    if(key == VK_ESCAPE)
+                        return this->toggleState();
                 };
             }
         )
@@ -278,8 +281,8 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                             auto textSize = Renderer::getTextSize(text, window->fontSize);
 
                             auto hRect = ImVec4(
-                                mousePos._x - (textSize.x / 2.f), mousePos._y - (textSize.y / 2.f),
-                                (mousePos._x - (textSize.x / 2.f)) + textSize.x, (mousePos._y - (textSize.y / 2.f)) + textSize.y
+                                mousePos._x - (textSize.x / 2.f), (mousePos._y - 14.f) - (textSize.y / 2.f),
+                                (mousePos._x - (textSize.x / 2.f)) + textSize.x, ((mousePos._y - 14.f) - (textSize.y / 2.f)) + textSize.y
                             );
 
                             Renderer::fillRect(hRect, ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
