@@ -15,9 +15,13 @@ KeyInput_Hook::KeyInput_Hook(Manager* mgr) : Hook<void, unsigned long long, bool
                 };
             };
         };
+
+        bool cancel = false;
         
-        this->mgr->dispatchEvent<EventType::KeyInput, uint64_t, bool>(key, isDown);
-        return this->_Func(key, isDown);
+        this->mgr->dispatchEvent<EventType::KeyInput, uint64_t, bool, bool*>(key, isDown, &cancel);
+        
+        if(!cancel)
+            return this->_Func(key, isDown);
 
     }
 ) {};
