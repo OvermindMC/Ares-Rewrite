@@ -10,6 +10,6 @@ public:
 public:
     float uiScale = 0.f;
 public:
-    class Window* dragWin = nullptr;
+    class ClickGuiWindow* dragWin = nullptr;
     Vec2<float> dragStart;
 };
