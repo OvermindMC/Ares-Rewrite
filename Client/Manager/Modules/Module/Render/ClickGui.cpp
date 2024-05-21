@@ -70,18 +70,40 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 
                 bool actionDone = false;
                 
-                if(action == 2 && isDown) { /* Window collapsing */
+                if((action == 1 || action == 2) && isDown) { /* Window collapsing */
                     for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
                         auto& window = *iter;
                         auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
                         auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
 
-                        if(titleRect.intersects(mousePos)) {
-                            window->isCollapsed = !window->isCollapsed;
-                            actionDone = true;
-                            return;
+                        if(!this->dragWin) {
+                            if(titleRect.intersects(mousePos)) {
+                                if(action == 2) {
+                                    window->isCollapsed = !window->isCollapsed;
+                                } else {
+                                    this->dragWin = window.get();
+                                    this->dragStart = mousePos;
+                                };
+                                actionDone = true;
+                                break;
+                            };
                         };
                     };
+                };
+
+                if(this->dragWin && action == 0) {
+                    auto diff = mousePos;
+                    diff -= this->dragStart;
+
+                    this->dragWin->tPos.x += diff._x;
+                    this->dragWin->tPos.y += diff._y;
+
+                    this->dragStart = mousePos;
+                };
+
+                if(this->dragWin && (action == 1 && !isDown)) {
+                    this->dragWin = nullptr;
+                    this->dragStart = Vec2<float>();
                 };
 
                 if(actionDone)
@@ -176,7 +198,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     window->rectPos.x = window->tPos.x; window->rectPos.y = window->tPos.y;
                     window->rectPos.z = window->tPos.x + bounds.x;
 
-                    if(window->rectPos.w <= 0.f)
+                    if(window->rectPos.w <= 0.f || this->dragWin == window.get())
                         window->rectPos.w = (window->isCollapsed ? window->tPos.y : window->tPos.y + bounds.y);
 
                     this->reachOff(&window->rectPos.w, window->isCollapsed ? window->tPos.y + titleSize.y : window->tPos.y + bounds.y, (window->category->getModules().size() * 2.f));
