@@ -87,9 +87,13 @@ auto Manager::cleanupHooks(void) -> void {
 
 #include "Hook/Hooks/Actor/Tick.h"
 #include "Hook/Hooks/Actor/Level/Tick.h"
+
 #include "Hook/Hooks/SwapChain/Present.h"
+#include "Hook/Hooks/SwapChain/ResizeBuffers.h"
+
 #include "Hook/Hooks/Input/Key/KeyInput.h"
 #include "Hook/Hooks/Input/Mouse/MouseInput.h"
+
 #include "Hook/Hooks/Screen/ScreenController.h"
 
 auto Manager::initHooks(void) -> bool {
@@ -98,6 +102,7 @@ auto Manager::initHooks(void) -> bool {
         return false;
     
     new ScreenController_TickHook(this);
+    new SwapChain_ResizeBuffers(this);
     new SwapChain_PresentHook(this);
     new Level_TickHook(this);
     new Actor_TickHook(this);
