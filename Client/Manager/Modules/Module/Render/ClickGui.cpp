@@ -88,6 +88,32 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     return;
                 
                 /* Do other potential actions */
+
+                if(action == 1 && isDown) {
+                    for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
+                        auto& window = *iter;
+                        auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
+                        auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
+
+                        if(titleRect.intersects(mousePos)) {
+                            //
+                        } else if(!window->isCollapsed) {
+                            auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
+                            for(auto module : window->category->getModules()) {
+                                auto size = Renderer::getTextSize(module->name, window->fontSize);
+                                auto rect = Vec4(window->rectPos.x, currY, window->rectPos.z, (currY + size.y));
+
+                                if(rect.intersects(mousePos)) {
+                                    module->toggleState();
+                                    actionDone = true;
+                                    return;
+                                };
+
+                                currY += size.y + (module == window->category->getModules().back() ? 0.f : (window->pad / 2.f));
+                            };
+                        };
+                    };
+                };
             }
         )
     );
@@ -171,12 +197,29 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                     auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
                     for(auto module : window->category->getModules()) {
                         auto size = Renderer::getTextSize(module->name, window->fontSize);
+                        auto rect = Vec4(window->rectPos.x, currY, window->rectPos.z, (currY + size.y));
 
                         Renderer::drawText(
                             ImVec2(
                                 window->tPos.x + 2.f, currY
                             ), module->name, window->fontSize, ImColor(255.f, 255.f, 255.f)
                         );
+
+                        if(rect.intersects(mousePos) && module->description.length() > 0) {
+                            auto text = module->description;
+                            auto textSize = Renderer::getTextSize(text, window->fontSize);
+
+                            auto hRect = ImVec4(
+                                mousePos._x - (textSize.x / 2.f), mousePos._y - (textSize.y / 2.f),
+                                (mousePos._x - (textSize.x / 2.f)) + textSize.x, (mousePos._y - (textSize.y / 2.f)) + textSize.y
+                            );
+
+                            Renderer::fillRect(hRect, ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
+                            Renderer::drawText(
+                                ImVec2(hRect.x, hRect.y), module->description, window->fontSize, ImColor(255.f, 255.f, 255.f)
+                            );
+                        };
+
                         currY += size.y + (module == window->category->getModules().back() ? 0.f : (window->pad / 2.f));
                     };
 
