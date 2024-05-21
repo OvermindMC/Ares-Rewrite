@@ -1,6 +1,44 @@
 #include "ClickGui.h"
 
+class Window {
+public:
+    ImVec4 rectPos;
+    ImVec2 tPos;
+public:
+    bool isCollapsed = false;
+    float fontSize = 18.f;
+public:
+    float pad = 16.f;
+public:
+    Category* category;
+public:
+    Window(Category* c) : category(c) {};
+public:
+    auto getTitle(void) -> std::string {
+        return category->getName();
+    };
+public:
+    auto getBounds(void) -> ImVec2 {
+        auto currSize = Renderer::getTextSize(category->getName(), fontSize);
+        currSize.x += pad; //currSize.y += pad;
+
+        for(auto module : category->getModules()) {
+            auto size = Renderer::getTextSize(module->name, fontSize);
+            size.x += pad; size.y += (pad / 2.f);
+
+            if(size.x > currSize.x)
+                currSize.x = size.x;
+            
+            currSize.y += size.y;
+        };
+        
+        return currSize;
+    };
+};
+
 ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui", "Interact with Modules", VK_INSERT) {
+
+    static auto windows = std::vector<std::unique_ptr<Window>>();
 
     this->setState(true);
 
@@ -21,75 +59,100 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
         })
     );
 
+    this->registerEvent<EventType::MouseInput, EventDispatcher::EventPriority::Highest>(
+        std::function<void(char, bool, Vec2<float>)>(
+            [&](char action, bool isDown, Vec2<float> mousePos) -> void {
+                if(action) {
+                    Debugger::log(std::string(std::to_string(action) + ", " + std::to_string(isDown)));
+                }
+            }
+        )
+    );
+
+    this->registerEvent<EventType::KeyInput, EventDispatcher::EventPriority::Highest>(
+        std::function<void(uint64_t, bool)>(
+            [&](uint64_t key, bool isDown) -> void {
+                //
+            }
+        )
+    );
+
+    this->registerEvent<EventType::Present_Resize, EventDispatcher::EventPriority::Highest>(
+        std::function<void(void)>(
+            [&](void) -> void {
+                auto instance = MC::getClientInstance();
+                auto guidata = instance ? instance->getGuiData() : nullptr;
+
+                if(guidata->uiScale != this->uiScale) {
+                    this->uiScale = guidata->uiScale;
+
+                    for(auto& window : windows) {
+                        window->fontSize = std::min(12.f * this->uiScale, 18.f);
+                    };
+                };
+            }
+        )
+    );
+
     this->registerEvent<EventType::Present_Tick, EventDispatcher::EventPriority::Highest>(
         std::function<void(void)>(
             [&](void) -> void {
                 if(!this->getState())
                     return;
                 
-                static auto windows = std::vector<LiteRender::Window*>();
                 auto instance = MC::getClientInstance();
-                auto& io = ImGui::GetIO();
+                auto guidata = instance ? instance->getGuiData() : nullptr;
+                auto mousePos = instance ? instance->mousePos : Vec2<float>();
 
                 if(windows.empty()) {
-                    float x = 100.f;
+                    auto currX = 10.f;
+                    this->uiScale = guidata->uiScale;
+
                     for(auto category : this->mgr->getCategories()) {
-                        if(category->getModules().empty())
-                            continue;
+                        auto window = std::make_unique<Window>(category);
                         
-                        auto window = new LiteRender::Window(category->getName());
-                        auto frames = std::vector<LiteRender::Frame*>();
-
-                        for(auto module : category->getModules()) {
-                            frames.push_back(new LiteRender::Frame({
-                                new LiteRender::Container(
-                                    new LiteRender::Text(
-                                        module->name
-                                    )
-                                )
-                            }));
-                            frames.push_back(
-                                new LiteRender::Frame({
-                                    new LiteRender::Container(
-                                        new LiteRender::Checkbox(
-                                            "Enabled", ImColor(255.f, 255.f, 255.f), &module->state.first
-                                        )
-                                    )
-                                }, 14.f)
-                            );
-                        };
-
-                        for(auto frame : frames)
-                            window->frames.push_back(frame);
+                        window->tPos = ImVec2(currX, 20.f);
+                        currX += (window->getBounds().x * 1.2f);
+                        window->fontSize = std::min(12.f * this->uiScale, 18.f);
                         
-                        window->setExtraSpace(6.f);
-                        
-                        window->updateBounds();
-                        windows.push_back(window);
-                    };
-                    
-                    std::sort(windows.begin(), windows.end(), [&](LiteRender::Window* windowA, LiteRender::Window* windowB) {
-                        return windowA->getBounds().w > windowB->getBounds().w;
-                    });
-
-                    for(auto window : windows) {
-                        window->setPos(x, 100.f);
-                        window->updateBounds();
-                        x = (window->getBounds().z + window->getSpace());
-                    };
+                        windows.push_back(std::move(window));
+                    }
                 };
 
-                instance->releaseMouse();
+                for(auto& window : windows) {
+                    
+                    auto bounds = window->getBounds();
+                    auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
+                    window->rectPos = ImVec4(window->tPos.x, window->tPos.y, window->tPos.x + bounds.x, window->tPos.y + bounds.y);
 
-                ImFX::Begin(ImGui::GetBackgroundDrawList());
-                ImFX::AddBlur(10.f, ImVec4(0.f, 0.f, io.DisplaySize.x, io.DisplaySize.y));
-                ImFX::End();
-                
-                for(auto window : windows)
-                    window->render();
-                
-                if(instance->getScreenName().rfind("hud_screen") == std::string::npos) {
-                    this->setState(false);
+                    auto centerX = ((window->rectPos.x + (window->tPos.x + bounds.x)) / 2.f) - (Renderer::getTextW(window->getTitle(), window->fontSize) / 2.f);
+                    auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
+
+                    Renderer::fillRect(window->rectPos, ImColor(27.f, 27.f, 27.f, 8.f), .4f);
+
+                    if(titleRect.intersects(mousePos))
+                        Renderer::fillRect(ImVec4(titleRect._x, titleRect._y, titleRect._z, titleRect._w), ImColor(255.f, 255.f, 255.f, .4f), 1.f);
+
+                    Renderer::drawText(ImVec2(centerX, window->tPos.y), window->getTitle(), window->fontSize, ImColor(255.f, 255.f, 255.f));
+
+                    Renderer::fillRect(
+                        ImVec4(
+                            window->rectPos.x, window->rectPos.y + titleSize.y, window->rectPos.z, window->rectPos.y + (titleSize.y + 2.f)
+                        ), ImColor(255.f, 255.f, 255.f, 1.f), 1.f
+                    );
+
+                    auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
+                    for(auto module : window->category->getModules()) {
+                        auto size = Renderer::getTextSize(module->name, window->fontSize);
+
+                        Renderer::drawText(
+                            ImVec2(
+                                window->tPos.x + 2.f, currY
+                            ), module->name, window->fontSize, ImColor(255.f, 255.f, 255.f)
+                        );
+                        currY += size.y + (module == window->category->getModules().back() ? 0.f : (window->pad / 2.f));
+                    };
+
                 };
             }
         )
