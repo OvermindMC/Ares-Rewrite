@@ -28,12 +28,12 @@ public:
     };
 public:
     auto getBounds(void) -> ImVec2 {
-        auto currSize = Renderer::getTextSize(category->getName(), fontSize);
+        auto currSize = Renderer::getTextSize(std::string(category->getName() + "   "), fontSize);
         currSize.x += pad;
 
         for(auto& mod : mods) {
             auto module = mod->mod;
-            auto size = Renderer::getTextSize(std::string(module->name + "  "), fontSize);
+            auto size = Renderer::getTextSize(std::string(module->name + "   "), fontSize);
             size.x += pad; size.y += (pad / 2.f);
 
             if(size.x > currSize.x)
@@ -97,7 +97,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if((action == 1 || action == 2) && isDown) { /* Window collapsing */
                     for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
                         auto& window = *iter;
-                        auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
+                        auto titleSize = Renderer::getTextSize(std::string(window->getTitle() + "   "), window->fontSize);
                         auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
 
                         if(!this->dragWin) {
@@ -138,7 +138,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if((action == 1 || action == 2) && isDown) {
                     for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
                         auto& window = *iter;
-                        auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
+                        auto titleSize = Renderer::getTextSize(std::string(window->getTitle() + "   "), window->fontSize);
                         auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
 
                         if(titleRect.intersects(mousePos)) {
@@ -239,6 +239,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                         for(auto module : category->getModules()) {
                             auto mod = std::make_unique<ClickGuiWindow::Mod>(module);
+
                             window->mods.push_back(std::move(mod));
                         };
                         
@@ -264,7 +265,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 for(auto& window : windows) {
                     
                     auto bounds = window->getBounds();
-                    auto titleSize = Renderer::getTextSize(window->getTitle(), window->fontSize);
+                    auto titleSize = Renderer::getTextSize(std::string(window->getTitle() + "   "), window->fontSize);
                     
                     window->rectPos.x = window->tPos.x; window->rectPos.y = window->tPos.y;
                     window->rectPos.z = window->tPos.x + bounds.x;
