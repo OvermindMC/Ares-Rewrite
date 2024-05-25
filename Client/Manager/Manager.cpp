@@ -38,7 +38,7 @@ auto Manager::init(void) -> void {
             return ptr->get(Signature::SearchType::VTable);
         }()},
         {"LoopbackPacketSender_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B 5C 24 ? 48 89 06 33 C0");
+            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B 5C 24 ? 48 89 06 33 C0 48 89 7E ? C6 46 ? 01 48");
             return ptr->get(Signature::SearchType::VTable);
         }()},
         {"ScreenController_VTable", []() {
@@ -99,6 +99,8 @@ auto Manager::cleanupHooks(void) -> void {
 #include "Hook/Hooks/Actor/Tick.h"
 #include "Hook/Hooks/Actor/Level/Tick.h"
 
+#include "Hook/Hooks/Packet/SendToServer.h"
+
 #include "Hook/Hooks/SwapChain/Present.h"
 #include "Hook/Hooks/SwapChain/ResizeBuffers.h"
 
@@ -115,6 +117,7 @@ auto Manager::initHooks(void) -> bool {
     new ScreenController_TickHook(this);
     new SwapChain_ResizeBuffers(this);
     new SwapChain_PresentHook(this);
+    new SendToServer_Hook(this);
     new Level_TickHook(this);
     new Actor_TickHook(this);
     new MouseInput_Hook(this);
