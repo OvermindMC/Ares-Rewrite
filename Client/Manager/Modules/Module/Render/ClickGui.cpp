@@ -92,6 +92,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if(!instance)
                     return;
                 
+                instance->releaseMouse();
                 bool actionDone = false;
                 
                 if((action == 1 || action == 2) && isDown) { /* Window collapsing */
