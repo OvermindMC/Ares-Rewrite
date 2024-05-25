@@ -12,6 +12,18 @@ public:
     BUILD_ACCESS(std::string, name, 0xD0);
     BUILD_ACCESS(std::string, name_id, 0x120);
 public:
+    auto getAttackDamage(void) -> __int64 {
+        return Mem::callVFunc<35, __int64>(this);
+    };
+public:
+    auto isArmor(void) -> bool {
+        return Mem::callVFunc<9, bool>(this);
+    };
+
+    auto getArmorValue(void) -> __int64 {
+        return Mem::callVFunc<53, __int64>(this);
+    };
+public:
     auto isSword(void) -> bool {
         switch(this->id) {
             case 311:
