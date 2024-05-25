@@ -52,6 +52,10 @@ auto Manager::init(void) -> void {
         {"KeyInput", []() {
             auto ptr = std::make_unique<Signature>("48 83 EC 48 0F B6 C1 4C 8D 05");
             return ptr->get(Signature::SearchType::Default);
+        }()},
+        {"MinecraftUIRenderCtx", []() {
+            auto ptr = std::make_unique<Signature>("E8 ? ? ? ? 48 8B 44 24 ? 48 8D 4C 24 ? 48 8B 80 ? ? ? ?");
+            return ptr->get(Signature::SearchType::Ref);
         }()}
     };
 
@@ -108,6 +112,7 @@ auto Manager::cleanupHooks(void) -> void {
 #include "Hook/Hooks/Input/Mouse/MouseInput.h"
 
 #include "Hook/Hooks/Screen/ScreenController.h"
+#include "Hook/Hooks/RenderContext/RenderContext.h"
 
 auto Manager::initHooks(void) -> bool {
 
@@ -117,6 +122,7 @@ auto Manager::initHooks(void) -> bool {
     new ScreenController_TickHook(this);
     new SwapChain_ResizeBuffers(this);
     new SwapChain_PresentHook(this);
+    new RenderContext_Hook(this);
     new SendToServer_Hook(this);
     new Level_TickHook(this);
     new Actor_TickHook(this);
