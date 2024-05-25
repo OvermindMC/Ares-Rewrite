@@ -3,6 +3,7 @@
 #include "Level/Level.h"
 #include "EntityContext.h"
 #include "GameMode/GameMode.h"
+#include "Dimension/Dimension.h"
 #include "Component/Component.h"
 #include "Inventory/PlayerInventory.h"
 
@@ -45,6 +46,9 @@ public:
     auto getEntityTypeId(void) -> unsigned char;
 public:
     auto getPos(void) -> Vec3<float>;
+public:
+    BUILD_ACCESS(std::shared_ptr<Dimension>, dimension, 0x248);
+    BUILD_ACCESS(Level*, level, 0x250);
 private:
     virtual ~Actor(void);
 public:
