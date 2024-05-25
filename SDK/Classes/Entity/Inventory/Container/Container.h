@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../../../../Mem/Mem.h"
-
-class ItemStack;
+#include "ItemStack/ItemStack.h"
 
 class Container {
 private:
