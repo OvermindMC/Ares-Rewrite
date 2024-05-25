@@ -18,7 +18,9 @@ enum class EventType {
     KeyInput = 6,
     MouseInput = 7,
 
-    ScreenControllerTick = 8
+    ScreenControllerTick = 8,
+
+    Packet_SendToServer = 9
 };
 
 template<typename... TArgs>
