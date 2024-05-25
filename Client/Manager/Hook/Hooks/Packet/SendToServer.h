@@ -2,7 +2,7 @@
 
 #include "../../Hook.h"
 
-class SendToServer_Hook : public Hook<void, void*, void*> {
+class SendToServer_Hook : public Hook<void, LoopbackPacketSender*, Packet*> {
 public:
     SendToServer_Hook(Manager*);
 };
