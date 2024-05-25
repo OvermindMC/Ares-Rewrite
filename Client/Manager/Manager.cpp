@@ -37,6 +37,10 @@ auto Manager::init(void) -> void {
             auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 11 48 8B 01 BA ? ? ? ? 48 8B 00 FF 15 ? ? ? ? 48 8B 8B ? ? ? ? 48 85 C9 74 17");
             return ptr->get(Signature::SearchType::VTable);
         }()},
+        {"LoopbackPacketSender_VTable", []() {
+            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B 5C 24 ? 48 89 06 33 C0");
+            return ptr->get(Signature::SearchType::VTable);
+        }()},
         {"ScreenController_VTable", []() {
             auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? 48 89 83 ? ? ? ? F2 0F 10 05 ? ? ? ?");
             return ptr->get(Signature::SearchType::VTable);
