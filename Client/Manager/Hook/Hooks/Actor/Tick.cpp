@@ -11,7 +11,7 @@ Actor_TickHook::Actor_TickHook(Manager* mgr) : Hook<void, Actor*>(mgr, "Actor_Ti
             auto& entityMap = this->mgr->entityMap;
 
             if(!entityMap.contains(runtimeId))
-                entityMap.emplace(runtimeId, entity);
+                entityMap.insert(std::pair<uint64_t, Actor*>(runtimeId, entity));
         };
         
         return this->_Func(entity);
