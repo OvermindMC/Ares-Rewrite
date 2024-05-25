@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.20)
 project(NetNode VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+add_compile_definitions(_ITERATOR_DEBUG_LEVEL=0)
+set_property(GLOBAL PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+
 include(FetchContent)
 
 FetchContent_Declare(

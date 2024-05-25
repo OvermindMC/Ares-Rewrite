@@ -6,6 +6,12 @@ auto ClientInstance::getLocalPlayer(void) -> Player* {
 
 };
 
+auto ClientInstance::getPacketSender(void) -> LoopbackPacketSender* {
+
+    return *(LoopbackPacketSender**)((uintptr_t)(this) + 0xF0);
+
+};
+
 auto ClientInstance::getLevelRenderer(void) -> LevelRenderer* {
 
     return *(LevelRenderer**)((uintptr_t)(this) + 0xE0);

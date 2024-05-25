@@ -5,11 +5,13 @@
 #include "Minecraft/Minecraft.h"
 #include "MinecraftGame/MinecraftGame.h"
 #include "ScreenController/ScreenController.h"
+#include "LoopbackPacketSender/LoopbackPacketSender.h"
 
 class ClientInstance {
 public:
     auto getLocalPlayer(void) -> Player*;
 public:
+    auto getPacketSender(void) -> LoopbackPacketSender*;
     auto getLevelRenderer(void) -> LevelRenderer*;
     auto getMinecraftGame(void) -> MinecraftGame*;
     auto getMinecraft(void) -> Minecraft*;
