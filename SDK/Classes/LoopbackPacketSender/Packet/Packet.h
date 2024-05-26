@@ -221,4 +221,8 @@ public:
 
         return _CreatePacket(type);
     };
+public:
+    auto getId(void) -> PacketID {
+        return VTable ? Mem::callVFunc<1, PacketID>(this) : static_cast<PacketID>(0);
+    };
 };
