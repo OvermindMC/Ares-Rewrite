@@ -4,7 +4,6 @@
 
 class TextPacket : public Packet {
 private:
-    uintptr_t** VTable;
     char pad[0xD0];
 public:
     enum class TextPacketType : int { RAW = 0, CHAT = 1, TRANSLATION = 2, POPUP = 3, JUKEBOX_POPUP = 4, TIP = 5, SYSTEM = 6, WHISPER = 7, ANNOUNCEMENT = 8, JSON_WHISPER = 9, JSON = 10, JSON_ANNOUNCEMENT = 11 };
@@ -18,6 +17,4 @@ public:
 public:
     BUILD_ACCESS(std::string, xuid, 0x98);
     BUILD_ACCESS(std::string, platformChatId, 0xB8);
-public:
-    TextPacket(std::string message_contents, std::string message_author = "", TextPacketType text_type = TextPacketType::CHAT);
 };
