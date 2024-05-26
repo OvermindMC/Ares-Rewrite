@@ -15,7 +15,6 @@ RenderContext_Hook::RenderContext_Hook(Manager* mgr) : Hook<void, void*, void*>(
                 auto [ runtimeId, entity ] = *iter;
                 if(!entity || !entity->isAlive()) {
                     iter = entityMap.erase(iter);
-                    Debugger::log("!");
                 } else {
                     ++iter;
                 };
