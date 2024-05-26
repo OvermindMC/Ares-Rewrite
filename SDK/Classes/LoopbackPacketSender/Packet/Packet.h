@@ -213,6 +213,8 @@ struct PacketTypeMap {
 class Packet {
 public:
     uintptr_t** VTable;
+private:
+    char pad[0x28];
 public:
     template<PacketID type, typename T = typename PacketTypeMap<type>::type>
     static auto createPacket(void) -> std::shared_ptr<typename PacketTypeMap<type>::type> {
