@@ -2,4 +2,3 @@ target_sources(NetNode PRIVATE ClientInstance.cpp)
 
 add_subdirectory(Entity)
 add_subdirectory(ScreenController)
-add_subdirectory(LoopbackPacketSender)
