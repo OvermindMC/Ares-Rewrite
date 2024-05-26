@@ -207,9 +207,11 @@ enum class PacketID : int {
 
 class Packet {
 public:
-    template<PacketID type>
-    static auto createPacket(void) -> std::shared_ptr<Packet> {
-        using CreatePacket = std::shared_ptr<Packet> (__fastcall*)(PacketID);
+    uintptr_t** VTable;
+public:
+    template<PacketID type, typename T>
+    static auto createPacket(void) -> std::shared_ptr<T> {
+        using CreatePacket = std::shared_ptr<T> (__fastcall*)(PacketID);
         static auto _CreatePacket = (CreatePacket)(Mem::findSig("40 53 48 83 EC 30 45 33 C0 48 8B D9 FF CA 81 FA 33 01 00 00 0F 87 00 0D 00 00 48 63 C2 48")->get(Signature::SearchType::Default));
 
         return _CreatePacket(type);
