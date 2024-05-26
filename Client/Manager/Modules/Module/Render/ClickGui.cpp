@@ -9,24 +9,23 @@ public:
         public:
             Mod(Module* mod) : mod(mod) {};
     };
-public:
+    
     ImVec4 rectPos;
     ImVec2 tPos;
-public:
+    
     bool isCollapsed = false;
     float fontSize = 18.f;
-public:
     float pad = 16.f;
-public:
+    
     Category* category;
     std::vector<std::unique_ptr<Mod>> mods;
-public:
+    
     ClickGuiWindow(Category* c) : category(c) {};
-public:
+    
     auto getTitle(void) -> std::string {
         return category->getName();
     };
-public:
+    
     auto getBounds(void) -> ImVec2 {
         auto currSize = Renderer::getTextSize(std::string(category->getName() + "   "), fontSize);
         currSize.x += pad;
