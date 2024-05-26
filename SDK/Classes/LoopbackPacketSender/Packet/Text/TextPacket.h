@@ -18,3 +18,11 @@ public:
     BUILD_ACCESS(std::string, xuid, 0x98);
     BUILD_ACCESS(std::string, platformChatId, 0xB8);
 };
+
+template<PacketID>
+struct PacketTypeMap;
+
+template<>
+struct PacketTypeMap<PacketID::Text> {
+    using type = TextPacket;
+};
