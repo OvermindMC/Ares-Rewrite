@@ -3,6 +3,8 @@
 #include "../Packet.h"
 
 class MovePlayerPacket : public Packet {
+private:
+    char pad[0xC0];
 public:
     BUILD_ACCESS(uint64_t, runtimeId, 0x30);
     BUILD_ACCESS(Vec3<float>, position, 0x38);
