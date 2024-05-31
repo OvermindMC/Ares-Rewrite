@@ -1,12 +1,6 @@
 #include "../Actor.h"
 #include "../EntityContext.h"
 
-auto Level::getEntityContextList(void) -> std::vector<EntityContext*> {
-
-    return **(std::vector<EntityContext*>**)((uintptr_t)(this) + 0x1B78);
-
-};
-
 template<typename T>
 auto Level::getEntityComponents(void) -> std::vector<T*> {
     auto results = std::vector<T*>();
@@ -17,7 +11,7 @@ auto Level::getEntityComponents(void) -> std::vector<T*> {
     auto assureF = (AssureT)(sig);
 
     auto type = entt::type_id<T>();
-    auto list = this->getEntityContextList();
+    auto list = **(std::vector<EntityContext*>**)((uintptr_t)(this) + 0x1B78);
 
     for(auto it = list.begin(); it < list.end();) {
         void* mRegistry = *it;
