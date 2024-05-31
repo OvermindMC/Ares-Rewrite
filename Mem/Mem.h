@@ -18,6 +18,7 @@
 #include <bitset>
 #include <variant>
 #include <assert.h>
+#include <atomic>
 
 class Mem {
 public:
