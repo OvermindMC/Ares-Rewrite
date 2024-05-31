@@ -4,8 +4,6 @@
 
 class Level {
 public:
-    auto getEntityContextList(void) -> std::vector<struct EntityContext*>;
-public:
     template<typename T>
     auto getEntityComponents(void) -> std::vector<T*>;
 public:
