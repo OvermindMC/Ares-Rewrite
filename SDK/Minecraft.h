@@ -8,6 +8,7 @@
 class MC {
 public:
     static auto getClientInstance(void) -> ClientInstance*;
+    static auto getEntities(void) -> std::vector<Actor*>;
 };
 
 class EntityUtils {
