@@ -6,7 +6,7 @@ public:
         public:
             Module* mod = nullptr;
             bool isCollapsed = true;
-        public:
+        
             Mod(Module* mod) : mod(mod) {};
     };
     
@@ -37,6 +37,18 @@ public:
 
             if(size.x > currSize.x)
                 currSize.x = size.x;
+            
+            if(!mod->isCollapsed) {
+                for(auto& [ name, setting ] : module->settings) {
+                    auto sSize = Renderer::getTextSize(name, fontSize);
+                    sSize.x += pad; sSize.y += (pad / 2.f);
+
+                    if(sSize.x > currSize.x)
+                        currSize.x = sSize.x;
+                    
+                    currSize.y += sSize.y;
+                };
+            };
             
             currSize.y += size.y;
         };
@@ -151,12 +163,31 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                 auto rect = Vec4(window->rectPos.x, currY, window->rectPos.z, (currY + size.y));
 
                                 if(rect.intersects(mousePos)) {
+                                    actionDone = true;
                                     if(action == 2) {
                                         mod->isCollapsed = !mod->isCollapsed;
                                     } else {
                                         module->toggleState();
-                                        actionDone = true;
-                                        return;
+                                    };
+                                    return;
+                                };
+
+                                if(!mod->isCollapsed) {
+                                    for(auto& [ name, setting ] : module->settings) {
+                                        auto sSize = Renderer::getTextSize(name, window->fontSize);
+                                        auto sRect = Vec4(window->rectPos.x, currY + (sSize.y + (window->pad / 2.f)), window->rectPos.z, ((currY + (sSize.y + (window->pad / 2.f))) + size.y));
+
+                                        if(sRect.intersects(mousePos)) {
+                                            actionDone = true;
+                                            if(action == 2) {
+                                                //
+                                            } else {
+                                                //
+                                            };
+                                            return;
+                                        };
+                                        
+                                        currY += sSize.y + (window->pad / 2.f);
                                     };
                                 };
 
@@ -318,6 +349,26 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                         if(upMostWin == window.get() && rect.intersects(mousePos) && module->description.length() > 0)
                             hoveringTooltip = HoveringTooltip(module->description, window->fontSize);
+
+                        if(!mod->isCollapsed) {
+                            for(auto& [ name, setting ] : module->settings) {
+                                auto sSize = Renderer::getTextSize(name, window->fontSize);
+                                auto sRect = Vec4(window->rectPos.x, currY + (sSize.y + (window->pad / 2.f)), window->rectPos.z, ((currY + (sSize.y + (window->pad / 2.f))) + size.y));
+
+                                if((currY + (size.y + (window->pad / 2.f)) + (size.y)) > window->rectPos.w)
+                                    break;
+                                
+                                Renderer::fillRect(ImVec4(sRect._x, sRect._y, sRect._z, sRect._w), ImColor(21.f, 21.f, 21.f, 4.f), 1.f);
+
+                                Renderer::drawText(
+                                    ImVec2(
+                                        window->tPos.x + 2.f, currY + (sSize.y + (window->pad / 2.f))
+                                    ), name, window->fontSize, ImColor(255.f, 255.f, 255.f)
+                                );
+
+                                currY += sSize.y + (window->pad / 2.f);
+                            };
+                        };
 
                         currY += size.y + (mod == window->mods.back() ? 0.f : (window->pad / 2.f));
                     };
