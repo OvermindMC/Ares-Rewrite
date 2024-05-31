@@ -112,5 +112,5 @@ struct PacketTypeMap;
 
 template<>
 struct PacketTypeMap<PacketID::Player_Auth_Input> {
-    using type = TextPacket;
+    using type = PlayerAuthInputPacket;
 };
