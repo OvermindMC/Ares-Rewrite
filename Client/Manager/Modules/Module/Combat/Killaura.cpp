@@ -14,14 +14,16 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                 if(!lp)
                     return;
                 
-                /*auto& entityMap = this->mgr->_entityMap;
+                auto entities = level->getEntities();
                 auto runtimeId = lp->getRuntimeID();
                 auto gm = lp->getGameMode();
                 auto myPos = lp->getPos();
-                
+
                 auto closest = std::vector<std::pair<double, Actor*>>();
-                for(auto [ entRuntimeId, entity ] : entityMap) {
-                    if(entRuntimeId == runtimeId || !entity || !entity->isAlive())
+                for(auto entity : entities) {
+                    auto entRuntimeId = entity->getRuntimeID();
+
+                    if(!entity->isAlive() || entRuntimeId == runtimeId)
                         continue;
                     
                     auto dist = myPos.dist(entity->getPos());
@@ -42,7 +44,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                 if(tEntity && tEntity->isAlive()) {
                     lp->swing();
                     gm->attack(tEntity);
-                };*/
+                };
             }
         )
     );
