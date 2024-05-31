@@ -2,11 +2,20 @@
 
 Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura", "Automatically attack nearby entities") {
 
+    this->registerSetting<float>("Range", &this->range, 0.f, 12.f);
+    this->registerSetting<bool>("Multi", &this->multi);
+
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Highest>(
         std::function<void(Level*)>(
             [&](Level* level) -> void {
                 if(!this->getState())
                     return;
+                
+                auto now = std::chrono::high_resolution_clock::now();
+                if(timepoint > now)
+                    return;
+                
+                timepoint += std::chrono::milliseconds(10);
                 
                 auto instance = MC::getClientInstance();
                 auto lp = instance ? instance->getLocalPlayer() : nullptr;
@@ -28,7 +37,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     
                     auto dist = myPos.dist(entity->getPos());
 
-                    if(dist <= 12.f)
+                    if(dist <= range)
                         closest.push_back(std::pair<double, Actor*>(dist, entity));
                 };
 
@@ -39,11 +48,18 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     return a.first < b.first;
                 });
 
-                auto& [ dist, tEntity ] = closest.front();
-                
-                if(tEntity && tEntity->isAlive()) {
+                auto i = 0;
+                for(auto& [ dist, tEntity ] : closest) {
+                    if(!tEntity || !tEntity->isAlive())
+                        continue;
+                    
                     lp->swing();
                     gm->attack(tEntity);
+                    
+                    if(!multi || i >= 2)
+                        break;
+                    
+                    i++;
                 };
             }
         )
