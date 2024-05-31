@@ -7,7 +7,7 @@ struct RuntimeIDComponent
     unsigned long long runtimeId;
 };
 
-struct UniqueIDComponent 
+struct ActorUniqueIDComponent 
 {
     unsigned long long uniqueId;
 };
