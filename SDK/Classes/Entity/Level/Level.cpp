@@ -1,5 +1,6 @@
 #include "../Actor.h"
 #include "../EntityContext.h"
+#include "../../../../Utils/Debugger/Debugger.h"
 
 auto Level::getEntityContextList(void) -> std::vector<EntityContext*> {
 
@@ -43,10 +44,10 @@ auto Level::getUniqueIds(void) -> std::vector<uint64_t> {
     {
         static auto sig = Mem::findSig("E8 ? ? ? ? BA 70 27 BA F0")->get(Signature::SearchType::Ref);
 
-        using AssureT = entt::basic_storage<UniqueIDComponent, EntityId>* (__fastcall*)(entt::basic_registry<EntityId>&, entt::id_type);
+        using AssureT = entt::basic_storage<ActorUniqueIDComponent, EntityId>* (__fastcall*)(entt::basic_registry<EntityId>&, entt::id_type);
         auto assureF = (AssureT)(sig);
 
-        auto type = entt::type_id<UniqueIDComponent>();
+        auto type = entt::type_id<ActorUniqueIDComponent>();
         auto list = this->getEntityContextList();
 
         for(auto it = list.begin(); it < list.end();) {
@@ -70,8 +71,8 @@ auto Level::getUniqueIds(void) -> std::vector<uint64_t> {
 auto Level::getEntities(void) -> std::vector<Actor*> {
     auto results = std::vector<Actor*>();
 
-    for(auto runtimeId : this->getRuntimeIds()) {
-        auto entity = Mem::callVFunc<61, Actor*>(this);
+    for(auto runtimeId : this->getUniqueIds()) {
+        auto entity = Mem::callVFunc<52, Actor*, uint64_t, bool>(this, runtimeId, false);
 
         if(entity)
             results.push_back(entity);
