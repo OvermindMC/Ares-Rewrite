@@ -7,6 +7,11 @@ struct RuntimeIDComponent
     unsigned long long runtimeId;
 };
 
+struct UniqueIDComponent 
+{
+    unsigned long long uniqueId;
+};
+
 struct ActorGameTypeComponent {
     enum GameType type;
 };
