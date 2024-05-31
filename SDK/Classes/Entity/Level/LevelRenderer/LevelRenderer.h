@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../../../../Mem/Math/Vector.h"
-#include "../../../../../Mem/Macro/Class.h"
+#include "../../../../../Mem/Mem.h"
 
 class LevelRendererPlayer {
 public:
