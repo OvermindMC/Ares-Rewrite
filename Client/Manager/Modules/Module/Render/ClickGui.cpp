@@ -182,7 +182,10 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                             if(action == 2) {
                                                 //
                                             } else {
-                                                //
+                                                if(setting->isType<bool>()) {
+                                                    auto v = setting->get<bool>();
+                                                    *v = !*v;
+                                                };
                                             };
                                             return;
                                         };
@@ -358,12 +361,26 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                 if((currY + (size.y + (window->pad / 2.f)) + (size.y)) > window->rectPos.w)
                                     break;
                                 
-                                Renderer::fillRect(ImVec4(sRect._x, sRect._y, sRect._z, sRect._w), ImColor(21.f, 21.f, 21.f, 4.f), 1.f);
+                                //Renderer::fillRect(ImVec4(sRect._x, sRect._y, sRect._z, sRect._w), ImColor(21.f, 21.f, 21.f, 4.f), 1.f);
 
+                                auto textColor = ImColor(255.f, 255.f, 255.f);
+
+                                if(setting->isType<bool>()) {
+                                    auto v = setting->get<bool>();
+                                    if(*v)
+                                        textColor = ImColor(66.f, 245.f, 164.f);
+                                };
+
+                                Renderer::fillRect(
+                                    ImVec4(
+                                        sRect._x + 3.f, sRect._y - 4.f, (sRect._z - 3.f), std::min((window->rectPos.w - 4.f), sRect._w + 4.f)
+                                    ),
+                                ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
+                                
                                 Renderer::drawText(
                                     ImVec2(
-                                        window->tPos.x + 2.f, currY + (sSize.y + (window->pad / 2.f))
-                                    ), name, window->fontSize, ImColor(255.f, 255.f, 255.f)
+                                        window->tPos.x + 6.f, currY + (sSize.y + (window->pad / 2.f))
+                                    ), name, window->fontSize, textColor
                                 );
 
                                 currY += sSize.y + (window->pad / 2.f);
