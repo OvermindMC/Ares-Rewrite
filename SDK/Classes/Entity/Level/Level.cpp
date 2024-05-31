@@ -13,17 +13,19 @@ auto Level::getEntityComponents(void) -> std::vector<T*> {
     auto type = entt::type_id<T>();
     auto list = **(std::vector<EntityContext*>**)((uintptr_t)(this) + 0x1B78);
 
-    for(auto it = list.begin(); it < list.end();) {
-        void* mRegistry = *it;
-        entt::basic_registry<EntityId>* registry = (entt::basic_registry<EntityId>*)list.at(std::distance(list.begin(), it + 1));
-        EntityId entityId = (EntityId&)list.at(std::distance(list.begin(), it + 2));
+    if(!list.empty()) {
+        for(auto it = list.begin(); it < list.end();) {
+            void* mRegistry = *it;
+            entt::basic_registry<EntityId>* registry = (entt::basic_registry<EntityId>*)list.at(std::distance(list.begin(), it + 1));
+            EntityId entityId = (EntityId&)list.at(std::distance(list.begin(), it + 2));
 
-        auto assure = assureF(*registry, type.hash());
+            auto assure = assureF(*registry, type.hash());
 
-        if(assure && assure->contains(entityId))
-            results.push_back((T*)std::addressof(assure->get(entityId)));
+            if(assure && assure->contains(entityId))
+                results.push_back((T*)std::addressof(assure->get(entityId)));
 
-        it += 4;
+            it += 4;
+        };
     };
 
     return results;
