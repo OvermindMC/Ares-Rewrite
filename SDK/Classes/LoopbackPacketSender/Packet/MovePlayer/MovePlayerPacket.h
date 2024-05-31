@@ -3,16 +3,35 @@
 #include "../Packet.h"
 
 class MovePlayerPacket : public Packet {
-private:
-    char pad[0xC0];
 public:
-    BUILD_ACCESS(uint64_t, runtimeId, 0x30);
-    BUILD_ACCESS(Vec3<float>, position, 0x38);
-    BUILD_ACCESS(Vec2<float>, bodyRot, 0x44);
-    BUILD_ACCESS(float, headYaw, 0x4C);
-    BUILD_ACCESS(bool, onGround, 0x51);
-    BUILD_ACCESS(uint64_t, ridingRuntimeId, 0x58);
-    BUILD_ACCESS(uint64_t, tick, 0x68);
+    enum class PositionMode : UCHAR {
+        Normal      = 0,
+        Respawn     = 1,
+        Teleport    = 2,
+        OnlyHeadRot = 3,
+    };
+    enum class TeleportationCause : int {
+        Unknown = 0,
+        Projectile  = 0x1,
+        ChorusFruit = 0x2,
+        Command     = 0x3,
+        Behavior    = 0x4,
+        Count       = 0x5,
+    };
+public:
+    uint64_t runtimeId;
+    Vec3<float> position;
+    Vec2<float> bodyRot;
+    float headYaw;
+    PositionMode resetPosition;
+    bool onGround;
+private:
+    char padd[6];
+public:
+    uint64_t ridingRuntimeId;
+    TeleportationCause teleportCause;
+    uint32_t sourceEntityType;
+    uint64_t tick;
 };
 
 template<PacketID>
