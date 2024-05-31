@@ -9,6 +9,31 @@ auto MC::getClientInstance(void) -> ClientInstance* {
 
 };
 
+auto MC::getEntities(void) -> std::vector<Actor*> {
+    auto results = std::vector<Actor*>();
+    
+    auto instance = getClientInstance();
+    auto lp = instance ? instance->getLocalPlayer() : nullptr;
+    auto ctx = lp ? lp->getEntityCtx() : nullptr;
+
+    if(lp && ctx) {
+        auto& registry = ctx->registry;
+        auto actorOwners = registry.view<ActorOwnerComponent>();
+
+        for(auto ent : actorOwners) {
+            if(!registry.valid(ent))
+                continue;
+            auto& ref = actorOwners.get<ActorOwnerComponent>(ent);
+            auto actor = ref.actor;
+
+            if(actor && actor->isAlive())
+                results.push_back(actor);
+        };
+    };
+    
+    return results;
+};
+
 auto EntityUtils::isHostile(unsigned char type) -> bool {
 
     static const std::unordered_set<unsigned char> hostileEntities {
