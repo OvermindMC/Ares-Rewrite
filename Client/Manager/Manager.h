@@ -8,9 +8,6 @@ class Module;
 class Category;
 enum class CategoryType;
 
-template<typename Type, typename... Args>
-class Hook;
-
 /* Manager Class */
 class Manager {
 /* Constructor, Deconstructor */
@@ -27,9 +24,6 @@ private:
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 public:
     PTR_ACCESS(Client*, client, client_instance_raw_ptr);
-public:
-    std::map<uint64_t, Actor*> entityMap;
-/* Methods for Manager Runtime */
 public:
     auto init(void) -> void;
     auto cleanupHooks(void) -> void;
@@ -59,6 +53,9 @@ public:
             auto& list = iter->second;
 
             for(auto& event : list) {
+                if(!event.second)
+                    continue;
+                
                 auto raw_event_ptr = static_cast<Event<TArgs...>*>(event.second);
                 raw_event_ptr->callback(arguments...);
             };
