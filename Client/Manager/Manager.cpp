@@ -100,8 +100,7 @@ auto Manager::cleanupHooks(void) -> void {
 
 };
 
-#include "Hook/Hooks/Actor/Tick.h"
-#include "Hook/Hooks/Actor/Level/Tick.h"
+#include "Hook/Hooks/Level/Tick.h"
 
 #include "Hook/Hooks/Packet/SendToServer.h"
 
@@ -125,7 +124,6 @@ auto Manager::initHooks(void) -> bool {
     new RenderContext_Hook(this);
     new SendToServer_Hook(this);
     new Level_TickHook(this);
-    new Actor_TickHook(this);
     new MouseInput_Hook(this);
     new KeyInput_Hook(this);
 
