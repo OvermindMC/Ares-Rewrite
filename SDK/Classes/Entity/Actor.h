@@ -48,7 +48,7 @@ public:
     auto getPos(void) -> Vec3<float>;
 public:
     BUILD_ACCESS(std::shared_ptr<Dimension>, dimension, 0x248);
-    BUILD_ACCESS(Level*, level, 0x250);
+    BUILD_ACCESS(Level*, level, 0x258);
 private:
     virtual ~Actor(void);
 public:
