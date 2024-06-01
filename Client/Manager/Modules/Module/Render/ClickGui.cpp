@@ -40,7 +40,13 @@ public:
             
             if(!mod->isCollapsed) {
                 for(auto& [ name, setting ] : module->settings) {
-                    auto sSize = Renderer::getTextSize(name, fontSize);
+                    auto key = name;
+
+                    if(setting->isType<float>() || setting->isType<int>()) {
+                        key += std::string(": 0000");
+                    };
+
+                    auto sSize = Renderer::getTextSize(key, fontSize);
                     sSize.x += pad; sSize.y += (pad / 2.f);
 
                     if(sSize.x > currSize.x)
@@ -106,24 +112,58 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 instance->releaseMouse();
                 bool actionDone = false;
                 
-                if((action == 1 || action == 2) && isDown) { /* Window collapsing */
-                    for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
-                        auto& window = *iter;
-                        auto titleSize = Renderer::getTextSize(std::string(window->getTitle() + "   "), window->fontSize);
-                        auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
+                for(auto iter = windows.rbegin(); iter != windows.rend(); ++iter) {
+                    auto& window = *iter;
+                    auto titleSize = Renderer::getTextSize(std::string(window->getTitle() + "   "), window->fontSize);
+                    auto titleRect = Vec4<float>(window->rectPos.x, window->rectPos.y, window->rectPos.z, window->rectPos.y + (titleSize.y));
 
-                        if(!this->dragWin) {
-                            if(titleRect.intersects(mousePos)) {
-                                if(action == 2) {
-                                    window->isCollapsed = !window->isCollapsed;
-                                } else {
-                                    this->dragWin = window.get();
-                                    this->dragStart = mousePos;
-                                };
-                                actionDone = true;
-                                break;
+                    if(!this->dragWin && ((action == 1 || action == 2) && isDown)) {
+                        if(titleRect.intersects(mousePos)) {
+                            if(action == 2) {
+                                window->isCollapsed = !window->isCollapsed;
+                            } else {
+                                this->dragWin = window.get();
+                                this->dragStart = mousePos;
                             };
+                            actionDone = true;
+                            break;
                         };
+                    } else if(this->isDraggingSlider && action == 0) {
+                        auto found = false;
+
+                        auto currY = (titleRect._w - 2.f) + (window->pad / 2.f);
+                            for(auto& mod : window->mods) {
+                                auto module = mod->mod;
+                                auto size = Renderer::getTextSize(std::string(module->name + "   "), window->fontSize);
+
+                                if(!mod->isCollapsed) {
+                                    for(auto& [ name, setting ] : module->settings) {
+                                        auto sSize = Renderer::getTextSize(name, window->fontSize);
+                                        auto sRect = Vec4(window->rectPos.x, currY + (sSize.y + (window->pad / 2.f)), window->rectPos.z, ((currY + (sSize.y + (window->pad / 2.f))) + size.y));
+
+                                        if(sRect.intersects(mousePos) && setting->isType<float>() || setting->isType<int>() && name == this->dragSlider) {
+                                            auto [ min, max ] = setting->getRange();
+                                            auto range = max - min;
+                                            float newValue;
+
+                                            newValue = min + ((mousePos._x - (sRect._x + 5.f)) / ((sRect._z - 7.f) - (sRect._x + 5.f))) * range;
+                                            newValue = std::clamp(newValue, min, max);
+
+                                            if(setting->isType<float>())
+                                                *setting->get<float>() = newValue;
+                                            else
+                                                *setting->get<int>() = static_cast<int>(newValue);
+                                        };
+                                        
+                                        currY += sSize.y + (window->pad / 2.f);
+                                    };
+                                };
+
+                                currY += size.y + (mod == window->mods.back() ? 0.f : (window->pad / 2.f));
+                            };
+
+                        if(found)
+                            this->isDraggingSlider = false;
                     };
                 };
 
@@ -140,6 +180,8 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if(this->dragWin && (action == 1 && !isDown)) {
                     this->dragWin = nullptr;
                     this->dragStart = Vec2<float>();
+                } else if(this->isDraggingSlider && (action == 1 && !isDown)) {
+                    this->isDraggingSlider = false;
                 };
 
                 if(actionDone)
@@ -185,6 +227,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                                 if(setting->isType<bool>()) {
                                                     auto v = setting->get<bool>();
                                                     *v = !*v;
+                                                } else if(setting->isType<float>() || setting->isType<int>() && !this->isDraggingSlider) {
+                                                    this->isDraggingSlider = true;
+                                                    this->dragSlider = name;
                                                 };
                                             };
                                             return;
@@ -361,6 +406,16 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                 if((currY + (size.y + (window->pad / 2.f)) + (size.y)) > window->rectPos.w)
                                     break;
                                 
+                                auto key = name;
+
+                                if(setting->isType<float>()) {
+                                    std::stringstream ss;
+                                    ss << std::fixed << std::setprecision(2) << *setting->get<float>();
+                                    key += std::string(": " + ss.str());
+                                } else if(setting->isType<int>()) {
+                                    key += std::string(": " + std::to_string(*setting->get<int>()));
+                                };
+                                
                                 //Renderer::fillRect(ImVec4(sRect._x, sRect._y, sRect._z, sRect._w), ImColor(21.f, 21.f, 21.f, 4.f), 1.f);
 
                                 auto textColor = ImColor(255.f, 255.f, 255.f);
@@ -376,11 +431,31 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                         sRect._x + 3.f, sRect._y - 4.f, (sRect._z - 3.f), std::min((window->rectPos.w - 4.f), sRect._w + 4.f)
                                     ),
                                 ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
+
+                                if(setting->isType<float>() || setting->isType<int>()) {
+                                    float v = setting->isType<float>() ? *setting->get<float>() : static_cast<float>(*setting->get<int>());
+                                    auto [ min, max ] = setting->getRange();
+
+                                    float handlePos = (sRect._x + 5.f) + (v - min) / (max - min) * ((sRect._z - 5.f) - (sRect._x + 5.f));
+                                    float filledWidth = handlePos - (sRect._x + 5.f);
+
+                                    Renderer::fillRect(
+                                        ImVec4(
+                                            handlePos - 2.f, sRect._y, std::min(sRect._z - 3.f, handlePos), sRect._w
+                                        ), ImColor(3.f, 88.f, 210.f, 1.f), 1.f
+                                    );
+
+                                    Renderer::fillRect(
+                                        ImVec4(
+                                            sRect._x + 5.f, sRect._y - 4.f, std::min(sRect._z - 3.f, handlePos), std::min((window->rectPos.w - 4.f), sRect._w + 4.f)
+                                        ), ImColor(110.f, 30.f, 230.f, 1.f), 1.f
+                                    );
+                                };
                                 
                                 Renderer::drawText(
                                     ImVec2(
                                         window->tPos.x + 6.f, currY + (sSize.y + (window->pad / 2.f))
-                                    ), name, window->fontSize, textColor
+                                    ), key, window->fontSize, textColor
                                 );
 
                                 currY += sSize.y + (window->pad / 2.f);
