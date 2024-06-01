@@ -2,9 +2,9 @@
 
 Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura", "Automatically attack nearby entities") {
 
-    this->registerSetting<float>("Range", &this->range, 0.f, 12.f);
-    this->registerSetting<int>("Delay", &this->msDelay, 0, 1000);
-    this->registerSetting<bool>("Multi", &this->multi);
+    this->registerSetting("Range", &this->range, 0.f, 12.f);
+    this->registerSetting("Delay", &this->msDelay, 0, 1000);
+    this->registerSetting("Multi", &this->multi);
 
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Highest>(
         std::function<void(Level*)>(
