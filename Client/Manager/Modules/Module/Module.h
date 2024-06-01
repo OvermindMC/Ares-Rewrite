@@ -18,6 +18,10 @@ public:
         };
         return nullptr;
     };
+
+    auto getRange(void) -> std::pair<float, float> {
+        return std::pair<float, float>(this->_min, this->_max);
+    };
 private:
     std::variant<float*, bool*, uint64_t*, int*> _item;
     float _min, _max;
