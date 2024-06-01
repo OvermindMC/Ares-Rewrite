@@ -43,7 +43,7 @@ public:
                     auto key = name;
 
                     if(setting->isType<float>() || setting->isType<int>()) {
-                        key += std::string(": 0000");
+                        key += std::string(": 0000 ");
                     };
 
                     auto sSize = Renderer::getTextSize(key, fontSize);
