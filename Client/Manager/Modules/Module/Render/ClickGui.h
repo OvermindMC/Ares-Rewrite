@@ -12,4 +12,7 @@ public:
 public:
     class ClickGuiWindow* dragWin = nullptr;
     Vec2<float> dragStart;
+public:
+    std::string dragSlider;
+    bool isDraggingSlider = false;
 };
