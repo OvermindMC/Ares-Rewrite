@@ -2,6 +2,8 @@
 
 TimerMod::TimerMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Timer", "Modify Game Speed") {
 
+    this->registerSetting<float>("Ticks", &this->ticks, 5.f, 100.f);
+
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Low>(
         std::function<void(Level* level)>(
             [&](Level* level) -> void {
@@ -12,8 +14,8 @@ TimerMod::TimerMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Timer", "Mod
                 auto mc = instance ? instance->getMinecraft() : nullptr;
 
                 if(mc) {
-                    mc->realTimer->ticksPerSec = 30.f;
-                    mc->simTimer->ticksPerSec = 30.f;
+                    mc->realTimer->ticksPerSec = this->ticks;
+                    mc->simTimer->ticksPerSec = this->ticks;
                 };
             }
         )
