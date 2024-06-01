@@ -2,7 +2,7 @@
 
 TimerMod::TimerMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Timer", "Modify Game Speed") {
 
-    this->registerSetting<float>("Ticks", &this->ticks, 5.f, 100.f);
+    this->registerSetting("Ticks", &this->ticks, 5.f, 100.f);
 
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Low>(
         std::function<void(Level* level)>(
