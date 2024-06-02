@@ -441,14 +441,20 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                                     Renderer::fillRect(
                                         ImVec4(
-                                            handlePos - 2.f, sRect._y, std::min(sRect._z - 3.f, handlePos), sRect._w
+                                            handlePos - 2.f, sRect._w - 6.f, handlePos + 2.f, sRect._w + 6.f
                                         ), ImColor(3.f, 88.f, 210.f, 1.f), 1.f
                                     );
 
                                     Renderer::fillRect(
                                         ImVec4(
-                                            sRect._x + 5.f, sRect._y - 4.f, std::min(sRect._z - 3.f, handlePos), std::min((window->rectPos.w - 4.f), sRect._w + 4.f)
+                                            sRect._x + 5.f, sRect._w - 2.f, handlePos, sRect._w + 2.f
                                         ), ImColor(110.f, 30.f, 230.f, 1.f), 1.f
+                                    );
+
+                                    Renderer::fillRect(
+                                        ImVec4(
+                                            handlePos, sRect._w - 2.f, sRect._z - 5.f, sRect._w + 2.f
+                                        ), ImColor(200.f, 200.f, 200.f, 1.f), 1.f
                                     );
                                 };
                                 
