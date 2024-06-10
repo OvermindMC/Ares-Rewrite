@@ -2,6 +2,8 @@
 
 Module::Module(Manager* manager_raw_ptr, CategoryType category_type, std::string module_name, std::string module_description, uint64_t module_bind) : name(module_name), description(module_description), bindKey(module_bind) {
 
+    this->registerSetting("Hotkey", &this->bindKey);
+    
     this->category_raw_ptr = manager_raw_ptr->getCategory(category_type);
     this->event_dispatcher_ptr = std::make_unique<EventDispatcher>();
     this->category_raw_ptr->addModule(this);
