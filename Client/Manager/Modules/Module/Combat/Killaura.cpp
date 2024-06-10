@@ -31,13 +31,12 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
 
                 auto closest = std::vector<std::pair<double, Actor*>>();
                 for(auto entity : entities) {
-                    auto entRuntimeId = entity->getRuntimeID();
                     auto typeId = entity->getEntityTypeId();
 
                     if(typeId != 63 && !EntityUtils::isHostile(typeId) && !EntityUtils::isPassive(typeId))
                         continue;
-
-                    if(!entity->isAlive() || entRuntimeId == runtimeId)
+                    
+                    if(!entity->isAlive() || entity->getRuntimeID() == runtimeId)
                         continue;
                     
                     auto dist = myPos.dist(entity->getPos());
@@ -64,7 +63,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     gm->attack(tEntity);
                     
                     if(!multi || i >= 2)
-                        break;
+                        return;
                     
                     i++;
                 };
