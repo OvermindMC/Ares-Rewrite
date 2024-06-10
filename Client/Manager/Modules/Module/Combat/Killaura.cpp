@@ -60,13 +60,12 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     if(!tEntity || !tEntity->isAlive())
                         continue;
                     
+                    i++;
                     lp->swing();
                     gm->attack(tEntity);
                     
                     if(!multi || i >= this->attacksPerTick)
-                        return;
-                    
-                    i++;
+                        break;
                 };
             }
         )
