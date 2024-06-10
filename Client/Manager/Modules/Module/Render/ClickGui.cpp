@@ -432,28 +432,27 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                                 if(setting->isType<float>() || setting->isType<int>()) {
                                     float v = setting->isType<float>() ? *setting->get<float>() : static_cast<float>(*setting->get<int>());
-                                    auto [ min, max ] = setting->getRange();
+                                    auto [min, max] = setting->getRange();
 
                                     float handlePos = (sRect._x + 5.f) + (v - min) / (max - min) * ((sRect._z - 5.f) - (sRect._x + 5.f));
-                                    float filledWidth = handlePos - (sRect._x + 5.f);
 
                                     Renderer::fillRect(
                                         ImVec4(
-                                            handlePos - 2.f, sRect._w - 6.f, handlePos + 2.f, sRect._w + 6.f
-                                        ), ImColor(3.f, 88.f, 210.f, 1.f), 1.f
+                                            sRect._x + 5.f, sRect._w - 2.f, 
+                                            handlePos, sRect._w + 2.f
+                                        ), 
+                                        ImColor(110.f, 30.f, 230.f, 1.f), 1.f
                                     );
 
-                                    Renderer::fillRect(
-                                        ImVec4(
-                                            sRect._x + 5.f, sRect._w - 2.f, handlePos, sRect._w + 2.f
-                                        ), ImColor(110.f, 30.f, 230.f, 1.f), 1.f
-                                    );
-
-                                    Renderer::fillRect(
-                                        ImVec4(
-                                            handlePos, sRect._w - 2.f, sRect._z - 5.f, sRect._w + 2.f
-                                        ), ImColor(200.f, 200.f, 200.f, 1.f), 1.f
-                                    );
+                                    if (handlePos < sRect._z - 5.f) {
+                                        Renderer::fillRect(
+                                            ImVec4(
+                                                handlePos, sRect._w - 2.f, 
+                                                sRect._z - 5.f, sRect._w + 2.f
+                                            ), 
+                                            ImColor(200.f, 200.f, 200.f, 1.f), 1.f
+                                        );
+                                    }
                                 };
                                 
                                 Renderer::drawText(
