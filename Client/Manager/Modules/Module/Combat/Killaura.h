@@ -11,4 +11,5 @@ private:
 private:
     std::chrono::steady_clock::time_point timepoint = std::chrono::high_resolution_clock::now();
     int msDelay = 10;
+    int attacksPerTick = 3;
 };
