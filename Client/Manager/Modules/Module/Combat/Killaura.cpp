@@ -4,6 +4,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
 
     this->registerSetting("Range", &this->range, 0.f, 12.f);
     this->registerSetting("Delay", &this->msDelay, 0, 1000);
+    this->registerSetting("Hits Per Tick", &this->attacksPerTick, 1, 6, &this->multi);
     this->registerSetting("Multi", &this->multi);
 
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Highest>(
@@ -62,7 +63,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     lp->swing();
                     gm->attack(tEntity);
                     
-                    if(!multi || i >= 2)
+                    if(!multi || i >= this->attacksPerTick)
                         return;
                     
                     i++;
