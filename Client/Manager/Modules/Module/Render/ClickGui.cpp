@@ -40,6 +40,9 @@ public:
             
             if(!mod->isCollapsed) {
                 for(auto& [ name, setting ] : module->settings) {
+                    if(!setting->isVisible())
+                        continue;
+                    
                     auto key = name;
 
                     if(setting->isType<float>() || setting->isType<int>()) {
@@ -138,6 +141,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                                 if(!mod->isCollapsed) {
                                     for(auto& [ name, setting ] : module->settings) {
+                                        if(!setting->isVisible())
+                                            continue;
+                                        
                                         auto sSize = Renderer::getTextSize(name, window->fontSize);
                                         auto sRect = Vec4(window->rectPos.x, currY + (sSize.y + (window->pad / 2.f)), window->rectPos.z, ((currY + (sSize.y + (window->pad / 2.f))) + size.y));
 
@@ -216,6 +222,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                                 if(!mod->isCollapsed) {
                                     for(auto& [ name, setting ] : module->settings) {
+                                        if(!setting->isVisible())
+                                            continue;
+                                        
                                         auto sSize = Renderer::getTextSize(name, window->fontSize);
                                         auto sRect = Vec4(window->rectPos.x, currY + (sSize.y + (window->pad / 2.f)), window->rectPos.z, ((currY + (sSize.y + (window->pad / 2.f))) + size.y));
 
@@ -400,6 +409,9 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                         if(!mod->isCollapsed) {
                             for(auto& [ name, setting ] : module->settings) {
+                                if(!setting->isVisible())
+                                    continue;
+                                
                                 auto sSize = Renderer::getTextSize(name, window->fontSize);
                                 auto sRect = Vec4(window->rectPos.x, currY + (sSize.y + (window->pad / 2.f)), window->rectPos.z, ((currY + (sSize.y + (window->pad / 2.f))) + size.y));
 
