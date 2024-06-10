@@ -52,7 +52,11 @@ public:
                     if(sSize.x > currSize.x)
                         currSize.x = sSize.x;
                     
-                    currSize.y += sSize.y;
+                    currSize.y += (
+                        sSize.y + (
+                            !mod->isCollapsed && setting.get() == mods.back()->mod->settings.back().second.get() ? 2.f : 0.f
+                        )
+                    );
                 };
             };
             
