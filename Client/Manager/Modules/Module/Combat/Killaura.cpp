@@ -56,9 +56,6 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     return a.first < b.first;
                 });
 
-                if(closest.size() > this->attacksPerTick)
-                    closest.resize(this->attacksPerTick);
-
                 auto i = 0;
                 for(auto [ dist, tEntity ] : closest) {
                     if(!tEntity || !tEntity->isAlive())
