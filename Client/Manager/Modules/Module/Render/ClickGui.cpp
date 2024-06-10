@@ -81,6 +81,59 @@ class HoveringTooltip {
 ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui", "Interact with Modules", VK_INSERT) {
 
     static auto windows = std::vector<std::unique_ptr<ClickGuiWindow>>();
+    static auto vkToStringMap = std::map<int, std::string>{
+        {VK_BACK, "Backspace"},
+        {VK_TAB, "Tab"},
+        {VK_CLEAR, "Clear"},
+        {VK_RETURN, "Enter"},
+        {VK_SHIFT, "Shift"},
+        {VK_CONTROL, "Control"},
+        {VK_MENU, "Alt"},
+        {VK_PAUSE, "Pause"},
+        {VK_CAPITAL, "Caps Lock"},
+        {VK_ESCAPE, "Escape"},
+        {VK_SPACE, "Space"},
+        {VK_PRIOR, "Page Up"},
+        {VK_NEXT, "Page Down"},
+        {VK_END, "End"},
+        {VK_HOME, "Home"},
+        {VK_LEFT, "Left Arrow"},
+        {VK_UP, "Up Arrow"},
+        {VK_RIGHT, "Right Arrow"},
+        {VK_DOWN, "Down Arrow"},
+        {VK_SELECT, "Select"},
+        {VK_PRINT, "Print Screen"},
+        {VK_EXECUTE, "Execute"},
+        {VK_SNAPSHOT, "Print Screen"},
+        {VK_INSERT, "Insert"},
+        {VK_DELETE, "Delete"},
+        {VK_HELP, "Help"},
+
+        {VK_F1, "F1"},
+        {VK_F2, "F2"},
+        {VK_F3, "F3"},
+        {VK_F4, "F4"},
+        {VK_F5, "F5"},
+        {VK_F6, "F6"},
+        {VK_F7, "F7"},
+        {VK_F8, "F8"},
+        {VK_F9, "F9"},
+        {VK_F10, "F10"},
+        {VK_F11, "F11"},
+        {VK_F12, "F12"},
+        {VK_F13, "F13"},
+        {VK_F14, "F14"},
+        {VK_F15, "F15"},
+        {VK_F16, "F16"},
+        {VK_F17, "F17"},
+        {VK_F18, "F18"},
+        {VK_F19, "F19"},
+        {VK_F20, "F20"},
+        {VK_F21, "F21"},
+        {VK_F22, "F22"},
+        {VK_F23, "F23"},
+        {VK_F24, "F24"}
+    };
 
     this->setState(true);
 
@@ -247,6 +300,14 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                                 } else if(setting->isType<float>() || setting->isType<int>() && !this->isDraggingSlider) {
                                                     this->isDraggingSlider = true;
                                                     this->dragSlider = name;
+                                                } else if(setting->isType<uint64_t>()) {
+                                                    if(!this->interactingModKB) {
+                                                        this->interactingModKB = module;
+                                                    } else {
+                                                        if(module == this->interactingModKB) {
+                                                            this->interactingModKB = nullptr;
+                                                        };
+                                                    };
                                                 };
                                             };
                                             return;
@@ -271,8 +332,22 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if(this->getState()) {
                     *cancel = true;
 
-                    if(key == VK_ESCAPE)
-                        return this->toggleState();
+                    if(isDown) {
+                        if(key == VK_ESCAPE) {
+                            if(this->interactingModKB) {
+                                this->interactingModKB->setBind(0);
+                                this->interactingModKB = nullptr;
+                                return;
+                            } else {
+                                return this->toggleState();
+                            };
+                        };
+
+                        if(this->interactingModKB) {
+                            this->interactingModKB->setBind(key);
+                            this->interactingModKB = nullptr;
+                        };
+                    };
                 };
             }
         )
@@ -435,8 +510,25 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                 } else if(setting->isType<int>()) {
                                     key += std::string(": " + std::to_string(*setting->get<int>()));
                                 } else if(setting->isType<uint64_t>()) {
+                                    std::string displayKey;
+
+                                    BYTE keyboardState[256] = { 0 };
+                                    if (GetKeyboardState(keyboardState)) {
+                                        int scanCode = MapVirtualKey((unsigned int)module->bindKey, MAPVK_VK_TO_VSC);
+                                        WCHAR result[2];
+                                        int resultLength = ToUnicode((unsigned int)module->bindKey, scanCode, keyboardState, result, 2, 0);
+
+                                        if(resultLength) {
+                                            std::wstring wkeyStr(result, result + resultLength);
+                                            for (auto& ch : wkeyStr)
+                                                displayKey += std::toupper(ch);
+                                        } else {
+                                            displayKey = (vkToStringMap.find((unsigned int)module->bindKey) != vkToStringMap.end() ? vkToStringMap.at((unsigned int)module->bindKey) : "Err");
+                                        }
+                                    };
+
                                     key += std::string(": " + std::string(
-                                        module->bindKey ? "0" : "None"
+                                        this->interactingModKB == module ? "..." : module->bindKey ? displayKey : "None"
                                     ));
                                 };
 
