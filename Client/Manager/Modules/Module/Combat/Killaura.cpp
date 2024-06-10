@@ -34,7 +34,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
                     auto entRuntimeId = entity->getRuntimeID();
                     auto typeId = entity->getEntityTypeId();
 
-                    if(typeId != 63 || !EntityUtils::isHostile(typeId) || !EntityUtils::isPassive(typeId))
+                    if(typeId != 63 && !EntityUtils::isHostile(typeId) && !EntityUtils::isPassive(typeId))
                         continue;
 
                     if(!entity->isAlive() || entRuntimeId == runtimeId)
