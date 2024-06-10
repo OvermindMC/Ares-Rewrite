@@ -415,8 +415,6 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                 } else if(setting->isType<int>()) {
                                     key += std::string(": " + std::to_string(*setting->get<int>()));
                                 };
-                                
-                                //Renderer::fillRect(ImVec4(sRect._x, sRect._y, sRect._z, sRect._w), ImColor(21.f, 21.f, 21.f, 4.f), 1.f);
 
                                 auto textColor = ImColor(255.f, 255.f, 255.f);
 
