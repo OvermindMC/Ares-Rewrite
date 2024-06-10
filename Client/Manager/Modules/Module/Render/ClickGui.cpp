@@ -45,8 +45,8 @@ public:
                     
                     auto key = name;
 
-                    if(setting->isType<float>() || setting->isType<int>()) {
-                        key += std::string(": 0000 ");
+                    if(setting->isType<float>() || setting->isType<int>() || setting->isType<uint64_t>()) {
+                        key += std::string(": " + setting->isType<uint64_t>() ? "None  " : "0000  ");
                     };
 
                     auto sSize = Renderer::getTextSize(key, fontSize);
@@ -59,7 +59,11 @@ public:
                 };
             };
             
-            currSize.y += size.y;
+            currSize.y += (
+                size.y + (
+                    mod == this->mods.back() ? 4.f : 0.f
+                )
+            );
         };
         
         return currSize;
@@ -124,6 +128,10 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                         if(titleRect.intersects(mousePos)) {
                             if(action == 2) {
                                 window->isCollapsed = !window->isCollapsed;
+
+                                for(auto& mod : window->mods) {
+                                    mod->isCollapsed = true;
+                                };
                             } else {
                                 this->dragWin = window.get();
                                 this->dragStart = mousePos;
@@ -391,7 +399,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                         Renderer::drawText(
                             ImVec2(
-                                window->tPos.x + 2.f, currY
+                                window->tPos.x + 4.f, currY
                             ), module->name, window->fontSize, module->getState() ? ImColor(3.f, 252.f, 207.f) : ImColor(255.f, 255.f, 255.f)
                         );
 
@@ -426,14 +434,24 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                     key += std::string(": " + ss.str());
                                 } else if(setting->isType<int>()) {
                                     key += std::string(": " + std::to_string(*setting->get<int>()));
+                                } else if(setting->isType<uint64_t>()) {
+                                    key += std::string(": " + std::string(
+                                        module->bindKey ? "0" : "None"
+                                    ));
                                 };
 
                                 auto textColor = ImColor(255.f, 255.f, 255.f);
 
                                 if(setting->isType<bool>()) {
                                     auto v = setting->get<bool>();
-                                    if(*v)
+                                    if(*v) {
                                         textColor = ImColor(66.f, 245.f, 164.f);
+                                    };
+                                    Renderer::fillRect(
+                                        ImVec4(
+                                            sRect._z - 2.f, sRect._y, sRect._z, sRect._w
+                                        ), *v ? textColor : ImColor(210.f, 10.f, 40.f), 1.f
+                                    );
                                 };
 
                                 Renderer::fillRect(
@@ -469,7 +487,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                 
                                 Renderer::drawText(
                                     ImVec2(
-                                        window->tPos.x + 6.f, currY + (sSize.y + (window->pad / 2.f))
+                                        window->tPos.x + 6.f, (currY + (sSize.y + (window->pad / 2.f)) - 2.f)
                                     ), key, window->fontSize, textColor
                                 );
 
