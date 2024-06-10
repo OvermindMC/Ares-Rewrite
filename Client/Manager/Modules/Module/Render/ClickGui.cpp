@@ -534,6 +534,12 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                                 auto textColor = ImColor(255.f, 255.f, 255.f);
 
+                                Renderer::fillRect(
+                                    ImVec4(
+                                        sRect._x + 3.f, sRect._y - 4.f, (sRect._z - 3.f), std::min((window->rectPos.w - 4.f), sRect._w + 4.f)
+                                    ),
+                                ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
+
                                 if(setting->isType<bool>()) {
                                     auto v = setting->get<bool>();
                                     if(*v) {
@@ -541,16 +547,10 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                     };
                                     Renderer::fillRect(
                                         ImVec4(
-                                            sRect._z - 2.f, sRect._y, sRect._z, sRect._w
+                                            sRect._z - 6.f, sRect._y, sRect._z - 4.f, sRect._w
                                         ), *v ? textColor : ImColor(210.f, 10.f, 40.f), 1.f
                                     );
                                 };
-
-                                Renderer::fillRect(
-                                    ImVec4(
-                                        sRect._x + 3.f, sRect._y - 4.f, (sRect._z - 3.f), std::min((window->rectPos.w - 4.f), sRect._w + 4.f)
-                                    ),
-                                ImColor(2.f, 43.f, 115.f, 1.f), 1.f);
 
                                 if(setting->isType<float>() || setting->isType<int>()) {
                                     float v = setting->isType<float>() ? *setting->get<float>() : static_cast<float>(*setting->get<int>());
@@ -560,8 +560,8 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
 
                                     Renderer::fillRect(
                                         ImVec4(
-                                            sRect._x + 5.f, sRect._w - 2.f, 
-                                            handlePos, sRect._w + 2.f
+                                            sRect._x + 5.f, sRect._w + 1.f, 
+                                            handlePos, sRect._w + 3.f
                                         ), 
                                         ImColor(110.f, 30.f, 230.f, 1.f), 1.f
                                     );
@@ -569,8 +569,8 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                                     if (handlePos < sRect._z - 5.f) {
                                         Renderer::fillRect(
                                             ImVec4(
-                                                handlePos, sRect._w - 2.f, 
-                                                sRect._z - 5.f, sRect._w + 2.f
+                                                handlePos, sRect._w + 1.f,
+                                                sRect._z - 5.f, sRect._w + 3.f
                                             ), 
                                             ImColor(200.f, 200.f, 200.f, 1.f), 1.f
                                         );
