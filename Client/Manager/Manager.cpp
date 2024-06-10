@@ -149,6 +149,7 @@ auto Manager::initCategories(void) -> void {
 };
 
 #include "Modules/Module/Combat/Killaura.h"
+#include "Modules/Module/Combat/Hitbox.h"
 
 #include "Modules/Module/Movement/NoSlow.h"
 
@@ -161,6 +162,7 @@ auto Manager::initCategories(void) -> void {
 auto Manager::initSubModules(void) -> void {
 
     new Killaura(this);
+    new Hitbox(this);
     
     new NoSlow(this);
 
