@@ -4,7 +4,7 @@
 
 class Setting {
 public:
-    Setting(std::variant<float*, bool*, uint64_t*, int*> value, float min = 0.0f, float max = 0.0f) : _item(value), _min(min), _max(max) {};
+    Setting(std::variant<float*, bool*, uint64_t*, int*> value, float min = 0.0f, float max = 0.0f, bool* visible = nullptr) : _item(value), _min(min), _max(max), dependantBool(visible) {};
 
     template<typename T>
     auto isType(void) -> bool {
@@ -22,9 +22,15 @@ public:
     auto getRange(void) -> std::pair<float, float> {
         return std::pair<float, float>(this->_min, this->_max);
     };
+
+    auto isVisible(void) -> bool {
+        return this->dependantBool ? *this->dependantBool : true;
+    };
 private:
     std::variant<float*, bool*, uint64_t*, int*> _item;
+    
     float _min, _max;
+    bool* dependantBool = nullptr;
 };
 
 /* Module Class */
@@ -72,10 +78,10 @@ public:
     };
 
     template<typename T>
-    auto registerSetting(std::string name, T* value, T min = 0, T max = 0) -> std::enable_if_t<
+    auto registerSetting(std::string name, T* value, T min = 0, T max = 0, bool* visibility = nullptr) -> std::enable_if_t<
         std::is_same_v<T, float> || std::is_same_v<T, bool> || std::is_same_v<T, uint64_t> || std::is_same_v<T, int>, void> {
         settings.push_back(
-            std::make_pair(name, std::make_unique<Setting>(value, static_cast<float>(min), static_cast<float>(max)))
+            std::make_pair(name, std::make_unique<Setting>(value, static_cast<float>(min), static_cast<float>(max), visibility))
         );
     };
 };
