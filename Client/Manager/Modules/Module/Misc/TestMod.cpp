@@ -4,15 +4,15 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
 
     this->setState(true);
 
-    this->registerEvent<EventType::Packet_SendToServer, EventDispatcher::EventPriority::Medium>(
-        std::function<void(LoopbackPacketSender*, Packet*, bool*)>(
-            [&](LoopbackPacketSender* pktSender, Packet* packet, bool* cancel) -> void {
-                if(!this->getState())
-                    return;
-                
-                auto id = packet->getId();
-                
-                //
+    this->registerEvent<EventType::Module_Toggle, EventDispatcher::EventPriority::Medium>(
+        std::function<void(void)>(
+            [&](void) -> void {
+                auto instance = MC::getClientInstance();
+
+                std::ostringstream ss;
+                ss << "Client Instance: " << std::hex << instance;
+
+                Debugger::log(ss.str());
             }
         )
     );
