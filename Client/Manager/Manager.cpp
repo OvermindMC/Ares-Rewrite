@@ -156,6 +156,8 @@ auto Manager::initCategories(void) -> void {
 #include "Modules/Module/Render/ClickGui.h"
 #include "Modules/Module/Render/ModuleList.h"
 
+#include "Modules/Module/Player/AutoSprint.h"
+
 #include "Modules/Module/Misc/Timer.h"
 #include "Modules/Module/Misc/TestMod.h"
 #include "Modules/Module/Misc/Uninject.h"
@@ -169,6 +171,8 @@ auto Manager::initSubModules(void) -> void {
 
     new ClickGui(this);
     new ModuleList(this);
+
+    new AutoSprint(this);
     
     new TimerMod(this);
     new TestMod(this);
