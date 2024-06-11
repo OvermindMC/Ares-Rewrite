@@ -23,8 +23,13 @@ auto MC::getEntities(void) -> std::vector<Actor*> {
         for(auto ent : actorOwners) {
             if(!registry.valid(ent))
                 continue;
-            auto& ref = actorOwners.get<ActorOwnerComponent>(ent);
-            auto actor = ref.actor;
+            
+            auto ref = std::addressof(actorOwners.get<ActorOwnerComponent>(ent));
+            
+            if(!ref)
+                continue;
+            
+            auto actor = ref->actor;
 
             if(actor && actor->isAlive())
                 results.push_back(actor);
