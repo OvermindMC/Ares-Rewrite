@@ -63,6 +63,8 @@ auto Manager::init(void) -> void {
         this->initCategories();
         this->initSubModules();
 
+        this->dispatchEvent<EventType::Modules_Initialized>();
+
         while(this->client_instance_raw_ptr->isRunning()) {
 
             for(auto& pair : this->categories) {
@@ -153,6 +155,7 @@ auto Manager::initCategories(void) -> void {
 
 #include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Movement/NoSlow.h"
+#include "Modules/Module/Movement/BHop.h"
 
 #include "Modules/Module/Render/ClickGui.h"
 #include "Modules/Module/Render/ModuleList.h"
@@ -170,6 +173,7 @@ auto Manager::initSubModules(void) -> void {
     
     new AirJump(this);
     new NoSlow(this);
+    new BHop(this);
 
     new ClickGui(this);
     new ModuleList(this);
@@ -272,6 +276,37 @@ auto Manager::getSortedEvents(void) -> std::map<EventType, std::vector<std::pair
 
 auto Manager::isUsingKey(uint64_t key) -> bool {
 
+    for(auto [key, isDown] : this->keymap) {
+        if(key == key)
+            return isDown;
+    };
+
+    return false;
+
+};
+
+auto Manager::getMcKey(std::string query) -> int {
+    
+    auto instance = MC::getClientInstance();
+    auto inpH = instance->getInputHandler();
+    auto factMap = inpH ? inpH->inputMappingFactory : nullptr;
+    auto keyboard = factMap ? factMap->keyboardMouseSettings : nullptr;
+
+    if(!keyboard)
+        return 0;
+    
+    auto keys = keyboard->keyboard_type_0;
+    auto it = std::find_if(keys.begin(), keys.end(), [&](const MCKeyBind& mcKey){
+        return mcKey.name == query;
+    });
+
+    return (it != keys.end() && !it->bindKey.empty() ? it->bindKey[0] : 0);
+
+};
+
+auto Manager::isUsingMCKey(std::string query) -> bool {
+
+    auto key = this->getMcKey(query);
     return this->keymap.contains(key) ? this->keymap.at(key) : false;
 
 };
