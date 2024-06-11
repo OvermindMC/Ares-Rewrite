@@ -7,9 +7,11 @@ public:
     Killaura(Manager*);
 private:
     float range = 12.f;
+
     bool multi = true;
-private:
+    bool rotations = true;
+    
     std::chrono::steady_clock::time_point timepoint = std::chrono::high_resolution_clock::now();
-    int msDelay = 50;
+    int msDelay = 120;
     int attacksPerTick = 3;
 };
