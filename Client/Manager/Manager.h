@@ -14,8 +14,9 @@ class Manager {
 public:
     Manager(Client* client_raw_ptr);
     ~Manager(void);
+
 /* Attributes for Runtime */
-private:
+
     Client* client_instance_raw_ptr = nullptr;
 private:
     std::vector<void*> hooks;
@@ -24,26 +25,28 @@ private:
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 public:
     PTR_ACCESS(Client*, client, client_instance_raw_ptr);
-public:
+    
     auto init(void) -> void;
     auto cleanupHooks(void) -> void;
-public:
+    
     auto initHooks(void) -> bool;
     auto initCategories(void) -> void;
     auto initSubModules(void) -> void;
-public:
+
     template<typename T>
     auto getSig(std::string query) -> T {
         return (this->signature_map.contains(query) ? (T)this->signature_map.at(query) : T{});
     };
-public:
+    
     auto registerHook(void* hook_raw_ptr) -> bool;
     auto getHookRaw(std::string) -> void*;
-public:
+    
     auto getCategories(void) -> std::vector<Category*>;
     auto getCategory(CategoryType category_type) -> Category*;
     auto getSortedEvents(void) -> std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>>;
-public:
+
+    auto isUsingKey(uint64_t key) -> bool;
+    
     template<EventType event_type, typename... TArgs>
     auto dispatchEvent(TArgs... arguments) -> void {
         auto events = this->getSortedEvents();

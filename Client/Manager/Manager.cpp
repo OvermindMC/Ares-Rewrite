@@ -151,6 +151,7 @@ auto Manager::initCategories(void) -> void {
 #include "Modules/Module/Combat/Killaura.h"
 #include "Modules/Module/Combat/Hitbox.h"
 
+#include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Movement/NoSlow.h"
 
 #include "Modules/Module/Render/ClickGui.h"
@@ -167,6 +168,7 @@ auto Manager::initSubModules(void) -> void {
     new Killaura(this);
     new Hitbox(this);
     
+    new AirJump(this);
     new NoSlow(this);
 
     new ClickGui(this);
@@ -265,5 +267,11 @@ auto Manager::getSortedEvents(void) -> std::map<EventType, std::vector<std::pair
     };
 
     return result;
+
+};
+
+auto Manager::isUsingKey(uint64_t key) -> bool {
+
+    return this->keymap.contains(key) ? this->keymap.at(key) : false;
 
 };
