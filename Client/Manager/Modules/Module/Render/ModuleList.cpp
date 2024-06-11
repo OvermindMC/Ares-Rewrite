@@ -99,7 +99,7 @@ ModuleList::ModuleList(Manager* mgr) : Module(mgr, CategoryType::RENDER, "Module
                     auto size = Renderer::getTextSize(text, this->fontSize);
 
                     if(displacement->xOff <= 0.f) {
-                        displacement->xOff = displaySize.x; //(displacement->mod->getState()) ? (displaySize.x - size.x) - this->pad.x : displaySize.x;
+                        displacement->xOff = displaySize.x;
                     };
 
                     float targetXOff = (displacement->mod->getState()) ? (displaySize.x - size.x) - this->pad.x : displaySize.x;
@@ -113,7 +113,7 @@ ModuleList::ModuleList(Manager* mgr) : Module(mgr, CategoryType::RENDER, "Module
                         displacement->xOff - this->pad.x,
                         currY,
                         displaySize.x,
-                        currY + ((size.y * 2.f) + this->pad.y)
+                        currY + ((size.y * 2.f) / 2.f + this->pad.y)
                     );
 
                     Renderer::fillRect(
@@ -161,7 +161,7 @@ ModuleList::ModuleList(Manager* mgr) : Module(mgr, CategoryType::RENDER, "Module
                         ), text, this->fontSize, ImColor(255.f, 255.f, 255.f)
                     );
 
-                    currY += ((size.y * 2.f) + this->pad.y);
+                    currY += ((size.y * 2.f) / 2.f + this->pad.y);
                 };
             }
         )
