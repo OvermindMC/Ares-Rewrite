@@ -117,7 +117,7 @@ ModuleList::ModuleList(Manager* mgr) : Module(mgr, CategoryType::RENDER, "Module
                     );
 
                     Renderer::fillRect(
-                        displacement->rect, ImColor(21.f, 21.f, 21.f, .8f), 0.f
+                        displacement->rect, ImColor(0.f, 27.f, 74.f, .8f), 0.f
                     );
 
                     Renderer::fillRect(
