@@ -155,6 +155,7 @@ auto Manager::initCategories(void) -> void {
 
 #include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Movement/NoSlow.h"
+#include "Modules/Module/Movement/Speed.h"
 #include "Modules/Module/Movement/BHop.h"
 
 #include "Modules/Module/Render/ClickGui.h"
@@ -173,6 +174,7 @@ auto Manager::initSubModules(void) -> void {
     
     new AirJump(this);
     new NoSlow(this);
+    new Speed(this);
     new BHop(this);
 
     new ClickGui(this);
