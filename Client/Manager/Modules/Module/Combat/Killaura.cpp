@@ -6,6 +6,7 @@ Killaura::Killaura(Manager* mgr) : Module(mgr, CategoryType::COMBAT, "Killaura",
     this->registerSetting("Delay", &this->msDelay, 0, 1000);
     this->registerSetting("Hits Per Tick", &this->attacksPerTick, 1, 6, &this->multi);
     this->registerSetting("Multi", &this->multi);
+    this->registerSetting("Rotations", &this->rotations);
 
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Highest>(
         std::function<void(Level*)>(
