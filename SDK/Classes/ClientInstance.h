@@ -3,6 +3,7 @@
 #include "Entity/Player.h"
 #include "GuiData/GuiData.h"
 #include "Minecraft/Minecraft.h"
+#include "Input/ClientInputHandler.h"
 #include "MinecraftGame/MinecraftGame.h"
 #include "ScreenController/ScreenController.h"
 #include "LoopbackPacketSender/LoopbackPacketSender.h"
@@ -12,6 +13,7 @@ public:
     auto getLocalPlayer(void) -> Player*;
 public:
     auto getPacketSender(void) -> LoopbackPacketSender*;
+    auto getInputHandler(void) -> ClientInputHandler*;
     auto getLevelRenderer(void) -> LevelRenderer*;
     auto getMinecraftGame(void) -> MinecraftGame*;
     auto getMinecraft(void) -> Minecraft*;

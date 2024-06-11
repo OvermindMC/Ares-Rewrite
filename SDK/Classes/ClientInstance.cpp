@@ -12,6 +12,12 @@ auto ClientInstance::getPacketSender(void) -> LoopbackPacketSender* {
 
 };
 
+auto ClientInstance::getInputHandler(void) -> ClientInputHandler* {
+
+    return *(ClientInputHandler**)((uintptr_t)(this) + 0x110);
+
+};
+
 auto ClientInstance::getLevelRenderer(void) -> LevelRenderer* {
 
     return *(LevelRenderer**)((uintptr_t)(this) + 0xE0);
