@@ -5,22 +5,22 @@
 
 enum class EventType {
     /* Client Internal Events*/
-    Module_Tick = 1, Module_Toggle = 2,
+    Module_Tick = 1, Module_Toggle = 2, Modules_Initialized = 3,
     
     /* Window */
-    Present_Tick = 3,
-    Present_Resize = 4,
+    Present_Tick = 4,
+    Present_Resize = 5,
     
     /* Other */
 
-    Level_Tick = 5,
+    Level_Tick = 6,
 
-    KeyInput = 6,
-    MouseInput = 7,
+    KeyInput = 7,
+    MouseInput = 8,
 
-    ScreenControllerTick = 8,
+    ScreenControllerTick = 9,
 
-    Packet_SendToServer = 9
+    Packet_SendToServer = 10
 };
 
 template<typename... TArgs>
