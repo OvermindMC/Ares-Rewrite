@@ -154,6 +154,7 @@ auto Manager::initCategories(void) -> void {
 #include "Modules/Module/Movement/NoSlow.h"
 
 #include "Modules/Module/Render/ClickGui.h"
+#include "Modules/Module/Render/ModuleList.h"
 
 #include "Modules/Module/Misc/Timer.h"
 #include "Modules/Module/Misc/TestMod.h"
@@ -167,6 +168,7 @@ auto Manager::initSubModules(void) -> void {
     new NoSlow(this);
 
     new ClickGui(this);
+    new ModuleList(this);
     
     new TimerMod(this);
     new TestMod(this);
