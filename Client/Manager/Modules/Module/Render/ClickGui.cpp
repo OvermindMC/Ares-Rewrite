@@ -362,9 +362,7 @@ ClickGui::ClickGui(Manager* mgr) : Module(mgr, CategoryType::RENDER, "ClickGui",
                 if(guidata->uiScale != this->uiScale) {
                     this->uiScale = guidata->uiScale;
 
-                    for(auto& window : windows) {
-                        window->fontSize = std::min(14.f * this->uiScale, 20.f);
-                    };
+                    windows.clear();
                 };
             }
         )
