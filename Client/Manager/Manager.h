@@ -17,7 +17,7 @@ public:
 
 /* Attributes for Runtime */
 
-    std::map<uint64_t, bool> keymap;
+    std::map<uint64_t, bool> keymap = {};
 private:
 
     Client* client_instance_raw_ptr = nullptr;
@@ -48,6 +48,8 @@ public:
     auto getSortedEvents(void) -> std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>>;
 
     auto isUsingKey(uint64_t key) -> bool;
+    auto getMcKey(std::string query) -> int;
+    auto isUsingMCKey(std::string query) -> bool;
     
     template<EventType event_type, typename... TArgs>
     auto dispatchEvent(TArgs... arguments) -> void {
