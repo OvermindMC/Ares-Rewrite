@@ -17,10 +17,12 @@ public:
 
 /* Attributes for Runtime */
 
-    Client* client_instance_raw_ptr = nullptr;
-private:
-    std::vector<void*> hooks;
     std::map<uint64_t, bool> keymap;
+private:
+
+    Client* client_instance_raw_ptr = nullptr;
+    
+    std::vector<void*> hooks;
     std::map<std::string, void*> signature_map;
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 public:
