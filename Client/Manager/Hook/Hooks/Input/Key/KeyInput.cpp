@@ -4,8 +4,6 @@
 KeyInput_Hook::KeyInput_Hook(Manager* mgr) : Hook<void, unsigned long long, bool>(mgr, "Input_Key", mgr->getSig<void*>("KeyInput"),
     [&](unsigned long long key, bool isDown) -> void {
 
-        this->mgr->keymap.emplace(key, isDown);
-
         auto instance = MC::getClientInstance();
         auto canUseKeys = ( instance ? instance->getLocalPlayer() ? instance->getScreenName().rfind("hud_screen") != std::string::npos : false : true );
 
@@ -20,6 +18,7 @@ KeyInput_Hook::KeyInput_Hook(Manager* mgr) : Hook<void, unsigned long long, bool
 
         bool cancel = false;
         
+        this->mgr->keymap[key] = isDown;
         this->mgr->dispatchEvent<EventType::KeyInput, uint64_t, bool, bool*>(key, isDown, &cancel);
         
         if(!cancel)
