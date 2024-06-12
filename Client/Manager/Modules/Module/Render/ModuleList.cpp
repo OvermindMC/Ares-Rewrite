@@ -148,7 +148,7 @@ ModuleList::ModuleList(Manager* mgr) : Module(mgr, CategoryType::RENDER, "Module
                             ImVec4(
                                 displacement->rect.x,
                                 displacement->rect.w,
-                                next->rect.x + 2.f,
+                                std::max(next->rect.x + 2.f, displacement->rect.x),
                                 displacement->rect.w
                             ), ImColor(255.f, 255.f, 255.f), 1.f
                         );
