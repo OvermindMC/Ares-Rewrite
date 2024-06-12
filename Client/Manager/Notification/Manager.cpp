@@ -19,6 +19,10 @@ auto NotificationManager::render(void) -> void {
     
     auto display = ImGui::GetIO().DisplaySize;
     auto& notif = this->notifications.front();
+
+    if(!notif)
+        return;
+    
     auto bounds = notif->getBounds(this->fontSize);
 
     auto reachOff = [&](float* x, float xOff, float modifier) -> void {
@@ -54,6 +58,10 @@ auto NotificationManager::render(void) -> void {
         notif->animXOff + (bounds.x + this->space), display.y - bounds.y
     );
 
+    ImFX::Begin(ImGui::GetBackgroundDrawList());
+    ImFX::AddBlur(notif->alpha * 10.f, rect);
+    ImFX::End();
+    
     Renderer::fillRect(rect, ImColor(21.f, 21.f, 21.f, std::max(notif->alpha - .4f, 0.f)), 5.f);
 
     Renderer::drawText(
