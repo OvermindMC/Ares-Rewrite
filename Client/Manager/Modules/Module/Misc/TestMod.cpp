@@ -16,8 +16,6 @@ TestMod::TestMod(Manager* mgr) : Module(mgr, CategoryType::MISC, "Test Module", 
                 ss << "Client Instance: " << std::hex << instance;
 
                 Debugger::log(ss.str());
-
-                this->client->addNotif("Title", "Contents", 1000);
             }
         )
     );
