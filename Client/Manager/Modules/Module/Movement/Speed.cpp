@@ -3,12 +3,19 @@
 Speed::Speed(Manager* mgr) : Module(mgr, CategoryType::MOVE, "Speed", "Enhance movement speed") {
 
     this->registerSetting("Speed", &this->speed, 0.5f, 3.f);
+    this->registerSetting("Delay", &this->msDelay, 0, 1000);
 
     this->registerEvent<EventType::Level_Tick, EventDispatcher::EventPriority::Medium>(
         std::function<void(Level*)>(
             [&](Level* level) -> void {
                 if(!this->getState())
                     return;
+                
+                auto now = std::chrono::high_resolution_clock::now();
+                if(timepoint > now)
+                    return;
+                
+                timepoint += std::chrono::milliseconds(this->msDelay);
                 
                 auto instance = MC::getClientInstance();
                 auto lp = instance ? instance->getLocalPlayer() : nullptr;
