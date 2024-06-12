@@ -34,6 +34,9 @@ auto Client::init(void) -> void {
     Debugger::log("Initialized Client <" + this->name + ">");
     
     this->nfMgr_raw_ptr = new NotificationManager(this); /* Create new Notification Manager Instance */
+
+    this->nfMgr_raw_ptr->addNotif(std::string(this->name + ", " + this->version.get()), "Running v" + this->version.get());
+
     this->mgr_raw_ptr = new Manager(this); /* Create new Manager instance */
     this->mgr_raw_ptr->init();
 
