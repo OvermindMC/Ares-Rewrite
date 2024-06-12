@@ -1,4 +1,5 @@
 #include "Present.h"
+#include "../../../Notification/Manager.h"
 
 SwapChain_PresentHook::SwapChain_PresentHook(Manager* mgr) : Hook<HRESULT, IDXGISwapChain3*, UINT, UINT>(mgr, "SwapChain_Present", (void*)Renderer::getSCVtable()[140],
     [&](IDXGISwapChain3* swapChain, unsigned int sync_interval, unsigned int flags) -> HRESULT {
@@ -25,6 +26,10 @@ SwapChain_PresentHook::SwapChain_PresentHook(Manager* mgr) : Hook<HRESULT, IDXGI
                 Renderer::setDrawList(ImGui::GetBackgroundDrawList());
 
                 this->mgr->dispatchEvent<EventType::Present_Tick>();
+
+                auto nfMgr = this->mgr->client->getNotifMgr();
+                if(nfMgr)
+                    nfMgr->render();
 
                 Renderer::endFrame();
                 Renderer::cleanup(false);

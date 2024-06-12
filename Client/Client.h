@@ -6,7 +6,9 @@
 
 #include "Version/Version.h"
 
-class Manager; /* Forward Declaration */
+/* Forward Declarations */
+class Manager;
+class NotificationManager;
 
 /* Client Class */
 
@@ -19,26 +21,29 @@ public:
     
 /* Client Name, Client Version */
 
-public:
     auto getName(void) -> std::string;
     auto getVersion(void) -> Version;
+    
 private:
     std::string name;
     Version version = Version(1, 0, 0);
 
 /* Runtime Attributes */
 
-private:
     bool _isRunning = false;
     Manager* mgr_raw_ptr = nullptr;
+    NotificationManager* nfMgr_raw_ptr = nullptr;
 
 public:
     PTR_ACCESS(Manager*, mgr, mgr_raw_ptr);
 
 /* Runtime Methods */
-public:
+
     auto init(void) -> void;
-public:
+
     auto isRunning(void) -> bool;
     auto stop(void) -> void;
+
+    auto addNotif(std::string title, std::string contents, int msDelay = 3000) -> void;
+    auto getNotifMgr(void) -> NotificationManager*;
 };
