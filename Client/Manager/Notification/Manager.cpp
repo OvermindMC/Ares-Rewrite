@@ -62,7 +62,7 @@ auto NotificationManager::render(void) -> void {
     ImFX::AddBlur(notif->alpha * 10.f, rect);
     ImFX::End();
     
-    Renderer::fillRect(rect, ImColor(21.f, 21.f, 21.f, std::max(notif->alpha - .4f, 0.f)), 5.f);
+    Renderer::fillRect(rect, ImColor(0.f, 27.f, 74.f, std::max(notif->alpha - .4f, 0.f)), 5.f);
 
     Renderer::drawText(
         ImVec2(
