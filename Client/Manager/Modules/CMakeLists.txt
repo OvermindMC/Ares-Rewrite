@@ -1,3 +1,3 @@
-target_sources(NetNode PRIVATE Category.cpp)
+target_sources(Ares PRIVATE Category.cpp)
 
 add_subdirectory(Module)

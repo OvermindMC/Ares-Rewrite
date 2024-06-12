@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE KeyInput.cpp)
+target_sources(Ares PRIVATE KeyInput.cpp)

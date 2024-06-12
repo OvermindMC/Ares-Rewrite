@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE Version.cpp)
+target_sources(Ares PRIVATE Version.cpp)

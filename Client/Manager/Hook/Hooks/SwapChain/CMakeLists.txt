@@ -1,4 +1,4 @@
-target_sources(NetNode PRIVATE
+target_sources(Ares PRIVATE
     "Present.cpp"
     "ResizeBuffers.cpp"
 )

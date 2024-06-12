@@ -1,3 +1,3 @@
-target_sources(NetNode PRIVATE Mem.cpp)
+target_sources(Ares PRIVATE Mem.cpp)
 
 add_subdirectory(Signature)

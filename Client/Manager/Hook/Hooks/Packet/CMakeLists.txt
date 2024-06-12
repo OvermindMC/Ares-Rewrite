@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE SendToServer.cpp)
+target_sources(Ares PRIVATE SendToServer.cpp)

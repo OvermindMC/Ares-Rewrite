@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE Tick.cpp)
+target_sources(Ares PRIVATE Tick.cpp)

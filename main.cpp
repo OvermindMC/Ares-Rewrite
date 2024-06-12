@@ -2,7 +2,7 @@
 
 auto init(HINSTANCE hInstance) -> void {
 
-    auto client = new Client("NetNode");
+    auto client = new Client("Ares");
     client->init();
 
     delete client;

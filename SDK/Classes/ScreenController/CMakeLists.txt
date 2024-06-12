@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE ScreenController.cpp)
+target_sources(Ares PRIVATE ScreenController.cpp)

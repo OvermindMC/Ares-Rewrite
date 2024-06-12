@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE Debugger.cpp)
+target_sources(Ares PRIVATE Debugger.cpp)

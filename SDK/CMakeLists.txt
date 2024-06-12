@@ -1,3 +1,3 @@
-target_sources(NetNode PRIVATE Minecraft.cpp)
+target_sources(Ares PRIVATE Minecraft.cpp)
 
 add_subdirectory(Classes)

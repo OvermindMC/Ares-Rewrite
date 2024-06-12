@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE MouseInput.cpp)
+target_sources(Ares PRIVATE MouseInput.cpp)

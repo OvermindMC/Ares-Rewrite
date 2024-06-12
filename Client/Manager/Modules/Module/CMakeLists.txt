@@ -1,4 +1,4 @@
-target_sources(NetNode PRIVATE Module.cpp)
+target_sources(Ares PRIVATE Module.cpp)
 
 add_subdirectory(Combat)
 add_subdirectory(Movement)

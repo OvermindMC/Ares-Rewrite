@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE RenderContext.cpp)
+target_sources(Ares PRIVATE RenderContext.cpp)

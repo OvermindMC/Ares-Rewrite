@@ -1,1 +1,1 @@
-target_sources(NetNode PRIVATE Signature.cpp)
+target_sources(Ares PRIVATE Signature.cpp)

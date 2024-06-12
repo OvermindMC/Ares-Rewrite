@@ -1,4 +1,4 @@
-target_sources(NetNode PRIVATE
+target_sources(Ares PRIVATE
     "imgui_impl_win32.cpp"
     "imgui_impl_dx11.cpp"
     "imgui_widgets.cpp"

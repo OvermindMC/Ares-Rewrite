@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(NetNode VERSION 1.0 LANGUAGES C CXX)
+project(Ares VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 add_compile_definitions(_ITERATOR_DEBUG_LEVEL=0)
@@ -35,8 +35,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(libhat)
 
-add_library(NetNode SHARED)
-target_sources(NetNode PRIVATE main.cpp)
+add_library(Ares SHARED)
+target_sources(Ares PRIVATE main.cpp)
 
 add_subdirectory(Client)
 add_subdirectory(Utils)
@@ -47,7 +47,7 @@ add_subdirectory(SDK)
 add_compile_definitions(ENTT_SPARSE_PAGE=2048)
 add_compile_definitions(ENTT_PACKED_PAGE=128)
 
-target_link_libraries(NetNode PRIVATE minhook nlohmann_json EnTT::EnTT libhat)
+target_link_libraries(Ares PRIVATE minhook nlohmann_json EnTT::EnTT libhat)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -1,4 +1,4 @@
-target_sources(NetNode PRIVATE Renderer.cpp)
+target_sources(Ares PRIVATE Renderer.cpp)
 
 add_subdirectory(ImFx)
 add_subdirectory(ImGui)
