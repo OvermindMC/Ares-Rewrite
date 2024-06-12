@@ -26,7 +26,7 @@ public:
     
 private:
     std::string name;
-    Version version = Version(1, 0, 0);
+    Version version = Version(3, 0, 0);
 
 /* Runtime Attributes */
 
