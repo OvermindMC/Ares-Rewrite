@@ -25,6 +25,9 @@
 #include <assert.h>
 #include <atomic>
 
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 class Mem {
 public:
     static auto getDll(void) -> HMODULE;
