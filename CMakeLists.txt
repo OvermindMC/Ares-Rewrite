@@ -47,7 +47,7 @@ add_subdirectory(SDK)
 add_compile_definitions(ENTT_SPARSE_PAGE=2048)
 add_compile_definitions(ENTT_PACKED_PAGE=128)
 
-target_link_libraries(Ares PRIVATE minhook nlohmann_json EnTT::EnTT libhat)
+target_link_libraries(Ares PRIVATE minhook nlohmann_json EnTT::EnTT libhat ws2_32)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
