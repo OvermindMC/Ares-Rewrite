@@ -1,5 +1,10 @@
 #pragma once
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
+#include <winsock2.h>
+#pragma comment(lib, "Ws2_32.lib")
+
 #include "EnTT/EnTT.h"
 #include "Math/Vector.h"
 #include "Math/Random.h"
