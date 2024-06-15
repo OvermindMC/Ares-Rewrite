@@ -1,9 +1,6 @@
 #pragma once
 
-#include "../Mem/Mem.h"
-#include "../Utils/Utils.h"
-#include "../SDK/Minecraft.h"
-
+#include "Socket/Socket.h"
 #include "Version/Version.h"
 
 /* Forward Declarations */
@@ -32,6 +29,7 @@ private:
 
     bool _isRunning = false;
     Manager* mgr_raw_ptr = nullptr;
+    SocketLayer* socketLayer = nullptr;
     NotificationManager* nfMgr_raw_ptr = nullptr;
 
 public:
@@ -44,6 +42,6 @@ public:
     auto isRunning(void) -> bool;
     auto stop(void) -> void;
 
-    auto addNotif(std::string title, std::string contents, int msDelay = 3000) -> void;
+    auto addNotif(std::string title, std::string contents, int msDelay = 3000, bool isError = false) -> void;
     auto getNotifMgr(void) -> NotificationManager*;
 };
