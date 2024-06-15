@@ -1,18 +1,18 @@
 #include "Socket.h"
 #include "../Client.h"
 
-SocketLayer::SocketLayer(Client* client_ptr) : client(client_ptr) {
+SocketLayer::SocketLayer(Client* raw_client_ptr) : client_ptr(raw_client_ptr) {
     auto ip = std::string("132.145.76.173");
     int port = 8000;
 
     this->serverAddr.sin_family = AF_INET;
     this->serverAddr.sin_port = htons(port);
     this->serverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
-
+    
     this->tryConnect();
 
     auto success = this->clientSocket != INVALID_SOCKET;
-    this->client->addNotif("Ares Server", success ? "Connected!" : "Failed To Connect!", success ? 1000 : 5000, !success);
+    this->client_ptr->addNotif("Ares Server", success ? "Connected!" : "Failed To Connect!", success ? 1000 : 5000, !success);
 };
 
 SocketLayer::~SocketLayer() {
@@ -33,24 +33,17 @@ auto SocketLayer::tryConnect(void) -> void {
                 closesocket(this->clientSocket);
                 this->clientSocket = INVALID_SOCKET;
                 WSACleanup();
-            } else {
-                auto curr_ver = this->client->getVersion().get();
-                json data = {
-                    {"version", curr_ver}, {"type", "version"}
-                };
-                auto result = this->sendToStream(data);
-                Debugger::log(result.dump());
-
-                if(result.contains("data") && result["data"].contains("version") && result["data"].contains("patch_notes")) {
-                    auto latest_ver = Version(result["data"]["version"].get<std::string>());
-                    
-                    if(latest_ver > curr_ver) {
-                        this->client->addNotif("Update", std::string(this->client->getName() + " v" + latest_ver.get()), 5000, true);
-                    };
-                };
             };
         };
     };
+
+    if(!this->aresUser)
+        this->aresUser = new AresUser(this);
+    
+    this->aresUser->fetchUpdate();
+
+    if(this->aresUser->hasUpdate())
+        this->client_ptr->addNotif("Update", std::string(this->client_ptr->getName() + " v" + this->aresUser->aresVer.get()), 5000, true);
 };
 
 auto SocketLayer::start(void) -> void {
@@ -84,8 +77,9 @@ auto SocketLayer::run(void) -> void {
         } else {
             this->tryConnect();
 
-            if(this->clientSocket != INVALID_SOCKET)
-                this->client->addNotif("Ares Server", "Connected!", 1000);
+            if(this->clientSocket != INVALID_SOCKET) {
+                this->client_ptr->addNotif("Ares Server", "Connected!", 1000);
+            };
         };
         Sleep(100);
     };
@@ -135,7 +129,7 @@ auto SocketLayer::isConnected(void) -> bool {
             WSACloseEvent(event);
             return false;
         } else if (result == 0) {
-            this->client->addNotif("Ares Server", "Disconnected!", 5000, true);
+            this->client_ptr->addNotif("Ares Server", "Disconnected!", 5000, true);
             WSACloseEvent(event);
 
             closesocket(clientSocket);
@@ -180,7 +174,7 @@ auto SocketLayer::sendToStream(json& data) -> json {
     bool eventOccurred = false;
 
     while (!eventOccurred) {
-        DWORD waitResult = WSAWaitForMultipleEvents(1, &event, FALSE, 5000, FALSE); // Timeout after 5 seconds
+        DWORD waitResult = WSAWaitForMultipleEvents(1, &event, FALSE, 5000, FALSE);
         if (waitResult == WSA_WAIT_FAILED) {
             Debugger::log("WSAWaitForMultipleEvents failed");
             break;
@@ -227,4 +221,37 @@ auto SocketLayer::sendToStream(json& data) -> json {
 
     WSACloseEvent(event);
     return result;
+};
+
+AresUser::AresUser(SocketLayer* socket) : socket_layer(socket), aresVer(AresVersion("", "")) {
+    this->fetchUpdate();
+};
+
+auto AresUser::fetchUpdate(void) -> void {
+    auto client = this->socket_layer ? this->socket_layer->client : nullptr;
+    this->aresVer = AresVersion("", "");
+
+    if(client) {
+        auto curr_ver = client->getVersion().get();
+        json data = {
+            {"version", curr_ver}, {"type", "version"}
+        };
+        auto result = this->socket_layer->sendToStream(data);
+        
+        if(result.contains("data") && result["data"].contains("version") && result["data"].contains("patch_notes")) {
+            auto latest_ver = result["data"]["version"].get<std::string>();
+            auto patch_notes = result["data"]["patch_notes"].get<std::string>();
+
+            this->aresVer = AresVersion(latest_ver, patch_notes);
+        };
+    };
+};
+
+auto AresUser::hasUpdate(void) -> bool {
+    auto client = this->socket_layer ? this->socket_layer->client : nullptr;
+
+    if(!client || !this->aresVer.isValid())
+        return false;
+    
+    return Version(this->aresVer.get()) > client->getVersion();
 };
