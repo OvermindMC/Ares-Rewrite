@@ -5,16 +5,19 @@
 #include "../../SDK/Minecraft.h"
 
 class Client;
+class Version;
+class AresUser;
 
 class SocketLayer {
 private:
-    Client* client = nullptr;
+    Client* client_ptr = nullptr;
+    AresUser* aresUser = nullptr;
 
     WSADATA wsaData;
     sockaddr_in serverAddr;
     SOCKET clientSocket = INVALID_SOCKET;
 public:
-    SocketLayer(Client* client_ptr);
+    SocketLayer(Client* raw_client_ptr);
     ~SocketLayer(void);
 
     auto tryConnect(void) -> void;
@@ -28,4 +31,33 @@ public:
 
     std::thread socketThread;
     std::atomic<bool> running;
+
+    PTR_ACCESS(Client*, client, client_ptr);
+};
+
+class AresUser {
+private:
+    SocketLayer* socket_layer = nullptr;
+public:
+    class AresVersion {
+        private:
+            std::string version;
+            std::string patchnotes;
+        public:
+            AresVersion(std::string latest_ver, std::string patch_notes) : version(latest_ver), patchnotes(patch_notes) {};
+
+            auto isValid(void) -> bool {
+                return version.length() > 0;
+            };
+
+            auto get(void) -> const std::string& {
+                return this->version;
+            };
+    };
+
+    AresUser(SocketLayer* socket);
+    AresVersion aresVer;
+
+    auto fetchUpdate(void) -> void;
+    auto hasUpdate(void) -> bool;
 };
