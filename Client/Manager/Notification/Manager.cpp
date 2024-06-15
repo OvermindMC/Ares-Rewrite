@@ -42,15 +42,20 @@ auto NotificationManager::render(void) -> void {
 
         };
     };
-
-    if(notif->animXOff <= 0.f)
-        notif->animXOff = display.x;
     
     auto targetX = ((display.x - this->space) - bounds.x) - 10.f;
+
+    if(notif->animXOff < targetX && !notif->doneAnim)
+        notif->animXOff = display.x;
+    else if(notif->doneAnim)
+        notif->animXOff = targetX;
+
     reachOff(&notif->animXOff, targetX, 2.f);
 
-    if(notif->animXOff <= targetX && !notif->doneAnim)
+    if(notif->animXOff <= targetX && !notif->doneAnim) {
         notif->doneAnim = true;
+        notif->timepoint = std::chrono::high_resolution_clock::now() + std::chrono::milliseconds(notif->msDelay);
+    };
     
     auto rect = ImVec4(
         notif->animXOff,
@@ -61,8 +66,13 @@ auto NotificationManager::render(void) -> void {
     ImFX::Begin(ImGui::GetBackgroundDrawList());
     ImFX::AddBlur(notif->alpha * 10.f, rect);
     ImFX::End();
+
+    float colors[3] = { 0.f, 27.f, 74.f };
+    if(notif->type == Notification::Type::Error) {
+        colors[0] = 245.f; colors[1] = 105.f; colors[2] = 66.f;
+    };
     
-    Renderer::fillRect(rect, ImColor(0.f, 27.f, 74.f, std::max(notif->alpha - .4f, 0.f)), 5.f);
+    Renderer::fillRect(rect, ImColor(colors[0], colors[1], colors[2], std::max(notif->alpha - .4f, 0.f)), 5.f);
 
     Renderer::drawText(
         ImVec2(
@@ -89,13 +99,16 @@ auto NotificationManager::render(void) -> void {
         );
     };
 
+    if(!notif->doneAnim)
+        return;
+    
     auto now = std::chrono::high_resolution_clock::now();
     if(now < notif->timepoint)
         return;
 
-    if(notif->doneAnim && notif->alpha) {
+    if(notif->alpha) {
         reachOff(&notif->alpha, 0.f, .02f);
-    } else if(notif->doneAnim) {
+    } else {
         this->notifications.erase(this->notifications.begin());
     };
 
