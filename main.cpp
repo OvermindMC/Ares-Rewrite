@@ -2,7 +2,7 @@
 
 auto init(HINSTANCE hInstance) -> void {
 
-    auto client = new Client("Ares");
+    auto client = new Client("Ares", Version("3.0.0"));
     client->init();
 
     delete client;
