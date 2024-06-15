@@ -7,6 +7,7 @@ Client::Client(const char* client_name) : name(client_name ? client_name : "Clie
 Client::~Client() {
 
     delete this->mgr_raw_ptr;
+    delete this->socketLayer;
     delete this->nfMgr_raw_ptr;
 
 };
@@ -37,6 +38,8 @@ auto Client::init(void) -> void {
 
     this->nfMgr_raw_ptr->addNotif(std::string(this->name + ", " + this->version.get()), "Running v" + this->version.get());
 
+    this->socketLayer = new SocketLayer(this); /* Create Socket Connection to back-end Server */
+    
     this->mgr_raw_ptr = new Manager(this); /* Create new Manager instance */
     this->mgr_raw_ptr->init();
 
@@ -54,9 +57,9 @@ auto Client::stop(void) -> void {
 
 };
 
-auto Client::addNotif(std::string title, std::string contents, int msDelay) -> void {
+auto Client::addNotif(std::string title, std::string contents, int msDelay, bool isError) -> void {
 
-    this->nfMgr_raw_ptr->addNotif(title, contents, msDelay);
+    this->nfMgr_raw_ptr->addNotif(title, contents, msDelay, isError ? Notification::Type::Error : Notification::Type::Default);
 
 };
 
