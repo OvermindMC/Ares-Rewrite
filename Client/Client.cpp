@@ -2,7 +2,7 @@
 #include "Manager/Manager.h"
 #include "Manager/Notification/Manager.h"
 
-Client::Client(const char* client_name) : name(client_name ? client_name : "Client") {};
+Client::Client(const char* client_name, Version client_version) : name(client_name ? client_name : "Client"), version(client_version) {};
 
 Client::~Client() {
 
