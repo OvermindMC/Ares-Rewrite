@@ -34,6 +34,7 @@ private:
 
 public:
     PTR_ACCESS(Manager*, mgr, mgr_raw_ptr);
+    PTR_ACCESS(SocketLayer*, socket, socketLayer);
 
 /* Runtime Methods */
 
