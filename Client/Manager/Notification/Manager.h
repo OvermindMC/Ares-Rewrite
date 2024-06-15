@@ -6,8 +6,15 @@ class Client;
 
 class Notification {
 public:
+    enum class Type : int {
+        Default = 0,
+        Error = 1
+    };
+
+    Type type = Type::Default;
     ImVec2 pad = ImVec2(6.f, 2.f);
     
+    int msDelay;
     float alpha = 1.f;
     float animXOff = 0.f;
     bool doneAnim = false;
@@ -15,8 +22,8 @@ public:
 
     std::chrono::steady_clock::time_point timepoint;
 
-    Notification(std::string nTitle, std::string nContent, int msDelay) : title(nTitle), contents(nContent) {
-        this->timepoint = std::chrono::high_resolution_clock::now() + std::chrono::milliseconds(msDelay);
+    Notification(std::string nTitle, std::string nContent, int ms_delay, Type nType) : title(nTitle), contents(nContent), msDelay(ms_delay), type(nType) {
+        this->timepoint = std::chrono::high_resolution_clock::now() + std::chrono::milliseconds(this->msDelay);
     };
 
     auto getBounds(float fontSize) -> ImVec2 {
@@ -42,8 +49,8 @@ public:
 
     auto render(void) -> void;
 
-    auto addNotif(std::string title, std::string contents, int msDelay = 3000) {
-        this->notifications.push_back(std::make_unique<Notification>(title, contents, msDelay));
+    auto addNotif(std::string title, std::string contents, int msDelay = 3000, Notification::Type type = Notification::Type::Default) {
+        this->notifications.push_back(std::make_unique<Notification>(title, contents, msDelay, type));
     };
 
     auto setFontSize(float font_size) -> void {
