@@ -13,7 +13,7 @@ class Client {
 /* Constructor, Deconstructor */
 
 public:
-    Client(const char* client_name);
+    Client(const char* client_name, Version client_version);
     ~Client(void);
     
 /* Client Name, Client Version */
@@ -23,7 +23,7 @@ public:
     
 private:
     std::string name;
-    Version version = Version(3, 0, 0);
+    Version version;
 
 /* Runtime Attributes */
 
