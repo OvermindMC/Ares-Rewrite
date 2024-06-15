@@ -39,6 +39,7 @@ auto Client::init(void) -> void {
     this->nfMgr_raw_ptr->addNotif(std::string(this->name + ", " + this->version.get()), "Running v" + this->version.get());
 
     this->socketLayer = new SocketLayer(this); /* Create Socket Connection to back-end Server */
+    this->socketLayer->start();
     
     this->mgr_raw_ptr = new Manager(this); /* Create new Manager instance */
     this->mgr_raw_ptr->init();
