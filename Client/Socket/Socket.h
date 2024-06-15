@@ -24,6 +24,7 @@ public:
     auto run(void) -> void;
 
     auto isConnected(void) -> bool;
+    auto sendToStream(json&) -> json;
 
     std::thread socketThread;
     std::atomic<bool> running;
