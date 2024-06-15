@@ -33,8 +33,61 @@ auto SocketLayer::tryConnect(void) -> void {
                 closesocket(this->clientSocket);
                 this->clientSocket = INVALID_SOCKET;
                 WSACleanup();
+            } else {
+                auto curr_ver = this->client->getVersion().get();
+                json data = {
+                    {"version", curr_ver}, {"type", "version"}
+                };
+                auto result = this->sendToStream(data);
+                Debugger::log(result.dump());
+
+                if(result.contains("data") && result["data"].contains("version") && result["data"].contains("patch_notes")) {
+                    auto latest_ver = Version(result["data"]["version"].get<std::string>());
+                    
+                    if(latest_ver > curr_ver) {
+                        this->client->addNotif("Update", std::string(this->client->getName() + " v" + latest_ver.get()), 5000, true);
+                    };
+                };
             };
         };
+    };
+};
+
+auto SocketLayer::start(void) -> void {
+    if(this->running)
+        return;
+    
+    this->running = true;
+    this->socketThread = std::thread(&SocketLayer::run, this);
+};
+
+auto SocketLayer::stop(void) -> void {
+    if(!this->running)
+        return;
+    
+    this->running = false;
+
+    if (clientSocket != INVALID_SOCKET) {
+        closesocket(clientSocket);
+        this->clientSocket = INVALID_SOCKET;
+        WSACleanup();
+    };
+    
+    if(this->socketThread.joinable())
+        this->socketThread.join();
+};
+
+auto SocketLayer::run(void) -> void {
+    while(this->running) {
+        if(this->isConnected()) {
+            //
+        } else {
+            this->tryConnect();
+
+            if(this->clientSocket != INVALID_SOCKET)
+                this->client->addNotif("Ares Server", "Connected!", 1000);
+        };
+        Sleep(100);
     };
 };
 
@@ -99,40 +152,79 @@ auto SocketLayer::isConnected(void) -> bool {
     return false;
 };
 
-auto SocketLayer::start(void) -> void {
-    if(this->running)
-        return;
-    
-    this->running = true;
-    this->socketThread = std::thread(&SocketLayer::run, this);
-};
+auto SocketLayer::sendToStream(json& data) -> json {
+    WSAEVENT event = WSACreateEvent();
+    json result = { {"success", false} };
 
-auto SocketLayer::stop(void) -> void {
-    if(!this->running)
-        return;
-    
-    this->running = false;
-
-    if (clientSocket != INVALID_SOCKET) {
-        closesocket(clientSocket);
-        this->clientSocket = INVALID_SOCKET;
-        WSACleanup();
+    if (event == WSA_INVALID_EVENT) {
+        Debugger::log("WSACreateEvent failed");
+        return result;
     };
-    
-    if(this->socketThread.joinable())
-        this->socketThread.join();
-};
 
-auto SocketLayer::run(void) -> void {
-    while(this->running) {
-        if(this->isConnected()) {
-            //
-        } else {
-            this->tryConnect();
+    if (WSAEventSelect(clientSocket, event, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR) {
+        Debugger::log("WSAEventSelect failed");
+        WSACloseEvent(event);
+        return result;
+    };
 
-            if(this->clientSocket != INVALID_SOCKET)
-                this->client->addNotif("Ares Server", "Connected!", 1000);
+    auto dump = data.dump();
+
+    int bytesSent = send(clientSocket, dump.c_str(), static_cast<int>(dump.length()), 0);
+    if (bytesSent == SOCKET_ERROR) {
+        Debugger::log("Send failed: " + std::to_string(WSAGetLastError()));
+        WSACloseEvent(event);
+        return result;
+    };
+
+    DWORD resultFlags = WSA_WAIT_EVENT_0;
+    bool eventOccurred = false;
+
+    while (!eventOccurred) {
+        DWORD waitResult = WSAWaitForMultipleEvents(1, &event, FALSE, 5000, FALSE); // Timeout after 5 seconds
+        if (waitResult == WSA_WAIT_FAILED) {
+            Debugger::log("WSAWaitForMultipleEvents failed");
+            break;
+        } else if (waitResult == WSA_WAIT_TIMEOUT) {
+            Debugger::log("Timeout waiting for socket event");
+            break;
         };
-        Sleep(1000);
+
+        WSANETWORKEVENTS networkEvents;
+        ZeroMemory(&networkEvents, sizeof(networkEvents));
+
+        if (WSAEnumNetworkEvents(clientSocket, event, &networkEvents) == SOCKET_ERROR) {
+            Debugger::log("WSAEnumNetworkEvents failed");
+            break;
+        };
+
+        if (networkEvents.lNetworkEvents & FD_READ) {
+            char buffer[1024];
+            int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
+
+            if (bytesReceived == SOCKET_ERROR || bytesReceived == 0) {
+                Debugger::log("Recv failed or connection closed");
+                break;
+            };
+
+            buffer[bytesReceived] = '\0';
+
+            try {
+                result = json::parse(std::string(buffer));
+                result["success"] = true;
+            } catch (const std::exception& e) {
+                Debugger::log("JSON parsing error: " + std::string(e.what()));
+            };
+
+            eventOccurred = true;
+            break;
+        };
+
+        if (networkEvents.lNetworkEvents & FD_CLOSE) {
+            Debugger::log("Socket closed by server");
+            break;
+        };
     };
+
+    WSACloseEvent(event);
+    return result;
 };
