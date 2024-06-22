@@ -64,25 +64,6 @@ auto Manager::init(void) -> void {
         this->initSubModules();
 
         this->dispatchEvent<EventType::Modules_Initialized>();
-
-        while(this->client_instance_raw_ptr->isRunning()) {
-
-            for(auto& pair : this->categories) {
-                for(auto module : pair.second->getModules()) {
-                    module->baseTick();
-                };
-            };
-
-            Sleep(1);
-
-        };
-
-        for(auto& pair : this->categories) {
-            for(auto module : pair.second->getModules()) {
-                module->setState(false);
-                module->baseTick();
-            };
-        };
     };
 
 };
@@ -183,9 +164,30 @@ auto Manager::initSubModules(void) -> void {
     new AutoSprint(this);
     
     new TimerMod(this);
-    new TestMod(this);
+    //new TestMod(this);
     new Uninject(this);
 
+};
+
+auto Manager::tickModules(void) -> void {
+    while(this->client_instance_raw_ptr->isRunning()) {
+
+        for(auto& pair : this->categories) {
+            for(auto module : pair.second->getModules()) {
+                module->baseTick();
+            };
+        };
+
+        Sleep(1);
+
+    };
+
+    for(auto& pair : this->categories) {
+        for(auto module : pair.second->getModules()) {
+            module->setState(false);
+            module->baseTick();
+        };
+    };
 };
 
 auto Manager::registerHook(void* hook_raw_ptr) -> bool {
