@@ -237,10 +237,10 @@ auto Renderer::newFrame(void) -> void {
     if(!Renderer::initialized)
         return;
     
-    ImFX::NewFrame(Renderer::dev, Renderer::surfaceBuffer, 0.f);
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+    ImFX::NewFrame(Renderer::dev, Renderer::surfaceBuffer, 0.f);
 
 };
 
