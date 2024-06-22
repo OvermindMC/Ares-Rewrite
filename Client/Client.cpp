@@ -7,8 +7,8 @@ Client::Client(const char* client_name, Version client_version) : name(client_na
 Client::~Client() {
 
     delete this->mgr_raw_ptr;
-    delete this->socketLayer;
     delete this->nfMgr_raw_ptr;
+    delete this->socketLayer;
 
 };
 
@@ -37,12 +37,14 @@ auto Client::init(void) -> void {
     this->nfMgr_raw_ptr = new NotificationManager(this); /* Create new Notification Manager Instance */
 
     this->nfMgr_raw_ptr->addNotif(std::string(this->name + ", " + this->version.get()), "Running v" + this->version.get());
-
-    this->socketLayer = new SocketLayer(this); /* Create Socket Connection to back-end Server */
-    this->socketLayer->start();
     
     this->mgr_raw_ptr = new Manager(this); /* Create new Manager instance */
+
+    this->socketLayer = new SocketLayer(this); /* Create Socket Connection to back-end Server */
+    
     this->mgr_raw_ptr->init();
+    this->socketLayer->start();
+    this->mgr_raw_ptr->tickModules();
 
 };
 
