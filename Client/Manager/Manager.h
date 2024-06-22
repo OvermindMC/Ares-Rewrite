@@ -35,6 +35,8 @@ public:
     auto initCategories(void) -> void;
     auto initSubModules(void) -> void;
 
+    auto tickModules(void) -> void;
+
     template<typename T>
     auto getSig(std::string query) -> T {
         return (this->signature_map.contains(query) ? (T)this->signature_map.at(query) : T{});
