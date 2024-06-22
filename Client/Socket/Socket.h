@@ -33,6 +33,7 @@ public:
     std::atomic<bool> running;
 
     PTR_ACCESS(Client*, client, client_ptr);
+    PTR_ACCESS(AresUser*, user, aresUser);
 };
 
 class AresUser {
@@ -42,16 +43,16 @@ public:
     class AresVersion {
         private:
             std::string version;
-            std::string patchnotes;
+            json patchnotes = {};
         public:
-            AresVersion(std::string latest_ver, std::string patch_notes) : version(latest_ver), patchnotes(patch_notes) {};
+            AresVersion(std::string latest_ver, json patch_notes) : version(latest_ver), patchnotes(patch_notes) {};
 
             auto isValid(void) -> bool {
                 return version.length() > 0;
             };
 
-            auto get(void) -> const std::string& {
-                return this->version;
+            auto get(void) -> std::pair<const std::string&, const json&> {
+                return std::pair<const std::string&, const json&>(this->version, this->patchnotes);
             };
     };
 
