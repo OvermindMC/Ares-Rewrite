@@ -19,10 +19,6 @@ Manager::~Manager() {
     };
 };
 
-bool Manager::hasInit(InitType type) const {
-    return this->initResults.contains(type) ? this->initResults.at(type) == ResultStatus::OKAY : false;
-};
-
 void Manager::initHooks() {
     if(this->hasInit(InitType::Hooks))
         return;
