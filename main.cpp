@@ -1,21 +1,15 @@
 #include "Client/Client.h"
 
-auto init(HINSTANCE hInstance) -> void {
-
-    auto client = new Client("Ares", Version("3.0.0"));
-    client->init();
-
+void init() {
+    Client* client = new Client("Ares", Version(4, 0, 0));
+    
     delete client;
-    Debugger::free();
     FreeLibraryAndExitThread(Mem::getDll(), 1);
-
 };
 
-auto WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID lpRes) -> BOOL {
-
-    if(fdwReason == DLL_PROCESS_ATTACH)
+BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, LPVOID lpRes) {
+    if(fdwReason == DLL_PROCESS_ATTACH) {
         CreateThread(0, 0, (LPTHREAD_START_ROUTINE)init, hInstance, 0, 0);
-    
-    return 1;
-
+    };
+    return TRUE;
 };

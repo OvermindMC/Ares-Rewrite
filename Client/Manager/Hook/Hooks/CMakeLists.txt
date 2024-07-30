@@ -1,6 +1,0 @@
-add_subdirectory(Input)
-add_subdirectory(Level)
-add_subdirectory(Screen)
-add_subdirectory(Packet)
-add_subdirectory(SwapChain)
-add_subdirectory(RenderContext)

@@ -1,316 +1,45 @@
 #include "Manager.h"
-#include "Hook/Hook.h"
-#include "Modules/Module/Module.h"
+#include "../Client.h"
 
-Manager::Manager(Client* client_raw_ptr) : client_instance_raw_ptr(client_raw_ptr) {};
-
-Manager::~Manager(void) {
-
-    this->categories.clear();
-    this->cleanupHooks();
-
-    ImFX::CleanupFX();
-
-    MH_DisableHook(MH_ALL_HOOKS);
-    MH_Uninitialize();
-
+Manager::Manager(Client* client) : ciPtr(client) {
+    this->initHooks();
+    this->initCategories();
+    this->initSubModules();
 };
 
-auto Manager::init(void) -> void {
-
-    Debugger::log("Initialized Manager");
-
-    this->signature_map = {
-        {"Actor_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 89 03 48 C7 83 ? ? ? ? ? ? ? ? 48 8B 8B ? ? ? ?");
-            return ptr->get(Signature::SearchType::VTable);
-        }()},
-        {"Player_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 89 01 B8 ? ? ? ? 8D 50 FA 44 8D 48 FE 44 8D 40 FC 66 89 44 24 ? E8 ? ? ? ? 48 8B 8B ? ? ? ?");
-            return ptr->get(Signature::SearchType::VTable);
-        }()},
-        {"Level_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 89 ? 48 8D 05 ? ? ? ? 48 89 ? 18 48 8D 05 ? ? ? ? 48 89 ? 20 ? ? ? ? ? ? ? 48 ? ? ? ? E8 ? ? ? ? 48 8B");
-            return ptr->get(Signature::SearchType::VTable);
-        }()},
-        {"GameMode_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 11 48 8B 01 BA ? ? ? ? 48 8B 00 FF 15 ? ? ? ? 48 8B 8B ? ? ? ? 48 85 C9 74 17");
-            return ptr->get(Signature::SearchType::VTable);
-        }()},
-        {"LoopbackPacketSender_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 8B 5C 24 ? 48 89 06 33 C0 48 89 7E ? C6 46 ? 01 48");
-            return ptr->get(Signature::SearchType::VTable);
-        }()},
-        {"ScreenController_VTable", []() {
-            auto ptr = std::make_unique<Signature>("48 8D 05 ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? 48 89 83 ? ? ? ? F2 0F 10 05 ? ? ? ?");
-            return ptr->get(Signature::SearchType::VTable);
-        }()},
-        {"MouseInput", []() {
-            auto ptr = std::make_unique<Signature>("48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 57 41 54 41 55 41 56 41 57 48 83 EC 60");
-            return ptr->get(Signature::SearchType::Default);
-        }()},
-        {"KeyInput", []() {
-            auto ptr = std::make_unique<Signature>("48 83 EC 48 0F B6 C1 4C 8D 05");
-            return ptr->get(Signature::SearchType::Default);
-        }()},
-        {"MinecraftUIRenderCtx", []() {
-            auto ptr = std::make_unique<Signature>("E8 ? ? ? ? 48 8B 44 24 ? 48 8D 4C 24 ? 48 8B 80 ? ? ? ?");
-            return ptr->get(Signature::SearchType::Ref);
-        }()}
+Manager::~Manager() {
+    if(this->hasInit(InitType::Hooks)) {
+        MH_DisableHook(MH_ALL_HOOKS);
+        MH_Uninitialize();
     };
-
-    if(this->initHooks()) {
-        this->initCategories();
-        this->initSubModules();
-
-        this->dispatchEvent<EventType::Modules_Initialized>();
-    };
-
 };
 
-auto Manager::cleanupHooks(void) -> void {
-
-    for (auto it = this->hooks.begin(); it != this->hooks.end(); ++it) {
-        auto curr_hook_raw_ptr = *it;
-        if (curr_hook_raw_ptr) {
-            auto currHook = static_cast<Hook<void>*>(curr_hook_raw_ptr);
-            delete currHook;
-            *it = nullptr;
-        };
-    };
-
-    this->hooks.clear();
-
+bool Manager::hasInit(InitType type) const {
+    return this->initResults.contains(type) ? this->initResults.at(type) == ResultStatus::OKAY : false;
 };
 
-#include "Hook/Hooks/Level/Tick.h"
-
-#include "Hook/Hooks/Packet/SendToServer.h"
-
-#include "Hook/Hooks/SwapChain/Present.h"
-#include "Hook/Hooks/SwapChain/ResizeBuffers.h"
-
-#include "Hook/Hooks/Input/Key/KeyInput.h"
-#include "Hook/Hooks/Input/Mouse/MouseInput.h"
-
-#include "Hook/Hooks/Screen/ScreenController.h"
-#include "Hook/Hooks/RenderContext/RenderContext.h"
-
-auto Manager::initHooks(void) -> bool {
-
-    if(MH_Initialize() != MH_OK)
-        return false;
+void Manager::initHooks() {
+    if(this->hasInit(InitType::Hooks))
+        return;
     
-    new ScreenController_TickHook(this);
-    new SwapChain_ResizeBuffers(this);
-    new SwapChain_PresentHook(this);
-    new RenderContext_Hook(this);
-    new SendToServer_Hook(this);
-    new Level_TickHook(this);
-    new MouseInput_Hook(this);
-    new KeyInput_Hook(this);
+    MH_STATUS res = MH_Initialize();
 
-    return true;
-
-};
-
-auto Manager::initCategories(void) -> void {
-
-    for(auto i = static_cast<int>(CategoryType::COMBAT); i <= static_cast<int>(CategoryType::MISC); i++) {
-        
-        auto type = static_cast<CategoryType>(i);
-        
-        if(!this->categories.contains(type)) {
-            this->categories[type] = std::make_unique<Category>(this, type);
-            Debugger::log(
-                std::string("Initializing Category <" + this->categories[type]->getName() + ">")
-            );
-        };
-
+    if(res != MH_OK) {
+        this->initResults.emplace(InitType::Hooks, Result(ResultStatus::ERR, "Failed to initialize MinHook"));
+        return;
     };
 
+    this->initResults.emplace(InitType::Hooks, Result(ResultStatus::OKAY, "Successfully initialized MinHook"));
+
+    /*
+        Emplace hooks, etc
+    */
 };
 
-#include "Modules/Module/Combat/Killaura.h"
-#include "Modules/Module/Combat/Hitbox.h"
-
-#include "Modules/Module/Movement/AirJump.h"
-#include "Modules/Module/Movement/NoSlow.h"
-#include "Modules/Module/Movement/Speed.h"
-#include "Modules/Module/Movement/BHop.h"
-
-#include "Modules/Module/Render/ClickGui.h"
-#include "Modules/Module/Render/ModuleList.h"
-
-#include "Modules/Module/Player/AutoSprint.h"
-
-#include "Modules/Module/Misc/Timer.h"
-#include "Modules/Module/Misc/TestMod.h"
-#include "Modules/Module/Misc/Uninject.h"
-
-auto Manager::initSubModules(void) -> void {
-
-    new Killaura(this);
-    new Hitbox(this);
-    
-    new AirJump(this);
-    new NoSlow(this);
-    new Speed(this);
-    new BHop(this);
-
-    new ClickGui(this);
-    new ModuleList(this);
-
-    new AutoSprint(this);
-    
-    new TimerMod(this);
-    //new TestMod(this);
-    new Uninject(this);
-
+void Manager::initCategories() {
+    //
 };
 
-auto Manager::tickModules(void) -> void {
-    while(this->client_instance_raw_ptr->isRunning()) {
-
-        for(auto& pair : this->categories) {
-            for(auto module : pair.second->getModules()) {
-                module->baseTick();
-            };
-        };
-
-        Sleep(1);
-
-    };
-
-    for(auto& pair : this->categories) {
-        for(auto module : pair.second->getModules()) {
-            module->setState(false);
-            module->baseTick();
-        };
-    };
-};
-
-auto Manager::registerHook(void* hook_raw_ptr) -> bool {
-
-    auto hook = (Hook<void>*)hook_raw_ptr;
-    auto canPush = true;
-
-    for(auto curr_hook_raw_ptr : this->hooks) {
-
-        auto currHook = (Hook<void>*)curr_hook_raw_ptr;
-
-        if(strcmp(currHook->name, hook->name) == 0) {
-            Debugger::log(currHook->name);
-            canPush = false;
-            break;
-        };
-
-    };
-
-    if(canPush)
-        this->hooks.push_back(hook_raw_ptr);
-
-    return canPush;
-
-};
-
-auto Manager::getHookRaw(std::string query) -> void* {
-
-    auto hook_raw_ptr = (void*)nullptr;
-
-    for(auto curr_hook_raw_ptr : this->hooks) {
-
-        if(strcmp(((Hook<void>*)curr_hook_raw_ptr)->name, query.c_str()) == 0) {
-            hook_raw_ptr = curr_hook_raw_ptr;
-            break;
-        };
-
-    };
-
-    return hook_raw_ptr;
-
-};
-
-auto Manager::getCategories(void) -> std::vector<Category*> {
-
-    auto result = std::vector<Category*>();
-
-    for(auto& [ type, category ] : this->categories) {
-        result.push_back(category.get());
-    };
-
-    return result;
-
-};
-
-auto Manager::getCategory(CategoryType category_type) -> Category* {
-
-    return (this->categories.contains(category_type) ? this->categories.at(category_type).get() : nullptr);
-
-};
-
-auto Manager::getSortedEvents(void) -> std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>> {
-
-    auto dispatchers = std::vector<EventDispatcher*>();
-    for (auto& [type, category] : this->categories) {
-        for (auto module : category->getModules()) {
-            dispatchers.push_back(module->getEventDispatcher());
-        };
-    };
-
-    std::map<EventType, std::vector<std::pair<EventDispatcher::EventPriority, void*>>> result;
-    for (auto& dispatcher : dispatchers) {
-        for (const auto& [eventType, eventList] : dispatcher->events_map) {
-            if (!eventList.empty()) {
-                auto& destination = result[eventType];
-                destination.insert(destination.end(), eventList.begin(), eventList.end());
-            };
-        };
-    };
-
-    for (auto& [eventType, eventList] : result) {
-        std::sort(eventList.begin(), eventList.end(), [](const auto& a, const auto& b) {
-            return a.first > b.first;
-        });
-    };
-
-    return result;
-
-};
-
-auto Manager::isUsingKey(uint64_t key) -> bool {
-
-    for(auto [key, isDown] : this->keymap) {
-        if(key == key)
-            return isDown;
-    };
-
-    return false;
-
-};
-
-auto Manager::getMcKey(std::string query) -> int {
-    
-    auto instance = MC::getClientInstance();
-    auto inpH = instance->getInputHandler();
-    auto factMap = inpH ? inpH->inputMappingFactory : nullptr;
-    auto keyboard = factMap ? factMap->keyboardMouseSettings : nullptr;
-
-    if(!keyboard)
-        return 0;
-    
-    auto keys = keyboard->keyboard_type_0;
-    auto it = std::find_if(keys.begin(), keys.end(), [&](const MCKeyBind& mcKey){
-        return mcKey.name == query;
-    });
-
-    return (it != keys.end() && !it->bindKey.empty() ? it->bindKey[0] : 0);
-
-};
-
-auto Manager::isUsingMCKey(std::string query) -> bool {
-
-    auto key = this->getMcKey(query);
-    return this->keymap.contains(key) ? this->keymap.at(key) : false;
-
+void Manager::initSubModules() {
+    //
 };
