@@ -2,6 +2,9 @@
 
 #include "../Client.h"
 
+class Category;
+enum class CategoryType;
+
 class Manager {
 public:
     Manager(Client*);
@@ -13,7 +16,11 @@ public:
     void initHooks();
     void initCategories();
     void initSubModules();
+
+    template<CategoryType type>
+    Category* getCategory() { return categories.contains(type) ? categories.at(type).get() : nullptr; };
 private:
     Client* ciPtr = nullptr;
     std::map<InitType, Result> initResults;
+    std::map<CategoryType, std::unique_ptr<Category>> categories;
 };
