@@ -13,6 +13,10 @@ Manager::~Manager() {
         MH_DisableHook(MH_ALL_HOOKS);
         MH_Uninitialize();
     };
+
+    if(this->hasInit(InitType::Categories)) {
+        this->categories.clear();
+    };
 };
 
 bool Manager::hasInit(InitType type) const {
