@@ -6,6 +6,15 @@ Manager::Manager(Client* client) : ciPtr(client) {
     this->initHooks();
     this->initCategories();
     this->initSubModules();
+
+    for(auto& [ initType, result ] : this->initResults) {
+        Debugger::log(
+            std::string( initType == InitType::Hooks ? "Hooks" : initType == InitType::Categories ? "Categories" : initType == InitType::SubModules ? "Modules" : "" ) +
+            " [ " + result.toString() + " ]"
+        );
+    };
+
+    Sleep(8000);
 };
 
 Manager::~Manager() {
@@ -58,5 +67,5 @@ void Manager::initSubModules() {
         return;
     };
     
-    this->initResults.emplace(InitType::Hooks, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
+    this->initResults.emplace(InitType::SubModules, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
 };
