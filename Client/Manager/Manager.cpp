@@ -13,8 +13,6 @@ Manager::Manager(Client* client) : ciPtr(client) {
             " [ " + result.toString() + " ]"
         );
     };
-
-    Sleep(8000);
 };
 
 Manager::~Manager() {
