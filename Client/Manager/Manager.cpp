@@ -1,5 +1,6 @@
 #include "Manager.h"
 #include "../Client.h"
+#include "Modules/Category.h"
 
 Manager::Manager(Client* client) : ciPtr(client) {
     this->initHooks();
@@ -37,9 +38,25 @@ void Manager::initHooks() {
 };
 
 void Manager::initCategories() {
-    //
+    if(!this->hasInit(InitType::Hooks)) {
+        this->initResults.emplace(InitType::Categories, Result(ResultStatus::ERR, "Hooks were not initialized!"));
+        return;
+    };
+    
+    for(int i = 0; i < 6; i++) {
+        auto type = static_cast<CategoryType>(i + 1);
+        auto category = std::make_unique<Category>(this, type);
+        this->categories.emplace(type, std::move(category));
+    };
+
+    this->initResults.emplace(InitType::Categories, Result(ResultStatus::OKAY, "Successfully initialized Categories"));
 };
 
 void Manager::initSubModules() {
-    //
+    if(!this->hasInit(InitType::Categories)) {
+        this->initResults.emplace(InitType::Categories, Result(ResultStatus::ERR, "Categories were not initialized!"));
+        return;
+    };
+    
+    this->initResults.emplace(InitType::Hooks, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
 };
