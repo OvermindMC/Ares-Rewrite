@@ -11,7 +11,7 @@ public:
     ~Manager();
 
     enum class InitType { Hooks, Categories, SubModules };
-    bool hasInit(InitType type) const;
+    bool hasInit(InitType type) const { return this->initResults.contains(type) ? this->initResults.at(type) == ResultStatus::OKAY : false; };
 
     void initHooks();
     void initCategories();
