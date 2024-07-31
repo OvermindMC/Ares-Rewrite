@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../SDK/Minecraft.h"
 #include "../Utils/Utils.h"
 #include "../Mem/Mem.h"
 
