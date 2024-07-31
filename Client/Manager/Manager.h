@@ -13,6 +13,9 @@ public:
     enum class InitType { Hooks, Categories, SubModules };
     bool hasInit(InitType type) const { return this->initResults.contains(type) ? this->initResults.at(type) == ResultStatus::OKAY : false; };
 
+    bool isTicking() const;
+    void stop();
+    
     void initHooks();
     void initCategories();
     void initSubModules();
@@ -20,6 +23,7 @@ public:
     template<CategoryType type>
     Category* getCategory() { return categories.contains(type) ? categories.at(type).get() : nullptr; };
 private:
+    bool ticking = false;
     Client* ciPtr = nullptr;
     std::map<InitType, Result> initResults;
     std::map<CategoryType, std::unique_ptr<Category>> categories;
