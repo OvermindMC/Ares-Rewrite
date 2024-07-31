@@ -14,12 +14,15 @@ Manager::Manager(Client* client) : ciPtr(client) {
         );
     };
 
-    for(;;) {
+    this->ticking = true;
+
+    while(this->ticking) {
         for(auto& [ type, category ] : this->categories) {
             for(auto module : category->getModules()) {
                 module->baseTick();
             };
         };
+        Sleep(1);
     };
 };
 
@@ -32,6 +35,14 @@ Manager::~Manager() {
     if(this->hasInit(InitType::Categories)) {
         this->categories.clear();
     };
+};
+
+bool Manager::isTicking() const {
+    return this->ticking;
+};
+
+void Manager::stop() {
+    this->ticking = false;
 };
 
 void Manager::initHooks() {
