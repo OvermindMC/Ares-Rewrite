@@ -11,11 +11,8 @@ void* Mem::resPtr(uintptr_t baseOffset, const std::vector<unsigned int>& offsets
     uintptr_t current = baseOffset;
 
     if (useGameBase) {
-        HMODULE moduleHandle = GetModuleHandle(nullptr);
-        if (!moduleHandle) {
-            return nullptr;
-        };
-        current = reinterpret_cast<uintptr_t>(moduleHandle) + baseOffset;
+        const auto moduleBase = reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr));
+        current += moduleBase;
     };
 
     for (const auto& offset : offsets) {
