@@ -22,9 +22,13 @@ public:
 
     template<CategoryType type>
     Category* getCategory() { return categories.contains(type) ? categories.at(type).get() : nullptr; };
+
+    template<typename T>
+    T getSig(std::string query) { return signatures.contains(query) ? (T)signatures.at(query) : T{}; };
 private:
     bool ticking = false;
     Client* ciPtr = nullptr;
     std::map<InitType, Result> initResults;
+    std::map<std::string, void*> signatures;
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 };
