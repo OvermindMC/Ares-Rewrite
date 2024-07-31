@@ -1,6 +1,6 @@
 #include "Manager.h"
 #include "../Client.h"
-#include "Modules/Category.h"
+#include "Modules/Module/Module.h"
 
 Manager::Manager(Client* client) : ciPtr(client) {
     this->initHooks();
@@ -12,6 +12,14 @@ Manager::Manager(Client* client) : ciPtr(client) {
             std::string( initType == InitType::Hooks ? "Hooks" : initType == InitType::Categories ? "Categories" : initType == InitType::SubModules ? "Modules" : "" ) +
             " [ " + result.toString() + " ]"
         );
+    };
+
+    for(;;) {
+        for(auto& [ type, category ] : this->categories) {
+            for(auto module : category->getModules()) {
+                module->baseTick();
+            };
+        };
     };
 };
 
@@ -59,6 +67,9 @@ void Manager::initCategories() {
     this->initResults.emplace(InitType::Categories, Result(ResultStatus::OKAY, "Successfully initialized Categories"));
 };
 
+#include "Modules/Module/Misc/TestModule.h"
+#include "Modules/Module/Misc/Uninject.h"
+
 void Manager::initSubModules() {
     if(!this->hasInit(InitType::Categories)) {
         this->initResults.emplace(InitType::Categories, Result(ResultStatus::ERR, "Categories were not initialized!"));
@@ -66,4 +77,7 @@ void Manager::initSubModules() {
     };
     
     this->initResults.emplace(InitType::SubModules, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
+
+    new TestMod(this->getCategory<CategoryType::MISC>());
+    new Uninject(this->getCategory<CategoryType::MISC>());
 };
