@@ -16,10 +16,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(minhook)
 
+FetchContent_Declare(
+        libhat
+        GIT_REPOSITORY https://github.com/BasedInc/libhat
+        GIT_TAG 37ee990ef49e07571e9a948f78cd597c84a639d9
+)
+FetchContent_MakeAvailable(libhat)
+
 add_library(Ares SHARED)
 target_sources(Ares PRIVATE main.cpp)
-target_link_libraries(Ares PRIVATE minhook)
+target_link_libraries(Ares PRIVATE minhook libhat)
 
 add_subdirectory(Client)
 add_subdirectory(Utils)
 add_subdirectory(Mem)
+add_subdirectory(SDK)
