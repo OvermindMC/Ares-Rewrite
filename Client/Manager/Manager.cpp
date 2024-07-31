@@ -16,6 +16,14 @@ Manager::Manager(Client* client) : ciPtr(client) {
 
     this->ticking = true;
 
+    this->signatures = {
+        {"Level_VTable", []() {
+            auto sig = (uintptr_t)Mem::getSig("48 8D 05 ? ? ? ? 48 89 ? 48 8D 05 ? ? ? ? 48 89 ? 18 48 8D 05 ? ? ? ? 48 89 ? 20 ? ? ? ? ? ? ? 48 ? ? ? ? E8 ? ? ? ? 48 8B");
+            auto offset = *(int*)(sig + 3);
+            return (void**)(sig + offset + 7);
+        }()}
+    };
+
     while(this->ticking) {
         for(auto& [ type, category ] : this->categories) {
             for(auto module : category->getModules()) {
