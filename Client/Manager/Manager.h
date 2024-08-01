@@ -10,12 +10,13 @@ public:
     Manager(Client*);
     ~Manager();
 
-    enum class InitType { Hooks, Categories, SubModules };
+    enum class InitType { Sigs, Hooks, Categories, SubModules };
     bool hasInit(InitType type) const { return this->initResults.contains(type) ? this->initResults.at(type) == ResultStatus::OKAY : false; };
 
     bool isTicking() const;
     void stop();
     
+    void initSigs();
     void initHooks();
     void initCategories();
     void initSubModules();
