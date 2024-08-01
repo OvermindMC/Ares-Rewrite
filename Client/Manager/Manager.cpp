@@ -3,26 +3,19 @@
 #include "Modules/Module/Module.h"
 
 Manager::Manager(Client* client) : ciPtr(client) {
+    this->initSigs();
     this->initHooks();
     this->initCategories();
     this->initSubModules();
 
     for(auto& [ initType, result ] : this->initResults) {
         Debugger::log(
-            std::string( initType == InitType::Hooks ? "Hooks" : initType == InitType::Categories ? "Categories" : initType == InitType::SubModules ? "Modules" : "" ) +
+            std::string( initType == InitType::Sigs ? "Sigs" : initType == InitType::Hooks ? "Hooks" : initType == InitType::Categories ? "Categories" : initType == InitType::SubModules ? "Modules" : "" ) +
             " [ " + result.toString() + " ]"
         );
     };
 
     this->ticking = true;
-
-    this->signatures = {
-        {"Level_VTable", []() {
-            auto sig = (uintptr_t)Mem::getSig("48 8D 05 ? ? ? ? 48 89 ? 48 8D 05 ? ? ? ? 48 89 ? 18 48 8D 05 ? ? ? ? 48 89 ? 20 ? ? ? ? ? ? ? 48 ? ? ? ? E8 ? ? ? ? 48 8B");
-            auto offset = *(int*)(sig + 3);
-            return (void**)(sig + offset + 7);
-        }()}
-    };
 
     while(this->ticking) {
         for(auto& [ type, category ] : this->categories) {
@@ -53,6 +46,35 @@ void Manager::stop() {
     this->ticking = false;
 };
 
+void Manager::initSigs() {
+    this->signatures = {
+        {"Level_VTable", []() {
+            auto sig = (uintptr_t)Mem::getSig("48 8D 05 ? ? ? ? 48 89 ? 48 8D 05 ? ? ? ? 48 89 ? 18 48 8D 05 ? ? ? ? 48 89 ? 20 ? ? ? ? ? ? ? 48 ? ? ? ? E8 ? ? ? ? 48 8B");
+            auto offset = *(int*)(sig + 3);
+            return (void**)(sig + offset + 7);
+        }()},
+        {"GameMode_VTable", []() {
+            auto sig = (uintptr_t)Mem::getSig("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 11 48 8B 01 BA ? ? ? ? 48 8B 00 FF 15 ? ? ? ? 48 8B 8B ? ? ? ? 48 85 C9 74 17");
+            auto offset = *(int*)(sig + 3);
+            return (void**)(sig + offset + 7);
+        }()}
+    };
+
+    bool problem = false;
+    for(auto [ name, addr ] : this->signatures) {
+        if(addr == nullptr) {
+            Debugger::log("Signature failed at [" + name + "]");
+            Sleep(2000);
+            problem = true;
+        }
+    };
+
+    this->initResults.emplace(InitType::Sigs, Result(problem ? ResultStatus::ERR : ResultStatus::OKAY, problem ? "Failed to resolve all Signatures" : "Successfully resolved all Signatures"));
+};
+
+#include "Hook/Hooks/Level/Level_Hook.h"
+#include "Hook/Hooks/GameMode/GmTick_Hook.h"
+
 void Manager::initHooks() {
     if(this->hasInit(InitType::Hooks))
         return;
@@ -66,9 +88,8 @@ void Manager::initHooks() {
 
     this->initResults.emplace(InitType::Hooks, Result(ResultStatus::OKAY, "Successfully initialized MinHook"));
 
-    /*
-        Emplace hooks, etc
-    */
+    new Level_Hook(this);
+    new GmTick_Hook(this);
 };
 
 void Manager::initCategories() {
