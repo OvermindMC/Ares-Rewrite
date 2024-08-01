@@ -17,4 +17,6 @@ public:
     
     bool isOnGround() const;
     void setIsOnGround(bool);
+
+    float getSpeed() const;
 };
