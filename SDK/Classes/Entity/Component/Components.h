@@ -16,6 +16,10 @@ struct MaxAutoStepComponent {
     float stepHeight;
 };
 
+struct MovementSpeedComponent {
+    float speed;
+};
+
 struct BlockMovementSlowdownMultiplierComponent {};
 struct OnGroundFlagComponent {};
 struct ItemInUseComponent {};
