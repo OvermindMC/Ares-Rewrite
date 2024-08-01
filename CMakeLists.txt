@@ -19,7 +19,7 @@ FetchContent_MakeAvailable(minhook)
 FetchContent_Declare(
         EnTT
         GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG 41aab920b083aa424ac1d27666ce287eeaff6ceb
+        GIT_TAG f931687ff04d435871ac9664bb299f71f2a8fafc
 )
 FetchContent_MakeAvailable(EnTT)
 
@@ -36,7 +36,7 @@ target_sources(Ares PRIVATE main.cpp)
 add_compile_definitions(ENTT_SPARSE_PAGE=2048)
 add_compile_definitions(ENTT_PACKED_PAGE=128)
 
-target_link_libraries(Ares PRIVATE minhook libhat EnTT::EnTT)
+target_link_libraries(Ares PRIVATE minhook EnTT::EnTT libhat)
 
 add_subdirectory(Client)
 add_subdirectory(Utils)
