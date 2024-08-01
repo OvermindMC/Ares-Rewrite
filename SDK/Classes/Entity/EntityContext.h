@@ -32,9 +32,9 @@ struct EntityContext {
         };
     };
 
-    template<typename T>
-    void addComponent() {
-        return this->enttRegistry.get_or_emplace<T>(this->entity);
+    template<typename T, typename... Args>
+    auto addComponent(Args &&...args) -> decltype(auto) {
+        return this->enttRegistry.get_or_emplace<T>(this->entity, std::forward<Args>(args)...);
     };
 
     template<typename... T>
