@@ -1,11 +1,11 @@
 #pragma once
 
-#include <libhat/MemoryProtector.hpp>
 #include <libhat/Scanner.hpp>
-#include <libhat/Access.hpp>
+#include <type_traits>
 #include <MinHook.h>
 #include <Windows.h>
 #include <assert.h>
+#include <utility>
 #include <Psapi.h>
 #include <vector>
 #include <memory>
