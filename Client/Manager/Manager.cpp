@@ -18,11 +18,7 @@ Manager::Manager(Client* client) : ciPtr(client) {
     this->ticking = true;
 
     while(this->ticking) {
-        for(auto& [ type, category ] : this->categories) {
-            for(auto module : category->getModules()) {
-                module->baseTick();
-            };
-        };
+        this->dispatchEvent<EventType::BaseTick>();
         Sleep(1);
     };
 };
@@ -120,4 +116,26 @@ void Manager::initSubModules() {
 
     new TestMod(this->getCategory<CategoryType::MISC>());
     new Uninject(this->getCategory<CategoryType::MISC>());
+};
+
+std::vector<std::pair<EventDispatcher::EventPriority, void*>> Manager::getSortedEvents(EventType filterType) const {
+    std::vector<std::pair<EventDispatcher::EventPriority, void*>> events;
+
+    for (const auto& [type, category] : this->categories) {
+        for (const auto& module : category->getModules()) {
+            const auto& moduleEvents = module->evDispatcher->getEvents();
+            auto iter = moduleEvents.find(filterType);
+            
+            if (iter != moduleEvents.end()) {
+                const auto& eventList = iter->second;
+                events.insert(events.end(), eventList.begin(), eventList.end());
+            };
+        };
+    };
+
+    std::sort(events.begin(), events.end(), [](const auto& a, const auto& b) {
+        return a.first > b.first;
+    });
+
+    return events;
 };

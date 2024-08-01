@@ -1,11 +1,30 @@
 #include "Module.h"
 
-Module::Module(Category* category, const std::string& display_name) : cPtr(category), name(display_name) {
+Module::Module(Category* category, const std::string& display_name) : cPtr(category), evDis(new EventDispatcher()), name(display_name) {
     category->registerModule(this);
+
+    this->evDispatcher->registerEvent<EventType::BaseTick>(
+        EventDispatcher::EventPriority::High,
+        [&]() {
+            if(this->state.first != this->state.second) {
+                this->state.second = this->state.first;
+
+                if(this->state.first) {
+                    this->evDispatcher->dispatchEvent<EventType::OnEnable>();
+                } else {
+                    this->evDispatcher->dispatchEvent<EventType::OnDisable>();
+                };
+            };
+
+            if(this->state.first) {
+                this->evDispatcher->dispatchEvent<EventType::OnTick>();
+            };
+        }
+    );
 };
 
 Module::~Module() {
-    //
+    delete this->evDispatcher;
 };
 
 Manager* Module::getMgr() const {
@@ -22,20 +41,4 @@ void Module::setIsEnabled(bool state) {
 
 std::string Module::getName() const {
     return this->name;
-};
-
-void Module::baseTick() {
-    if(this->state.first != this->state.second) {
-        this->state.second = this->state.first;
-
-        if(this->state.first) {
-            this->onEnable();
-        } else {
-            this->onDisable();
-        };
-    };
-
-    if(this->state.first) {
-        this->onTick();
-    };
 };

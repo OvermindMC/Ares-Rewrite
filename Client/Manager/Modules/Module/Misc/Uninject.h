@@ -5,6 +5,4 @@
 class Uninject : public Module {
 public:
     Uninject(Category*);
-
-    void onEnable() override;
 };

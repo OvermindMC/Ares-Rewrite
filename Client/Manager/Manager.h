@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Client.h"
+#include "Event/Dispatcher.h"
 
 class Category;
 enum class CategoryType;
@@ -26,6 +27,20 @@ public:
 
     template<typename T>
     T getSig(std::string query) { return signatures.contains(query) ? (T)signatures.at(query) : T{}; };
+
+    std::vector<std::pair<EventDispatcher::EventPriority, void*>> getSortedEvents(EventType type) const;
+    template<EventType type, typename... Args>
+    void dispatchEvent(Args&&... args) {
+        auto sortedEvents = this->getSortedEvents(type);
+
+        for (const auto& [priority, eventPtr] : sortedEvents) {
+            auto* event = static_cast<Event<Args...>*>(eventPtr);
+
+            if (event && event->callback) {
+                event->callback(std::forward<Args>(args)...);
+            };
+        };
+    };
 private:
     bool ticking = false;
     Client* ciPtr = nullptr;

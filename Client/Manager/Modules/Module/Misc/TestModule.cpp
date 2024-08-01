@@ -2,16 +2,11 @@
 
 TestMod::TestMod(Category* c) : Module(c, "Test Module") {
     this->setIsEnabled(true);
-};
 
-void TestMod::onTick() {
-    //
-};
-
-void TestMod::onEnable(){
-    Debugger::log(this->getName() + " Enabled!");
-};
-
-void TestMod::onDisable() {
-    Debugger::log(this->getName() + " Disabled!");
+    this->evDispatcher->registerEvent<EventType::OnTick>(
+        EventDispatcher::EventPriority::High,
+        [&]() {
+            //
+        }
+    );
 };
