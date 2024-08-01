@@ -2,6 +2,7 @@
 
 #include <libhat/Scanner.hpp>
 #include <type_traits>
+#include <functional>
 #include <MinHook.h>
 #include <Windows.h>
 #include <assert.h>
