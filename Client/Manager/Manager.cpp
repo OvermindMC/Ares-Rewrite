@@ -118,17 +118,19 @@ void Manager::initSubModules() {
     new Uninject(this->getCategory<CategoryType::MISC>());
 };
 
-std::vector<std::pair<EventDispatcher::EventPriority, void*>> Manager::getSortedEvents(EventType filterType) const {
-    std::vector<std::pair<EventDispatcher::EventPriority, void*>> events;
+std::vector<std::pair<EventDispatcher::EventPriority, std::unique_ptr<BaseEvent>>> Manager::getSortedEvents(EventType filterType) const {
+    std::vector<std::pair<EventDispatcher::EventPriority, std::unique_ptr<BaseEvent>>> events;
 
     for (const auto& [type, category] : this->categories) {
         for (const auto& module : category->getModules()) {
-            const auto& moduleEvents = module->evDispatcher->getEvents();
+            const auto& moduleEvents = module->getEventDispatcher()->getEvents();
             auto iter = moduleEvents.find(filterType);
-            
+
             if (iter != moduleEvents.end()) {
                 const auto& eventList = iter->second;
-                events.insert(events.end(), eventList.begin(), eventList.end());
+                for (const auto& [priority, event] : eventList) {
+                    events.emplace_back(priority, event->clone());
+                };
             };
         };
     };
