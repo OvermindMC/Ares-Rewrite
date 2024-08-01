@@ -7,6 +7,10 @@ Vec3 Actor::getPosition() const {
     return Vec3();
 };
 
+void Actor::setPosition(Vec3 position) {
+    this->ctx.addComponent<ActorSetPositionRequestComponent>(std::move(position));
+};
+
 bool Actor::isJumping() const {
     return this->ctx.hasComponent<FlagComponent<MobIsJumpingFlag>>();
 };
