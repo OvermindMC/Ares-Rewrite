@@ -22,8 +22,10 @@ public:
     void initCategories();
     void initSubModules();
 
+    Category* getCategory(CategoryType type) { return categories.contains(type) ? categories.at(type).get() : nullptr; };
+    
     template<CategoryType type>
-    Category* getCategory() { return categories.contains(type) ? categories.at(type).get() : nullptr; };
+    Category* getCategory() { return getCategory(type); };
 
     template<typename T>
     T getSig(std::string query) { return signatures.contains(query) ? (T)signatures.at(query) : T{}; };
