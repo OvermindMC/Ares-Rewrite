@@ -22,3 +22,10 @@ void Actor::setIsOnGround(bool state) {
         this->ctx.removeComponent<OnGroundFlagComponent>();
     };
 };
+
+float Actor::getSpeed() const {
+    if(auto* msc = this->ctx.tryGetComponent<MovementSpeedComponent>()) {
+        return msc->speed;
+    };
+    return 0.f;
+};
