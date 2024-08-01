@@ -1,21 +1,24 @@
 #include "Actor.h"
 
 Vec3 Actor::getPosition() const {
-    return this->getComponent<StateVectorComponent>()->position;
+    if(auto* svc = this->ctx.tryGetComponent<StateVectorComponent>()) {
+        return svc->oldPosition;
+    };
+    return Vec3();
 };
 
 bool Actor::isJumping() const {
-    return this->hasComponent<FlagComponent<MobIsJumpingFlag>>();
+    return this->ctx.hasComponent<FlagComponent<MobIsJumpingFlag>>();
 };
 
 bool Actor::isOnGround() const {
-    return this->hasComponent<OnGroundFlagComponent>();
+    return this->ctx.hasComponent<OnGroundFlagComponent>();
 };
 
 void Actor::setIsOnGround(bool state) {
     if(state && !this->isOnGround()) {
-        this->ctx.registry.emplace<OnGroundFlagComponent>(this->ctx.entityId);
+        this->ctx.addComponent<OnGroundFlagComponent>();
     } else if(!state && this->isOnGround()) {
-        this->removeComponent<OnGroundFlagComponent>();
+        this->ctx.removeComponent<OnGroundFlagComponent>();
     };
 };
