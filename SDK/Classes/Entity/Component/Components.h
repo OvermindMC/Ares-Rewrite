@@ -20,6 +20,14 @@ struct MovementSpeedComponent {
     float speed;
 };
 
+struct SwimSpeedMultiplierComponent {
+    float speed;
+};
+
+struct ActorSetPositionRequestComponent {
+    Vec3 position;
+};
+
 struct BlockMovementSlowdownMultiplierComponent {};
 struct OnGroundFlagComponent {};
 struct ItemInUseComponent {};
