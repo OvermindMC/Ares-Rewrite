@@ -4,5 +4,7 @@
 #include "../../../Utils/Utils.h"
 
 enum class EventType {
-    BaseTick = 0, OnTick = 1, OnEnable = 2, OnDisable = 3
+    BaseTick = 0, OnTick = 1, OnEnable = 2, OnDisable = 3,
+
+    OnLevel = 4, OnGameMode = 5
 };
