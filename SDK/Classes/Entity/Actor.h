@@ -12,6 +12,7 @@ public:
     EntityContext ctx;
 
     Vec3 getPosition() const;
+    void setPosition(Vec3);
     
     bool isJumping() const;
     
