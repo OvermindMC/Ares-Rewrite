@@ -12,14 +12,10 @@ struct StateVectorComponent {
     Vec3 positionDelta;
 };
 
-struct OnGroundFlagComponent {
-    //
+struct MaxAutoStepComponent {
+    float stepHeight;
 };
 
-struct BlockMovementSlowdownMultiplierComponent {
-    //
-};
-
-struct ItemInUseComponent {
-    //
-};
+struct BlockMovementSlowdownMultiplierComponent {};
+struct OnGroundFlagComponent {};
+struct ItemInUseComponent {};
