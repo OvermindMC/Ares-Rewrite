@@ -45,11 +45,12 @@ public:
             };
         };
     };
+
+    std::unique_ptr<LuaScripting> luaScripting;
 private:
     bool ticking = false;
     Client* ciPtr = nullptr;
     std::map<InitType, Result> initResults;
     std::map<std::string, void*> signatures;
-    std::unique_ptr<LuaScripting> luaScripting;
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 };
