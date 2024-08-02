@@ -2,6 +2,7 @@
 
 #include "../Client.h"
 #include "Event/Dispatcher.h"
+#include "Lua/LuaScripting.h"
 
 class Category;
 enum class CategoryType;
@@ -49,5 +50,6 @@ private:
     Client* ciPtr = nullptr;
     std::map<InitType, Result> initResults;
     std::map<std::string, void*> signatures;
+    std::unique_ptr<LuaScripting> luaScripting;
     std::map<CategoryType, std::unique_ptr<Category>> categories;
 };

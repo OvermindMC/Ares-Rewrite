@@ -2,7 +2,7 @@
 #include "../Client.h"
 #include "Modules/Module/Module.h"
 
-Manager::Manager(Client* client) : ciPtr(client) {
+Manager::Manager(Client* client) : ciPtr(client), luaScripting(std::make_unique<LuaScripting>(this)) {
     this->initSigs();
     this->initHooks();
     this->initCategories();

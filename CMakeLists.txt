@@ -10,33 +10,38 @@ set_property(GLOBAL PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 include(FetchContent)
 
 FetchContent_Declare(
-        minhook
-        GIT_REPOSITORY https://github.com/TsudaKageyu/minhook.git
-        GIT_TAG master
+    minhook
+    GIT_REPOSITORY https://github.com/TsudaKageyu/minhook.git
+    GIT_TAG master
 )
 FetchContent_MakeAvailable(minhook)
 
 FetchContent_Declare(
-        EnTT
-        GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG f931687ff04d435871ac9664bb299f71f2a8fafc
+    EnTT
+    GIT_REPOSITORY https://github.com/skypjack/entt.git
+    GIT_TAG f931687ff04d435871ac9664bb299f71f2a8fafc
 )
 FetchContent_MakeAvailable(EnTT)
 
 FetchContent_Declare(
-        libhat
-        GIT_REPOSITORY https://github.com/BasedInc/libhat
-        GIT_TAG 37ee990ef49e07571e9a948f78cd597c84a639d9
+    libhat
+    GIT_REPOSITORY https://github.com/BasedInc/libhat
+    GIT_TAG 37ee990ef49e07571e9a948f78cd597c84a639d9
 )
 FetchContent_MakeAvailable(libhat)
 
+set(LUA_SRC_DIR "${CMAKE_SOURCE_DIR}/Include/Lua/src")
+set(LUA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Include/Lua/src")
+
+file(GLOB LUA_SOURCES "${LUA_SRC_DIR}/*.c")
+
+add_library(lua_static STATIC ${LUA_SOURCES})
+target_include_directories(lua_static PUBLIC ${LUA_INCLUDE_DIR})
+
 add_library(Ares SHARED)
 target_sources(Ares PRIVATE main.cpp)
-
-add_compile_definitions(ENTT_SPARSE_PAGE=2048)
-add_compile_definitions(ENTT_PACKED_PAGE=128)
-
-target_link_libraries(Ares PRIVATE minhook EnTT::EnTT libhat)
+target_link_libraries(Ares PRIVATE minhook EnTT::EnTT libhat lua_static)
+target_include_directories(Ares PRIVATE ${LUA_INCLUDE_DIR})
 
 add_subdirectory(Client)
 add_subdirectory(Utils)

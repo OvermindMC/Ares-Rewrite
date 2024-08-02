@@ -6,6 +6,7 @@
 #include <MinHook.h>
 #include <Windows.h>
 #include <assert.h>
+#include <lua.hpp>
 #include <utility>
 #include <Psapi.h>
 #include <vector>
