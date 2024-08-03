@@ -30,18 +30,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(libhat)
 
-set(LUA_SRC_DIR "${CMAKE_SOURCE_DIR}/Include/Lua/src")
-set(LUA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Include/Lua/src")
-
-file(GLOB LUA_SOURCES "${LUA_SRC_DIR}/*.c")
-
-add_library(lua_static STATIC ${LUA_SOURCES})
-target_include_directories(lua_static PUBLIC ${LUA_INCLUDE_DIR})
-
 add_library(Ares SHARED)
 target_sources(Ares PRIVATE main.cpp)
-target_link_libraries(Ares PRIVATE minhook EnTT::EnTT libhat lua_static)
-target_include_directories(Ares PRIVATE ${LUA_INCLUDE_DIR})
+target_link_libraries(Ares PRIVATE minhook EnTT::EnTT libhat)
 
 add_subdirectory(Client)
 add_subdirectory(Utils)

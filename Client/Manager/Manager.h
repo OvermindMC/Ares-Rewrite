@@ -2,7 +2,6 @@
 
 #include "../Client.h"
 #include "Event/Dispatcher.h"
-#include "Lua/LuaScripting.h"
 
 class Category;
 enum class CategoryType;
@@ -45,8 +44,6 @@ public:
             };
         };
     };
-
-    std::unique_ptr<LuaScripting> luaScripting;
 private:
     bool ticking = false;
     Client* ciPtr = nullptr;

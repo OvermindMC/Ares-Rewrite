@@ -2,7 +2,7 @@
 #include "../Client.h"
 #include "Modules/Module/Module.h"
 
-Manager::Manager(Client* client) : ciPtr(client), luaScripting(std::make_unique<LuaScripting>(this)) {
+Manager::Manager(Client* client) : ciPtr(client) {
     this->initSigs();
     this->initHooks();
     this->initCategories();
@@ -103,6 +103,7 @@ void Manager::initCategories() {
     this->initResults.emplace(InitType::Categories, Result(ResultStatus::OKAY, "Successfully initialized Categories"));
 };
 
+#include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Misc/TestModule.h"
 #include "Modules/Module/Misc/Uninject.h"
 
@@ -114,6 +115,7 @@ void Manager::initSubModules() {
     
     this->initResults.emplace(InitType::SubModules, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
 
+    new AirJump(this->getCategory<CategoryType::MOVE>());
     new TestMod(this->getCategory<CategoryType::MISC>());
     new Uninject(this->getCategory<CategoryType::MISC>());
 };
