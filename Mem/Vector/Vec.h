@@ -78,6 +78,14 @@ public:
         return std::sqrt(x * x + y * y + z * z);
     };
 
+    Vec3 lerp(const Vec3& target, float t) const {
+        return Vec3(
+            x + (target.x - x) * t,
+            y + (target.y - y) * t,
+            z + (target.z - z) * t
+        );
+    };
+
     std::string toStr() const {
         std::ostringstream ss;
         ss << x << ", " << y << ", " << z;
