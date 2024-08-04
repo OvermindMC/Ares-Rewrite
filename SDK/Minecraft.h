@@ -8,4 +8,5 @@
 class MC {
 public:
     static ClientInstance* getClientInstance();
+    static Player* getLocalPlayer();
 };
