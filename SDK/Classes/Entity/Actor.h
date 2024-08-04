@@ -11,6 +11,8 @@ private:
 public:
     EntityContext ctx;
 
+    bool isAlive() const;
+
     Vec3 getPosition() const;
     void setPosition(Vec3);
     
