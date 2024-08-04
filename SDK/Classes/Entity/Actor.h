@@ -20,4 +20,8 @@ public:
     void setIsOnGround(bool);
 
     float getSpeed() const;
+
+    Vec3 getMotion() const;
+    void setMotion(Vec3);
+    void lerpMotion(Vec3, float);
 };
