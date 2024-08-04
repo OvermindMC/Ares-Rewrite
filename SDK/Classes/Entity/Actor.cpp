@@ -1,5 +1,13 @@
 #include "Actor.h"
 
+bool Actor::isAlive() const {
+    static void* sig = Mem::getSig("48 83 EC 28 80 B9 ? ? ? ? ? 75 10"); // vtable index[50] - 1.21.2
+    using Func = bool (__thiscall*)(Actor*);
+    Func func = (Func)sig;
+
+    return func ? func(const_cast<Actor*>(this)) : false;
+};
+
 Vec3 Actor::getPosition() const {
     if(auto* svc = this->ctx.tryGetComponent<StateVectorComponent>()) {
         return svc->oldPosition;
