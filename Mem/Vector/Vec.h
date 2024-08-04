@@ -56,6 +56,31 @@ public:
     };
 };
 
+class Vec3i : public Vec2i {
+public:
+    int z;
+
+    Vec3i(int xOff = 0, int yOff = 0, int zOff = 0) : Vec2i(xOff, yOff), z(zOff) {};
+
+    Vec3i operator+(const Vec3i& other) const {
+        return Vec3i(x + other.x, y + other.y, z + other.z);
+    };
+
+    Vec3i operator-(const Vec3i& other) const {
+        return Vec3i(x - other.x, y - other.y, z - other.z);
+    };
+
+    Vec3i operator*(int scalar) const {
+        return Vec3i(x * scalar, y * scalar, z * scalar);
+    };
+
+    std::string toStr() const {
+        std::ostringstream ss;
+        ss << x << ", " << y << ", " << z;
+        return ss.str();
+    };
+};
+
 class Vec3 : public Vec2 {
 public:
     float z;
