@@ -7,4 +7,5 @@ private:
     virtual ~Player();
 public:
     void setSprinting(bool);
+    void displayClientMsg(std::string);
 };
