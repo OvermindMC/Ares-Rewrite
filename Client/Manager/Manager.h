@@ -33,7 +33,7 @@ public:
     std::vector<std::pair<EventDispatcher::EventPriority, std::unique_ptr<BaseEvent>>> getSortedEvents(EventType filterType) const;
 
     template<EventType type, typename... Args>
-    void dispatchEvent(Args&&... args) {
+    void dispatchEvent(Args... args) {
         auto sortedEvents = this->getSortedEvents(type);
 
         for (const auto& [priority, eventPtr] : sortedEvents) {
