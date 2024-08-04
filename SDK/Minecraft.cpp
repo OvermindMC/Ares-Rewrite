@@ -9,3 +9,8 @@ ClientInstance* MC::getClientInstance() {
     static auto ptr = Mem::resPtr(baseOffset, { 0x0, 0x58, 0x0, 0x0 });
     return ptr ? (ClientInstance*)ptr : nullptr;
 };
+
+Player* MC::getLocalPlayer() {
+    ClientInstance* ci = getClientInstance();
+    return ci ? ci->getPlayer() : nullptr;
+};
