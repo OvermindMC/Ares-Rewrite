@@ -14,3 +14,24 @@ Player* MC::getLocalPlayer() {
     ClientInstance* ci = getClientInstance();
     return ci ? ci->getPlayer() : nullptr;
 };
+
+std::vector<Actor*> MC::getEntities() {
+    std::vector<Actor*> results;
+
+    if (auto player = getLocalPlayer()) {
+        if (auto ctx = &player->ctx) {
+            auto& registry = ctx->enttRegistry;
+
+            for (auto ent : registry.view<ActorOwnerComponent>()) {
+                if (registry.valid(ent)) {
+                    auto& ownerComponent = registry.get<ActorOwnerComponent>(ent);
+                    if (auto actor = ownerComponent.actor; actor && actor->isAlive()) {
+                        results.push_back(actor);
+                    };
+                };
+            };
+        };
+    };
+
+    return results;
+};
