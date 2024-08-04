@@ -2,6 +2,11 @@
 
 #include "Flags.h"
 
+class ActorOwnerComponent {
+public:
+    class Actor* actor;
+};
+
 struct RuntimeIDComponent {
     uint64_t runtimeId;
 };
