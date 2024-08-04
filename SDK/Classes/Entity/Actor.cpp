@@ -33,3 +33,23 @@ float Actor::getSpeed() const {
     };
     return 0.f;
 };
+
+Vec3 Actor::getMotion() const {
+    if(auto* svc = this->ctx.tryGetComponent<StateVectorComponent>()) {
+        return svc->positionDelta;
+    };
+    return Vec3();
+};
+
+void Actor::setMotion(Vec3 motion) {
+    if(auto* svc = this->ctx.tryGetComponent<StateVectorComponent>()) {
+        svc->positionDelta = motion;
+    };
+};
+
+void Actor::lerpMotion(Vec3 motion, float t) {
+    if(auto* svc = this->ctx.tryGetComponent<StateVectorComponent>()) {
+        Vec3 currMotion = svc->positionDelta;
+        svc->positionDelta = currMotion.lerp(motion, t);
+    };
+};
