@@ -103,6 +103,7 @@ void Manager::initCategories() {
     this->initResults.emplace(InitType::Categories, Result(ResultStatus::OKAY, "Successfully initialized Categories"));
 };
 
+#include "Modules/Module/Movement/AutoSprint.h"
 #include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Misc/TestModule.h"
 #include "Modules/Module/Misc/Uninject.h"
@@ -115,6 +116,7 @@ void Manager::initSubModules() {
     
     this->initResults.emplace(InitType::SubModules, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
 
+    new AutoSprint(this->getCategory<CategoryType::MOVE>());
     new AirJump(this->getCategory<CategoryType::MOVE>());
     new TestMod(this->getCategory<CategoryType::MISC>());
     new Uninject(this->getCategory<CategoryType::MISC>());
