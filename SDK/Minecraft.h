@@ -9,4 +9,6 @@ class MC {
 public:
     static ClientInstance* getClientInstance();
     static Player* getLocalPlayer();
+
+    static std::vector<Actor*> getEntities();
 };
