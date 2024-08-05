@@ -12,6 +12,7 @@
 #include <memory>
 #include <map>
 
+#include "AABB/AABB.h"
 #include "Vector/Vec.h"
 #include "Macro/Class.h"
 #include "EnTT/EnTT.h"
