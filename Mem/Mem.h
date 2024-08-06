@@ -17,6 +17,10 @@
 #include "Macro/Class.h"
 #include "EnTT/EnTT.h"
 
+#define PI 3.14159265358979323846
+const float DEG_TO_RAD = PI / 180.0f;
+const float RAD_TO_DEG = 180.0f / PI;
+
 class Mem {
 public:
     static HMODULE getDll();
