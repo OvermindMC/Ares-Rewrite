@@ -11,6 +11,10 @@ struct RuntimeIDComponent {
     uint64_t runtimeId;
 };
 
+struct ActorTypeComponent {
+    uint8_t typeId;
+};
+
 struct StateVectorComponent {
     Vec3 position;
     Vec3 oldPosition;

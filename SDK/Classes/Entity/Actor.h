@@ -12,6 +12,7 @@ public:
     EntityContext ctx;
 
     uint64_t getRuntimeId() const;
+    uint8_t getEntityTypeId() const;
 
     bool isAlive() const;
 
