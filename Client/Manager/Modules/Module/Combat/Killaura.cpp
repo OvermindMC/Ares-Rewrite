@@ -1,12 +1,16 @@
 #include "Killaura.h"
 
 Killaura::Killaura(Category* c) : Module(c, "Killaura") {
-    //this->setIsEnabled(true);
-
     this->registerEvent<EventType::OnLevel, Level*>(
         EventDispatcher::EventPriority::High,
         [&](Level* level) {
             if(!this->isEnabled())
+                return;
+            
+            ClientInstance* ci = MC::getClientInstance();
+            std::string screenName = ci ? ci->getTopScreenName() : "";
+
+            if(screenName.rfind("hud_screen") == std::string::npos)
                 return;
             
             auto now = std::chrono::high_resolution_clock::now();
