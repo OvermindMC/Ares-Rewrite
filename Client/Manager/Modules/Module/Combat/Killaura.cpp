@@ -38,7 +38,7 @@ Killaura::Killaura(Category* c) : Module(c, "Killaura") {
 
             int i = 0;
             for(auto ent : entities) {
-                if(ent->getRuntimeId() == lRuntimeId)
+                if(ent->getRuntimeId() == lRuntimeId || !ent->isAlive())
                     continue;
                 
                 Vec3 tPos = ent->getPosition();
