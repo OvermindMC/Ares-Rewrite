@@ -11,6 +11,8 @@ private:
 public:
     EntityContext ctx;
 
+    uint64_t getRuntimeId() const;
+
     bool isAlive() const;
 
     Vec3 getPosition() const;
