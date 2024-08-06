@@ -111,6 +111,14 @@ public:
         );
     };
 
+    double distance(const Vec3& target) const {
+        float dX = this->x - target.x;
+        float dY = this->y - target.y;
+        float dZ = this->z - target.z;
+
+        return sqrt(dX * dX + dY * dY + dZ * dZ);
+    };
+
     std::string toStr() const {
         std::ostringstream ss;
         ss << x << ", " << y << ", " << z;
