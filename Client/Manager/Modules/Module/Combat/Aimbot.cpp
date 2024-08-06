@@ -53,7 +53,7 @@ Aimbot::Aimbot(Category* c) : Module(c, "Aimbot") {
             });
 
             for(auto ent : entities) {
-                if(ent->getRuntimeId() == lRuntimeId)
+                if(ent->getRuntimeId() == lRuntimeId || !ent->isAlive())
                     continue;
                 
                 Vec3 tPos = ent->getPosition();
