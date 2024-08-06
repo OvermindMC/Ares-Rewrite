@@ -53,6 +53,9 @@ void Manager::initSigs() {
             auto sig = (uintptr_t)Mem::getSig("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 8B 89 ? ? ? ? 48 85 C9 74 11 48 8B 01 BA ? ? ? ? 48 8B 00 FF 15 ? ? ? ? 48 8B 8B ? ? ? ? 48 85 C9 74 17");
             auto offset = *(int*)(sig + 3);
             return (void**)(sig + offset + 7);
+        }()},
+        {"HandleLookInput_Func", []() {
+            return Mem::getSig("48 89 5C 24 ? 57 48 83 EC ? F3 41 0F 10 00 49 8B D8 F3 41 0F 58 40");
         }()}
     };
 
@@ -70,6 +73,7 @@ void Manager::initSigs() {
 
 #include "Hook/Hooks/Level/Level_Hook.h"
 #include "Hook/Hooks/GameMode/GmTick_Hook.h"
+#include "Hook/Hooks/LookInput/LookInp_Hook.h"
 
 void Manager::initHooks() {
     if(this->hasInit(InitType::Hooks))
@@ -86,6 +90,7 @@ void Manager::initHooks() {
 
     new Level_Hook(this);
     new GmTick_Hook(this);
+    new LookInp_Hook(this);
 };
 
 void Manager::initCategories() {
@@ -103,6 +108,7 @@ void Manager::initCategories() {
     this->initResults.emplace(InitType::Categories, Result(ResultStatus::OKAY, "Successfully initialized Categories"));
 };
 
+#include "Modules/Module/Combat/Aimbot.h"
 #include "Modules/Module/Movement/AutoSprint.h"
 #include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Misc/TestModule.h"
@@ -116,6 +122,7 @@ void Manager::initSubModules() {
     
     this->initResults.emplace(InitType::SubModules, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
 
+    new Aimbot(this->getCategory<CategoryType::COMBAT>());
     new AutoSprint(this->getCategory<CategoryType::MOVE>());
     new AirJump(this->getCategory<CategoryType::MOVE>());
     new TestMod(this->getCategory<CategoryType::MISC>());
