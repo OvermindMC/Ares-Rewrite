@@ -33,6 +33,11 @@ struct ActorSetPositionRequestComponent {
     Vec3 position;
 };
 
+struct AABBShapeComponent {
+    AABB AABB;
+    Vec2 radius;
+};
+
 struct BlockMovementSlowdownMultiplierComponent {};
 struct OnGroundFlagComponent {};
 struct ItemInUseComponent {};
