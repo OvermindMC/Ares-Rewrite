@@ -109,6 +109,7 @@ void Manager::initCategories() {
 };
 
 #include "Modules/Module/Combat/Aimbot.h"
+#include "Modules/Module/Combat/Killaura.h"
 #include "Modules/Module/Movement/AutoSprint.h"
 #include "Modules/Module/Movement/AirJump.h"
 #include "Modules/Module/Misc/TestModule.h"
@@ -122,9 +123,12 @@ void Manager::initSubModules() {
     
     this->initResults.emplace(InitType::SubModules, Result(ResultStatus::OKAY, "Successfully initialized Modules"));
 
+    new Killaura(this->getCategory<CategoryType::COMBAT>());
     new Aimbot(this->getCategory<CategoryType::COMBAT>());
+
     new AutoSprint(this->getCategory<CategoryType::MOVE>());
     new AirJump(this->getCategory<CategoryType::MOVE>());
+    
     new TestMod(this->getCategory<CategoryType::MISC>());
     new Uninject(this->getCategory<CategoryType::MISC>());
 };
