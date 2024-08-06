@@ -30,11 +30,12 @@ Vec2 calcAnglesRad(const Vec3& currPos, const Vec3& target) {
 };
 
 Aimbot::Aimbot(Category* c) : Module(c, "Aimbot") {
-    this->setIsEnabled(true);
-
     this->registerEvent<EventType::OnFirstPersonLook, Vec2*>(
         EventDispatcher::EventPriority::High,
         [&](Vec2* mAngles) {
+            if(!this->isEnabled())
+                return;
+            
             Player* player = MC::getLocalPlayer();
 
             if(!player)
