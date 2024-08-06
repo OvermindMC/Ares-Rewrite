@@ -1,5 +1,12 @@
 #include "Actor.h"
 
+uint64_t Actor::getRuntimeId() const {
+    if(auto* c = this->ctx.tryGetComponent<RuntimeIDComponent>()) {
+        return c->runtimeId;
+    };
+    return 0;
+};
+
 bool Actor::isAlive() const {
     static void* sig = Mem::getSig("48 83 EC 28 80 B9 ? ? ? ? ? 75 10"); // vtable index[50] - 1.21.2
     using Func = bool (__thiscall*)(Actor*);
