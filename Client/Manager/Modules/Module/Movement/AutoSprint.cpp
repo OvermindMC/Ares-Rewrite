@@ -6,8 +6,11 @@ AutoSprint::AutoSprint(Category* c) : Module(c, "AutoSprint") {
     this->registerEvent<EventType::OnGameMode, GameMode*>(
         EventDispatcher::EventPriority::Low,
         [&](GameMode* GM) {
+            if(!this->isEnabled())
+                return;
+            
             Player* player = GM->player;
-            float speed = [&] { auto m = player->getMotion(); return std::sqrt(m.x * m.x + m.z * m.z); }();
+            float speed = [&] { auto m = player ? player->getMotion() : Vec3(); return std::sqrt(m.x * m.x + m.z * m.z); }();
 
             if(speed > 0.1f)
                 player->setSprinting(true);
