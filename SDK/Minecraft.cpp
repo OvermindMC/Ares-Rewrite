@@ -25,7 +25,7 @@ std::vector<Actor*> MC::getEntities() {
             for (auto ent : registry.view<ActorOwnerComponent>()) {
                 if (registry.valid(ent)) {
                     auto& ownerComponent = registry.get<ActorOwnerComponent>(ent);
-                    if (auto actor = ownerComponent.actor; actor && actor->isAlive()) {
+                    if (auto actor = ownerComponent.actor) {
                         results.push_back(actor);
                     };
                 };
