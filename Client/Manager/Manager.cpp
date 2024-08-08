@@ -56,6 +56,9 @@ void Manager::initSigs() {
         }()},
         {"HandleLookInput_Func", []() {
             return Mem::getSig("48 89 5C 24 ? 57 48 83 EC ? F3 41 0F 10 00 49 8B D8 F3 41 0F 58 40");
+        }()},
+        {"KeyInput_Func", []() {
+            return Mem::getSig("48 83 EC 48 0F B6 C1 4C 8D 05");
         }()}
     };
 
@@ -71,6 +74,7 @@ void Manager::initSigs() {
     this->initResults.emplace(InitType::Sigs, Result(problem ? ResultStatus::ERR : ResultStatus::OKAY, problem ? "Failed to resolve all Signatures" : "Successfully resolved all Signatures"));
 };
 
+#include "Hook/Hooks/Key/KeyInput_Hook.h"
 #include "Hook/Hooks/Level/Level_Hook.h"
 #include "Hook/Hooks/GameMode/GmTick_Hook.h"
 #include "Hook/Hooks/LookInput/LookInp_Hook.h"
@@ -87,6 +91,8 @@ void Manager::initHooks() {
     };
 
     this->initResults.emplace(InitType::Hooks, Result(ResultStatus::OKAY, "Successfully initialized MinHook"));
+
+    new KeyInput_Hook(this);
 
     new Level_Hook(this);
     new GmTick_Hook(this);
