@@ -1,8 +1,6 @@
 #include "Hitbox.h"
 
 Hitbox::Hitbox(Category* c) : Module(c, "Hitbox") {
-    this->setIsEnabled(true);
-
     this->registerEvent<EventType::OnLevel, Level*>(
         EventDispatcher::EventPriority::Medium,
         [&](Level* level) {
