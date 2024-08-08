@@ -24,6 +24,7 @@ public:
 
     bool isHoldingKey(uint64_t key) const { return this->keyMap.contains(key) ? this->keyMap.at(key) : false; };
 
+    std::vector<Category*> getCategories() const;
     Category* getCategory(CategoryType type) { return categories.contains(type) ? categories.at(type).get() : nullptr; };
     
     template<CategoryType type>

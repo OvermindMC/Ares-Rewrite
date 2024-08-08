@@ -143,6 +143,16 @@ void Manager::initSubModules() {
     new Uninject(this->getCategory<CategoryType::MISC>());
 };
 
+std::vector<Category*> Manager::getCategories() const {
+    std::vector<Category*> list;
+
+    for(auto& [ type, category ] : this->categories) {
+        list.push_back(category.get());
+    };
+
+    return list;
+};
+
 std::vector<std::pair<EventDispatcher::EventPriority, std::unique_ptr<BaseEvent>>> Manager::getSortedEvents(EventType filterType) const {
     std::vector<std::pair<EventDispatcher::EventPriority, std::unique_ptr<BaseEvent>>> events;
 
