@@ -42,3 +42,12 @@ void Module::setIsEnabled(bool state) {
 std::string Module::getName() const {
     return this->name;
 };
+
+uint64_t Module::getBind() const {
+    return this->bindKey;
+};
+
+void Module::setBind(uint64_t bind) {
+    if(bind)
+        this->bindKey = bind;
+};
